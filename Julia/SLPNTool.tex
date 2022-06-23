@@ -1,0 +1,112 @@
+\section{Tool for Symbolic automata}
+
+OK finally user input term to html $\rightarrow$ websocket Julia  returns evaluation to html!
+
+
+
+
+
+We start by modelling processes that can interact by event synchronisation (and shared memory) with Local Petri Nets where Transitions are labelled with synchronising events to these we add: (1) symbolic state  local to a sequential process (2) boolean guards and assignment to the Transitions.
+
+
+By introducing state and boolean guards it is always possible to model any system with a single Place, just like TLA+ and Event-B. But, with this representation understanding the behaviour of a collection of such processes is far from easy. Although these tools offer tha ability to model check and verify the processes. TLA+ is state based, hence no explict use of shared events, and  TLA+ is explicitly not modular but is able to model check some extremely large automata  with respect to specifications given by Temporal Logic, hence the name. 
+
+It is helpful to explicitly define a  of enumerated type, that represents distinct Places. Alternatively by  building the reachable symbolic state variables that range over an enumerated set of values can be detected.
+ 
+Automata with atomic transitions $tr$ are easy to compose and analyse partly because the precondition of each transition $^{\bullet}tr$ is the initial node from which the transition exits. Symbolic transitions are more complex in  two significant ways:
+\begin{enumerate}
+\item transitions can output values and input values
+\item the precondition of a transition consists of both $^{\bullet}tr$  and  the  boolean guard attached to the transition
+\end{enumerate}
+
+To analyse  automata with symbolic transitions we  first transform them into automata with  transitions that have no boolean guards. A one place buffer that can hold an integer clearly can be in  an unbounded  number of states, one for each integer value it can hold. Nonetheless it can be represented by an automata with two nodes and two transitions neither with a boolean guard. Note with $N$ events their are only $N$ boolean guards and hence the state space only need be divided into $2^N$ regions in order that the boolean guards can be removed.
+
+
+When transitions receive some input value then  guards over the input value can be "fused" with the transition name prior to the event synchronisation when composing automata in parallel. Output events only output values, at run time, but prior to run time can be defined as out putting a variable.
+
+
+of passive events then the resulting automata can be considered to have atomic events and can be analysed accordingly.  
+
+
+Basic analysis methodology involves  using visualisation as a sanity check at each step:
+
+\begin{enumerate}
+\item Define sequential processes 
+\item Compose two or more sequential processes.
+\item Analyse by hiding private communication - $\tau$ abstraction and simplifying while preserving failure semantics / bisimulation / trace semantics 
+  \begin{enumerate}
+    \item These semantics have a long history on automata with atomic events. $P\sqsubseteq_x Q \iff  Expand(P)\sqsubseteq_x Expand(Q)$
+   \end{enumerate}
+\end{enumerate}
+
+Using Julia meta-programming  gives us access to parsing and compiling the guards and assignments on the transitions. Implementing sequential processes on  threads and converting the events into inter-thread communication should implement the SLPN.
+
+
+Process simplification can be achieved by identifying node with the same colour for either bisimulation or failure colouring. Once $\tau$ events have been constructed compute the observational semantics by event saturation and then compute the observational colouring on the non saturated automata.
+
+This requires computing the boolean guards an assignments  of the new events, $b_1\wedge (b_2@a_1)$ and $a_2@a_1$. To compute the equivalence colouring  we need to compute $(node,name)\rightarrow (b_1\vee B_2\vee\ldots)$. All computed terms must be simplified and those the evaluate to $false$ can be dropped.
+
+
+
+
+\subsection{Julia Meta Programming}
+The State of an Atomic automata is an evaluation of the Automata variables.
+\begin{enumerate}
+\item The variables of a Symbolic automata may be constrained by Predicates. Julia Symbolics.jl copes very well with numbers and arrays of numbers and functions including differentiation but only copes with these.
+
+\item Both Symbolic and Atomic automata have an enumeration of nodes. At each Node the Variable NdState always has an Integer value.
+\end{enumerate}
+
+Need to decompose two, potentially overlapping  boolean values $A$, $B$ into the three maximal disjoint boolean values $A\cap B$, $A\cap \neg B$ and $B\cap \neg A$.
+
+{\bf Julia} is a multi purpose programming language with an expanding collection of  performant  Libraries for scientific use including ODE,PDE,Neural Nets, Constraint optinization,... \emph{" Symbolics.jl, a high-performance symbolic-numeric computing library"} . JuMP.jl is an Algebraic Modelling Language, a DSL (MOI MathOptInteface.jl) with Bridges for converting user specified code into data structures passed to solvers.  Quoting from JuMP documentation \emph{"JuMP has three types of expressions: affine, quadratic, and nonlinear. "}  No built in Booleans but \emph{Binary variables can be used to construct logical operators.} . Metatheory.jl provides a solver based on classical term rewriting and a solver based on E-Graph saturation. The first reference to solving - simplifying Boolean expressions I have found is in {\bf ConstraintSolver.jl}.
+
+Look up {\bf SatisfiabilityInterface.lj   SimpleSATSolver.jl  ConstraintProgrammingExtensions.jl}
+
+
+{\bf Question: Can reasoning about the state of a program always be encoded as a Julia constraint problem Or do we need First Order Logic?}   Disjunction in the state constraints of an event introduces non-determinism of the event. Such non determinism can also be encodes by the introduction  multiple events with the same name but deterministic  state transformation.
+
+Problems expressed as is this Fist Order Logic, FOL, statement valid can be answered by \emph{Term Rewriting}, \emph{E-Graph saturation}, or be recast as a Constraint Satisfaction Problem, CSP. This offers totally different algorithms for evaluating  FOL terms. CSP solutions can be found by \emph{constraint propagation}. 
+E-Graph saturation can be used to generate sets of Rewrite Rules more efficient that hand crafted rewrite rules.
+
+Now a CSP can in turn be recast as the fundamental algebraic problem called the Homomorphism Problem, HP. Another way to recast a CSP is each constraint is a table in a Relational Database and the solution is the join of the constraints. Note that the join of tables becomes a constraint propagation.
+
+Pragmatically memoiseation may increase the effectiveness of any of the algorithms and by storing memoised results from past work could be helpful in quite new situations?
+
+Equality Saturation,ES,  can be used, in place of hand crafted rewrite rules, for code optimization producing improved optimization over many rewrite techniques use in existing compilers.  ES demonstrates the emergent optimization rules of both previously hand crafted rule and novel rules.
+ By hiding event synchronised symbolic events  we end up with an inefficient sequential program. It would eb interesting to see what the output of applying  ES to such code would look like!
+
+\emph{refutations by OBDDs are exponentially stronger than resolution!}
+
+
+
+The Julia Abstract Syntax tree is of type \verb|Expr| and contains variables of type \verb|Symbol|.  Thus \verb|typeof(:(qqq==4))==Expr| yet \verb|typeof(:(qqq))==Symbol|
+
+\begin{verbatim}
+@enum EType hsin hsout bcout bcin
+mutable struct myEvent
+    etype:: EType
+    preNode:: Expr
+    ebool:: Expr
+    ename:: String
+    eass:: Expr
+    postNode:: Expr
+ end
+ macro event(t,pre,bool,name,ass, post)
+  return myEvent(eval(t),pre,bool,name ,ass,post)
+ end
+@variables x, y, ndState # need to use these for symbolic reasoning  
+eve = @event(hsin, ndState==1, y==1 ,"ping", [(x,1),(ndState,2)],ndState==2 )
+
+d = Dict(eval(eve.eass))
+dd = SymbolicUtils.substitute(eval(eve.preNode), d) #performs simplification
+\end{verbatim}
+
+\subsection{For Symbolic reasoning}
+\begin{verbatim}
+@variables var
+Symbolics.simplify(var<var)
+\end{verbatim}
+
+
+

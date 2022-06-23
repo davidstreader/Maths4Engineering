@@ -1,0 +1,3427 @@
+\begin{filecontents}{localrefs.bib}
+
+@report{GaloisPeter,
+	author = {Peter Smith},
+	title = {The Galois Connection Between Syntax and Semantics},
+	journal = {Technical Report},
+	publisher = {University of Cambridge},
+	year = {2010}
+}
+@InCollection{SEP21,
+	author       =	{Shapiro, Stewart and Kouri Kissel, Teresa},
+	title        =	{{Classical Logic}},
+	booktitle    =	{The {Stanford} Encyclopedia of Philosophy},
+	editor       =	{Edward N. Zalta},
+	howpublished =	{\url{https://plato.stanford.edu/archives/spr2021/entries/logic-classical/}},
+	year         =	{2021},
+	edition      =	{{S}pring 2021},
+	publisher    =	{Metaphysics Research Lab, Stanford University}
+}
+
+@article{SVic91,
+	title = {Steven Vickers. Topology Via Logic. Cambridge Tracts in Theoretical Computer Science, No. 5. Cambridge University Press, Cambridge Etc. 1989, Xiii + 200 Pp},
+	year = {1991},
+	volume = {56},
+	doi = {10.2307/2275086},
+	pages = {1101--1102},
+	journal = {Journal of Symbolic Logic},
+	author = {P. T. Johnstone},
+	number = {3}
+}
+
+@article{LMN13,
+author = {Williamson, Timothy},
+year = {2013},
+month = {03},
+pages = {},
+title = {Logic, Metalogic and Neutrality},
+volume = {79},
+journal = {Erkenntnis},
+doi = {10.1007/s10670-013-9474-z}
+}
+
+@book{BPT00,
+  author    = {Anne Sjerp Troelstra and
+               Helmut Schwichtenberg},
+  title     = {Basic proof theory, Second Edition},
+  series    = {Cambridge tracts in theoretical computer science},
+  volume    = {43},
+  publisher = {Cambridge University Press},
+  year      = {2000},
+  isbn      = {978-0-521-77911-1},
+  timestamp = {Mon, 22 Jul 2019 16:40:55 +0200},
+  biburl    = {https://dblp.org/rec/books/daglib/0001441.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+@misc{GalLogic17,
+      title={A Galois connection between classical and intuitionistic logics. I: Syntax}, 
+      author={Sergey A. Melikhov},
+      year={2017},
+      eprint={1312.2575},
+      archivePrefix={arXiv},
+      primaryClass={math.LO}
+}
+@misc{topo19,
+      title={A semantic hierarchy for intuitionistic logic}, 
+      author={Guram Bezhanishvilia and Wesley H.Holliday},
+      year={2019},
+      series={Indagationes Mathematicae},
+      volume  = {30/3},
+      pages  = {403-469}
+}
+
+@misc{intuitSeman17,
+      title={Mathematical semantics of intuitionistic logic}, 
+      author={Sergey A. Melikhov},
+      year={2017},
+      eprint={1504.03380},
+      archivePrefix={arXiv},
+      primaryClass={math.LO}
+}
+@inproceedings{HFCA05,
+author = {Chen, Yaohua and Yao, Yiyu},
+year = {2005},
+month = {09},
+pages = {285- 292},
+title = {Formal concept analysis based on hierarchical class analysis},
+isbn = {0-7803-9136-5},
+doi = {10.1109/COGINF.2005.1532643}
+}
+@article{ConstructClassical,
+  author    = {Russell O'Connor},
+  title     = {Classical mathematics for a constructive world},
+  journal   = {Math. Struct. Comput. Sci.},
+  volume    = {21},
+  number    = {4},
+  pages     = {861--882},
+  year      = {2011},
+  url       = {https://doi.org/10.1017/S0960129511000132},
+  doi       = {10.1017/S0960129511000132},
+  timestamp = {Wed, 01 Apr 2020 08:48:57 +0200},
+  biburl    = {https://dblp.org/rec/journals/mscs/OConnor11.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+\end{filecontents}
+
+\documentclass[]{llncs}
+%\documentclass[final]{ieee}
+%\usepackage{tikz}
+%\include{zl-defs}
+%\usepackage {latexsym,epsf,floatflt,pstricks}
+%\usepackage{semantic, inference}
+%\usepackage[table]{xcolor}
+
+\usepackage[table]{xcolor}
+%\usepackage{times,pstricks} 
+\usepackage{tikz-cd} 
+\usepackage {pst-node}
+\usepackage {latexsym}
+%\usepackage{amsmath,amscdx}
+\usepackage[all]{xy}
+\usepackage{mathpartir}
+\usepackage {stmaryrd}
+\usepackage {amsmath,cancel}
+\usepackage {amssymb}
+\usepackage {floatflt}
+\usepackage{tikzit}
+\usepackage{bussProof}
+\input{simple.tikzstyles}
+
+%\setlength{\tabcolsep}{12pt}
+\newcommand {\blank}[0]{\ensuremath{\_ }}
+\newcommand {\eg}[0]{e.g.}
+\newcommand {\ie}[0]{i.e.}
+\newcommand{\DofD}{{\bf DofD }}
+\newcommand {\setN}[0]{\ensuremath{\mathbb N}}
+\newcommand {\AbsLH}[2]{\, _{#1}{Abs}_{#2}}
+\newcommand{\s}[0]{\hspace*{1mm}}
+\newcommand{\sa}[1]{\s #1 \s}
+\newcommand{\shl}{ \cellcolor[HTML]{D0D0D0} }
+\newcommand{\shd}{ \cellcolor[HTML]{A0A0A0}}
+\newcommand{\shll}{ \cellcolor[HTML]{E0E0E0}}
+\newcommand {\parp} [1]{ \hspace*{-0.5ex}||_{#1} \hspace*{-0.5ex}}
+\newsavebox{\mybx}  
+\newsavebox{\mybxx}  
+\newsavebox{\mybxxx}  
+\newcommand {\mythin}[4]
+   {
+\savebox{\mybx}{#1}  
+\settowidth{\dslen}{\usebox{\mybx}}     
+\addtolength{\dslen}{#4}
+\begin{floatingfigure}[r]{\dslen}
+\hspace*{#4}\hspace*{-1ex}\usebox{\mybx}
+\caption{#2}   
+ \label{#3}
+\end{floatingfigure} 
+   }
+%\newsavebox{\mybx}  
+\newcommand {\myfloat}[3]
+   {
+\savebox{\mybx}{#1}  
+\settowidth{\dslen}{\usebox{\mybx}}     
+\begin{floatingfigure}[r]{\dslen}
+\noindent
+\usebox{\mybx} \vspace{-3ex}
+ \caption{\ #2}   
+ \label{#3}
+\end{floatingfigure} 
+   }
+\newcommand {\oldfloat}[3]
+   {
+\savebox{\mybx}{#1}  
+\settowidth{\dslen}{\usebox{\mybx}}     
+\begin{floatingfigure}[r]{\dslen}
+\noindent
+
+\usebox{\mybx}
+ \caption{\ #2}   
+ \label{#3 }
+\end{floatingfigure} 
+   }
+\newcommand {\myfloatwo}[2]
+   {
+\savebox{\mybx}{#1}  
+\settowidth{\dslen}{\usebox{\mybx}}     
+\begin{floatingfigure}[r]{\dslen}
+\noindent
+\usebox{\mybx}
+ \label{#2}
+\end{floatingfigure} 
+   }
+
+\newcommand {\myfig}[3]
+   {
+\savebox{\mybx}{#1} 
+   \settowidth{\dslen}{\usebox{\mybx}}
+  \begin{figure}[!htb]
+  \begin{center}
+    \begin {minipage}{\dslen}{#1}\end{minipage}
+    \caption{\ #2}
+\label{#3}
+  \end{center}
+  \end{figure}
+    }
+\newcommand {\myfigtwo}[4]
+   {
+\savebox{\mybx}{#1} 
+   \settowidth{\dslen}{\usebox{\mybx}}
+  \begin{figure}[!htb]
+  \begin{center}
+    %\fbox{
+   \begin {minipage}{\dslen}{#1}\end{minipage}
+   %}
+\savebox{\mybx}{#4} 
+   \settowidth{\dslen}{\usebox{\mybx}}
+      %\fbox{
+    \begin {minipage}{\dslen}{#4}\end{minipage}
+     %}
+  \caption{\ #2} 
+\label{#3}
+  \end{center}
+  \end{figure}
+   }
+\newcommand {\myfigf}[4]
+   {
+\savebox{\mybx}{#1} 
+   \settowidth{\dslen}{\usebox{\mybx}}
+  \begin{figure}[!htb]
+  \begin{center}
+    \begin {minipage}{\dslen}{#1}
+
+   \footnotesize{#4}\end{minipage}
+     \caption{\ #2}
+\label{#3}
+  \end{center}
+
+  \end{figure}
+   }
+
+\newcommand {\myfigb}[3]
+   {
+\savebox{\mybx}{#1}  
+\settowidth{\dslen}{\usebox{\mybx}}     
+\noindent
+\begin{figure}[b]
+\noindent
+\begin{center}
+\makebox[\dslen][c] {
+\usebox{\mybx}}  \caption{#2}   
+ \label{#3}
+\end{center}
+\end{figure} 
+   }
+
+\newcommand {\Arop} [4] 
+{\ensuremath{{#1}{{\stackrel{#2}{\Longrightarrow}}_{#4}}{#3} }}
+
+%%%%%%%%%%%%
+% Z sequence-filter
+\newcommand{\zfilter} [2] { {#1} \upharpoonright{#2}}
+
+%\usepackage {ifthen}
+%\usepackage [dvips] {graphics}
+\newlength{\dslen}
+\newlength{\dslena}
+\newlength{\dslenb}
+\newcommand {\overo} [1] {\widehat{#1}}
+
+
+\newsavebox{\mytab}
+\newcommand {\mybox} [1]
+   {
+\settowidth{\dslena}{#1}
+ \raisebox{\dslena}{#1}
+  }
+\newcommand {\parsyn} [1] {\stackrel{\parallel}{\scriptstyle #1}}
+%\newcommand {\parsyn} [1] {\parallel_{\vspace{1ex}\hspace{-1ex}\scriptstyle #1}}
+\newcommand {\refadt} [0] {Ref_{s}}
+\newcommand {\scol} [0] {;\hspace{-0.5em}}
+\newcommand {\sfa} [0] {\sf{a}}
+\newcommand {\sfb} [0] {\sf{b}}
+\newcommand {\sfc} [0] {\sf{c}}
+\newcommand {\citepa} [0] {\cite{Ros97,Mil89,BaW90,Hen88b}}
+\newcommand {\hplu} [0] {\ensuremath{\widehat{+}}}
+\newcommand {\hpar} [0] {\ensuremath{\widehat{\parallel_{S}}}}
+\newcommand {\htau} [0] {\ensuremath{\widehat{\tau}}}
+\newcommand {\hdelta} [0] {\ensuremath{\widehat{\delta}}}
+\newcommand {\hseq} [0] {\ensuremath{\widehat{\hspace*{0.5ex}; }}}
+\newcommand {\hcon} [0] {\ensuremath{\widehat{[\_]}}}
+
+\newcommand {\notangle} [0] {\ensuremath{\hspace*{0.1em}\angle \hspace*{-0.8em}\diagdown}}
+
+\newcommand {\leftproj} [1] {\stackrel{\scriptstyle \gets }{#1}}
+\newcommand {\rightproj} [1] {\stackrel{\scriptstyle \to }{#1}}
+\newcommand {\pretotal} [1] {\stackrel{\scriptstyle \heartsuit}{#1}}
+\newcommand {\lifttotal} [1] {\stackrel{\scriptstyle \bullet}{#1}}
+\newcommand {\lsemantics} [0] {\lbrack\mkern-3mu\lbrack}
+\newcommand {\rsemantics}     [0] {\rbrack\mkern-3mu\rbrack}
+
+\newcommand {\plcsp}[1] {\ensuremath{{\parallel \atop{\scriptscriptstyle #1}}}}
+
+\newcommand {\parcsp}     [1] {\ensuremath{
+\settowidth{\dslen}{/{#1}}
+{\hspace{-\dslen} {\hspace{\dslen}{\sf VM}\parallel{\sf Rob}/{#1} \atop{\scriptscriptstyle #1}}}}}
+\newcommand {\partwocsp}     [2] {\ensuremath{
+\settowidth{\dslen}{{#2}}
+{\hspace{-\dslen} {\hspace{\dslen}(\_\parallel\_)/{#2} \atop{\scriptscriptstyle #1}}} }}
+
+
+\newcommand {\absto}[1] {\ensuremath{\stackrel{#1}{\Longrightarrow}} }
+%\newcommand {\mylgc} [3] {\ensuremath{
+%\settowidth{\dslen}{\mbox {${#1}$}}
+%\settowidth{\dslena}{\mbox {${#2}$}}
+%\ifthenelse{\dslen < \dslena}{\setlength{\dslena}{\dslen}}{}
+%\parbox[t]{\dslen}{\underline{#1} {#2}}
+%\settodepth{\dslena}{\mbox ${#3}$}
+%\raisebox{\dslena}{${#3}$} }}
+
+\newcommand {\mylogic} [3] {
+\xymatrix@R=0pt@C=0pt@M=0pt{&{#1} \\
+\ar@{-}[rr] &&\hspace{1.0ex}{#3}\hspace{1.0ex}\\
+&{#2}}}
+
+%\newcommand {\mylgcy} [3] {
+%\settowidth{\dslen}{\mbox{#1}}
+%\settowidth{\dslena}{\mbox{#2}}
+%\ifthenelse{\dslen < \dslena}
+%{\parbox[t]{\dslena}{\underline{\makebox[\dslena]{#1}} {#2}}}
+%{\parbox[t]{\dslen}{\underline{#1} \makebox[\dslen]{#2}}}
+%%\settodepth{\dslena}{\mbox {#3}}
+%\raisebox{-1.0ex}{#3} }
+
+%\newcommand {\mylgcyy} [5] {
+%\settowidth{\dslen}{\mbox{#1}}
+%\settowidth{\dslena}{\mbox{#2}}
+%\settowidth{\dslenb}{\mbox{#4}}
+%\ifthenelse{\dslen < \dslena}
+%{\setlength{\dslen}{\dslena}}
+%{}
+%\ifthenelse{\dslen < \dslenb}
+%{\setlength{\dslen}{\dslenb}}
+%{}
+%{\begin{minipage}[b]{\dslen}
+%\parbox[t]{\dslen}{\underline{\makebox[\dslen]{#1}}
+%\underline{\makebox[\dslen]{#2}}
+%\raisebox{-1.0ex}{#3}} \\ \mbox{} \end{minipage}
+%\\ \parbox[t]{\dslen}{#4}\raisebox{-1.0ex}{#5}}}
+
+\newcommand {\ct} [1] {\stackrel{\scriptstyle \circ \hspace*{-0.2ex} \to  }{T_{#1}}}
+
+%%%\newcommand {\arocel}[3] {\ensuremath{
+%%%{#1}\buildrel {#2} \over {\circ \hspace*{-1.0ex} - \hspace*{-1.1ex} - \hspace*{-1.1ex} \to }{#3} }}
+
+%%%\def\rightcircfill{$\mathsurround=0pt \circ \mkern-2.4mu
+%%%\\cleaders\hbox{$\mkern-2mu \mathord- \mkern-2mu$}\hfill
+%%%\\mkern-6mu \mathord\to $}
+
+%%%\\newcommand {\arocel}[3] {\ensuremath{Dij%%%\\settowidth{\dslen}{\hbox {${#2}$\hspace{1ex}}}
+%%%\{#1}\buildrel {#2} \over {\hbox to \dslen{\rightcircfill}}{#3} }}
+
+
+
+\def\rightharpfill{$\mathsurround=0pt - \mkern-6mu
+\cleaders\hbox{$\mkern-2mu \mathord- \mkern-2mu$}\hfill
+\mkern-6mu \mathord\rightharpoondown$}
+
+\def\Rightmapfill{$\mathsurround=0pt \models \mkern-6mu
+\cleaders\hbox{$\mkern-2mu \mathord= \mkern-2mu$}\hfill
+\mkern-6mu \mathord\Rightarrow$}
+
+\def\Rightarrowfill{$\mathsurround=0pt \mathord= \mkern-6mu
+\cleaders\hbox{$\mkern-2mu \mathord= \mkern-2mu$}\hfill
+\mkern-6mu \mathord\Rightarrow$}
+
+\newcommand {\AroL}[4] {\ensuremath{
+\settowidth{\dslen}{\hbox {$\langle{#2},{#4}\rangle$}}
+{#1}\buildrel \langle{#2},{#4}\rangle \over {\hbox to \dslen{\Rightarrowfill}}{#3} }}
+
+
+\newcommand {\Aroel}[4] {\ensuremath{
+\settowidth{\dslen}{\hbox {${#2}$}}
+{#1}\buildrel {#2} \over {\hbox to \dslen{\Rightarrowfill}}_{#4}{#3} }}
+
+\newcommand {\aro} [3]
+{\ensuremath{{#1}{\stackrel{#2}{\longrightarrow}}{#3} }}
+\newcommand {\raro} [3]
+{\ensuremath{{#1}{\stackrel{#2}{\gets}}{#3} }}
+
+\newcommand {\arotwo} [5]
+{\ensuremath{{#1}{\stackrel{#2}{\longrightarrow}}{#3}{\stackrel{#4}{\longrightarrow}}{#5} }}
+
+\newcommand {\aroeltwo}[5] {\ensuremath{
+\settowidth{\dslen}{\hbox {${#2}$}}
+\settowidth{\dslena}{\hbox {${#4}$}}
+{{#1}\buildrel {#2\hspace{-0.5ex}} \over {\hbox to \dslen{\rightarrowfill}}{\hspace{-0.5ex}#3}\buildrel {#4\hspace{-0.5ex}} \over {\hbox to \dslena{\rightarrowfill}}{\hspace{-0.5ex}#5} }}}
+
+
+
+\newcommand {\Aro} [3]
+{\ensuremath{{#1}{\stackrel{#2}{\Longrightarrow}}{#3} }}
+
+\newcommand {\aroleft} [3]
+{\ensuremath{{#1}{\stackrel{#2}{\longleftarrow}}{#3} }}
+\newcommand {\arew} [1] {\ensuremath{\stackrel{#1}{\leadsto}}}
+\newcommand {\defeq}  {\ensuremath{ \hspace*{0.5em}
+\stackrel{\mathrm{def}}{=} \hspace*{0.5em}} }
+
+\newtheorem {mypdef}      {Definition}
+\newtheorem {myplemma}     {Lemma} 
+\newtheorem {myptheorem}  {Theorem}
+\newtheorem {mypass}      {Assumption}
+%\newtheorem {myprwa}      {Real World Assumption}
+\newtheorem {mypprop}      {Proposition}
+%\newtheorem {myptheorem} [mypdef] {Theorem}
+
+\newcommand {\sref} [1] {Section~\ref{sec:#1}}
+\newcommand {\aref} [1] {Assumption~\ref{ass:#1}}
+\newcommand {\dref} [1] {Definition~\ref{def:#1}}
+\newcommand {\propref} [1] {Property~\ref{prop:#1}}
+\newcommand {\pref} [1] {Page~\pageref{page:#1}}
+\newcommand {\lref} [1] {Lemma~\ref{lem:#1}}
+\newcommand {\tref} [1] {Theorem~\ref{thm:#1}}
+\newcommand {\fref} [1] {{\bf Fig.~\ref{fig:#1}}}
+%\newcommand {\rwaref} [1] {Real World Assumption~\ref{rwa:#1}}
+
+\newcommand {\myproof} {\noindent {\bf Proof\hspace{1em} }}
+\newcommand {\mylend} {\noindent \ensuremath{\hfill\Box}}
+\newcommand {\mydend} {\noindent \ensuremath{\hfill{\Box}}}
+\newcounter{lno}
+\newcounter{listno}
+\newcommand {\pcm}
+{\ensuremath{\vert\hspace{-0.3ex}\vert\hspace{-0.3ex}\vert} }
+\newcommand {\myprog} [1]
+   {\begin{verbatim} \include {#1} \end{verbatim} }
+\newcommand {\aroelp}[4] {\ensuremath{
+\settowidth{\dslen}{\hbox {${#2}\hspace{0.5em}$}}
+{#1}\buildrel {#2} \over {\hbox to \dslen{\rightarrowfill}}_{#4}{#3} }}
+
+\newcommand {\harp}[3] {\ensuremath{
+\settowidth{\dslen}{\hbox {${#2}\hspace{0.5em}$}}
+{#1}\buildrel {#2} \over {\hbox to \dslen{\rightharpfill}}{#3} }}
+
+
+\newcommand {\saroelp}[4] {\ensuremath{\scriptstyle{
+\settowidth{\dslen}{\hbox {${#2}$\hspace{-0.5em}}}
+{#1}\buildrel {#2} \over {\hbox to \dslen{\rightarrowfill}}_{#4}{#3} }}}
+\newcommand {\aroelps}[4] {\ensuremath{
+\settowidth{\dslen}{\hbox {${#2}\hspace{-2.0em}$}}
+{#1}\buildrel {#2} \over {\hbox to \dslen{\rightarrowfill}}_{#4}{#3} }}
+
+\newcommand {\aroel}[3] {\ensuremath{
+\settowidth{\dslen}{\hbox {${#2}$}}
+{#1}\buildrel {#2\hspace{-0.5ex}} \over {\hbox to \dslen{\rightarrowfill}}{\hspace{-0.5ex}#3} }}
+\newcommand {\arop}
+[4]{\ensuremath{{#1}{\stackrel{#2}{\longrightarrow}_{#4}}{#3} }}
+
+\newcommand {\notaro}
+[3]{\ensuremath{{#1}{\stackrel{#2}{\,\,\not\!\!\longrightarrow}}{#3} }}
+\newcommand {\notarop}
+[4]{\ensuremath{{#1}{\stackrel{#2}{\,\,\not\!\!\longrightarrow}_{#4}}{#3 }
+}}
+\newcommand {\compress} {\setlength{\itemsep}{0cm}
+\setlength{\parsep}{0cm}
+\setlength{\topsep}{0cm}}
+\newcommand {\Obsmath}[0]{\ensuremath{\mathbb O}}
+
+\usepackage {calc} 
+\newcounter{hours}\newcounter{mins}
+\newcommand{\printtime}{%
+   \setcounter{hours}{\time/60}%
+   \setcounter{mins}{\time-\value{hours}*60}%
+   \today \hspace{1ex}\thehours:\themins }
+
+
+\catcode`\@=11
+\newdimen\cdsep
+\cdsep=3em
+
+
+
+\def\cdstrut{\vrule height .6\cdsep width 0pt depth .4\cdsep}
+\def\@cdstrut{{\advance\cdsep by 2em\cdstrut}}
+
+\def\arrow#1#2{
+  \ifx d#1
+    \llap{$\scriptstyle#2$}\left\downarrow\cdstrut\right.\@cdstrut\fi
+  \ifx u#1
+    \llap{$\scriptstyle#2$}\left\uparrow\cdstrut\right.\@cdstrut\fi
+  \ifx r#1
+    \mathop{\hbox to \cdsep{\rightarrowfill}}\limits^{#2}\fi
+  \ifx l#1
+    \mathop{\hbox to \cdsep{\leftarrowfill}}\limits^{#2}\fi
+}
+\catcode`\@=12
+
+\pagestyle{plain}
+\begin{document}
+\title{One Logic to rule them all}
+\author{}
+
+\institute{
+      \email{davidistreader@gmail.com}\\
+      %\printtime
+      }
+
+
+
+\maketitle
+\thispagestyle{empty}
+
+%%%%%%%%%%%
+\vspace{-.5cm}
+\begin{abstract}   
+ 
+
+
+\end{abstract}
+
+
+
+\section{Introduction}\label{sec:ex}
+The work presented here started by considering how to formalise certain  informal assertions about which a straw pole of engineers had very strong intuitions. My  initial propositional formalisation, Zero Order Logic - ZOL, contradicted with my strongly held intuitions. Resolving this clash took far longer than I expected and lead the understanding that there are two distinct uses of disjunction, $\vee$, "or" within this sentence. One use of "or"  can be thought of as a meta operator and  not as the disjunction, $\vee$ that appears with in the ZOL language itself.  The other use  "or" can be thought of as the disjunction, $\vee$ in the language. This explanation fell apart somewhat when using predicate logic, First Order Logic - FOL, where predicates are defined over a \emph{Domain of Discourse}, $DofD$. In FOL both distinct uses of $\vee$ are formalised with in the FOL language. The key distinction between these two uses of "or" was better described, not by considering the object logic meta logic distinction but by considering over what domain the $\vee$ is intended to be evaluated. The ZOL operators are all  computed once for each instance, row of a truth table, whereas the ZOL meta operators are computed once per truth table. In contrast in FOL some $\vee$ operators are computed one per instance, element of the $DofD$ others are computed once for the whole $DofD$.
+
+
+
+ 
+
+
+\begin{quotation}
+\emph{In a typical argument, quantifiers are eliminated, then propositional calculus is applied to unquantified expressions (which typically contain free variables), and then the quantifiers are reintroduced.}
+\end{quotation}
+
+The formalisation of FOL implicitly or explicitly requires the definition of a $DofD$ in addition it has a set of functions over the $DofD$ and a set of predicates over the $DofD$. The use of functions and predicates makes FOL very expressive and flexible.
+FOL defines a set of rules that impose a pre-order over the  well formed FOL sentences. But the FOL rules do no constrain  how the predicates and functions are defined. The standard set theoretic semantics of FOL maps each predicate to a subset of the $DofD$. In comparison the standard \emph{truth valued} semantics of a ZOL proposition, as computed by a Truth Table, is the set of instances that applied to ZOL sentence evaluate to true. This set of instances is, obviously, a subset of the set of all instances. Consequently ZOL can be given a set theoretic semantics where  the $DofD$ is enumerable and fixed by the number of proposition under consideration. It is easy to see that having given ZOL a set theoretic semantics we could introduce quantifiers to the ZOL language with out introducing the flexibility and expressiveness of FOL.
+
+
+
+This move from FOL to ZOL can not be applied to any FOL sentence, precisely because some uses of $\vee$ are computed once per $DofD$ hence need to be translated into meta ZOL.  Introducing an operator $[\_]_{\_}$ to compute the validity of a ZOL sentence, $ZOL^*$ facilitates the translation of all FOL sentences into this zero order logic. It does so by replacing predicate $P(x)$ with proposition $P_x$, and adopting  the FOL quantifier rules, along with their side conditions,  and with the quantifiers replaced by $[\_]_{\_}$. Thus  sentence $\forall_x.P(x)$ becomes $[P_x]_x$
+ and there is no explicit definition of the $DofD$, functions or predicates.
+
+
+
+
+\subsection{An engineers view of equality}
+Mathematicians only say things are equal when they are not. For example it is not true that  $1+1=2$ as the  time taken to compute $1+1$ is larger than the  time taken to p compute $2$. What is important is that equality  is really a parametrised relation\footnote{This becomes important when we are trying to create mathematically rigorous  descriptions from  informal assertions.}. This can be seen by  looking at the definition of equality in more detail.
+Equality is defined by a relation $R$ with the following properties:
+\begin{enumerate}
+\item $R$ is an equivalence relation: reflexive, symmetric and transitive
+\item equals are substitutive   $xRy$ implies $P(x) R P(y)$
+\item equals  are indistinguishable  hence $xRy$   if and only if $Obs(x)=Obs(y)$
+\end{enumerate} 
+Consequently the definition of an equality is parametrized on, dependent on, an observation function $Obs$ you use.
+Change what can be observed and you  change the definition of equality.
+
+Refinement can be described in a very similar way:
+It is defined by a relation $\sqsubseteq$ with the following properties:
+\begin{enumerate}
+\item $\sqsubseteq$ is pre-order, reflexive and transitive
+\item the relation is monotonic   $x\sqsubseteq y$ implies $P(x) \sqsubseteq P(y)$
+\item   hence $x\sqsubseteq y$   if and only if $Obs(x)\subseteq Obs(y)$
+\end{enumerate}
+
+\subsection{What is logic}
+A simplified description is: a logic provides a language used  to construct  assertions, $A$ , $B$, sentences (and wff)  along with rules to formalise deductions, $A\vdash B$. One extraordinary feature is an operator, in the logical language  itself, for implication $A\rightarrow B$ that is an internal representation of the result of applying the rules of deduction.
+The deductions define a pre-order on the set of sentences. If you take the view that the rules are only used to define this pre-order, or that only the pre-order between assertions can be observed then two logics that define the same pre-order can be thought of as equivalent. The relation between two distinct logics becomes the relation between two pre-orders.  Useful  relations between two pre-orders have  been extensively studied using  Galois connections between the pre-orders.
+
+It is important to realise that FOL is more than an implication pre-order over a set of sentences. 
+FOL includes a $DofD$ and both predicates $DofD\Rightarrow bool$ and functions 
+$DofD\Rightarrow DofD$.  This allows a more direct reasoning about some of the rich structure in the world around than can be achieved with ZOL. 
+
+We will extend the ZOL syntax with an operator$[\_]_{\_}$ for asserting that a proposition is valid and thereby allowing ZOL sentences to, just like in FOL, to include disjunction $\vee$ that is evaluated once per $DofD$
+
+
+Where we are going can be represented in the following diagram:
+% \ar@<1ex>[r]^{\vDash}_{}
+
+\hspace{\fill}
+\xymatrix@+=1.4cm{
+ZOL \ar@<1mm>[d]^{f_*}_{.} \ar@<1mm>[r]_{inj} &  
+ FOL \ar@<1mm>[d]^{f_*} \ar@<0.5mm>[r]^{} &
+ ZOL+ \ar@<0.5mm>[l]^{inj} \ar@<1mm>[d]^{f_*}\\
+ TT  \ar@<1mm>[r]_{inj} \ar@<1mm>[u]^{f^*} & 
+Set  \ar@<1mm>[r]^{\alpha} \ar@<1mm>[u]^{f^*}  & 
+TT+ \ar@<1mm>[l]^{\gamma} \ar@<1mm>[u]^{f_*}
+}
+\hspace{\fill}
+
+FOL can be given a set theoretic semantics. But what do we mean by $Set$ theory? if we include in $Set$ theory the language used to define the sets then set theory is certainly more expressive than Truth Tables. But, on the other hand, if $Set$ theory only starts after the sets have been defined then we can build an isomorphism between sets and truth tables. Using this isomorphism we extend the language and rules of $ZOL$ to $ZOL+$ and then extend truth tables aby adding an additional method to give $TT+$. Finally we establish the  commutativity of the above  right hand square.
+
+
+
+The $(f^*,f_*)$ Galois connections are between language and Models \cite{GaloisPeter} and the  $(\alpha,\gamma)$ Galois connection is between the two languages ZOL and FOL. Although $ZOL$ is a restriction of $FOL$, put another way $ZOL$ can be mapped to $FOL$ by an obvious injection this can not be extended into a Galois connection (or can be by extending $ZOL$ to $ZOL+$).
+
+
+
+%By  prohibiting the  naming of particular elements  of FOL  Set  semantics we can define an isomorphism between the data of Truth Tables and the data of Set semantics.
+The semantics of the logics we consider are composed of both data and  methods for reasoning about  the data. 
+Their are well known methods for reasoning about Truth Tables  that that are sound and complete with respect to  ZOL. Using the injection between Truth Tables and Set semantics these methods map to methods that are sound but not complete with respect to FOL.   Additional  set theoretic methods that are sound  with respect to FOL are well known. The ZOL language is extended to    $ZOL+$ and shown to have a Truth Table semantics with methods that map, via the injection to these additional FOL methods.
+
+
+
+\subsection{What dose it mean to relate two different logics?}
+At the extremes  we could a) map every FOL sentence to the ZOL sentence "True" or
+b) map every distinct FOL sentence to a distinct ZOL proposition. Both these extremes work but are uninteresting. For a mapping, $m^*$  between two logics to be interesting we certainly want $P\rightarrow Q$ to imply $m^*P \rightarrow m^*Q$. Given the desire to move in both directions between the logics we want another mapping $m_*$ in the other direction with a similar property. More than this if we map from one logic to another and back we want no surprises that is $m_*m^*P \rightarrow P$ or 
+$m_*m^*P \leftarrow P$ and similarly for the loop on the other logic.
+In addition it would be desirable for it to be safe  to apply these mappings to components of a large system.
+
+
+\subsection{Why we are interested in homomorphic Galois connections}
+It has been established that people, even babies,  possess a hierarchy of mental models, each model at a different level of abstraction. These models are closely related and continually updated as new information is gained. One of the extraordinary skill humans possess is the ability, given any question,  to select the  best level of abstraction to be able to answer the question easily and accurately.  Thus it is the whole stack of related terms that represent entities in the world around us, in the real world. Hence the composition of two entities needs to be the composition of two stacks of terms. To  view one layer as  an abstraction of another it can be desirable for the round trip from abstraction to concretion and back to abstraction to be the identity function.
+
+
+In order to facilitate reasoning at different levels of abstraction it is desirable for:
+\begin{description}
+\item[G1] logical implication to be preserved when moving between levels
+\item[G2] the round trip from one model to another and back not to introduce anything new
+\item[H] operators like conjunction $\wedge$, disjunction $\vee$ and negation - $\neg$ to be applied to the stack of models as a whole. This being achieved when the mappings between models are homomorphic operators are 
+\end{description}
+
+
+
+Homomorphic Galois connections are built with  a pair of homomorphic functions between formal models that can be given at distinct levels of abstraction. These homomorphic Galois connect ion are one way to  satisfy the desirable properties G1, G2 and H given above. 
+
+
+From any relation between two sets $A$ and $B$ there is a standard construction of a Galois connection between the two powersets $2^A$ and $2^B$ that preserves the pre-order $\subseteq$.That means given any relation between two domains of discourse the FOL over these domains are related by a Galois connection that preserves logical implication. In addition the  construction of semantics models of any language, undertaken in the usual way \cite{GaloisPeter}, results in a homomorphic Galois relation between the language, the syntax, and the semantics of the language. Thus although the requirement that models are related by homomorphic Galois connections can seem overly restrictive such connections are surprisingly common.
+
+
+
+
+\subsection{An engineers view of Propositional Logic}\label{sec:ZOL}
+ZOL is a language with a set of atomic propositions that can only  take boolean values, i.e. \emph{true} or \emph{false}. In addition ZOL  has the logical operators $\wedge,\vee,\neg,\rightarrow$. The semantics of ZOL can be given by truth tables. The meta logical idea the using ZOL we might prove sentence $B$ from the assumption of sentence $A$ is entailment\footnote{Frequently $\vdash$ is used for  syntactic entailment and $\vDash$ is used for semantic entailment. Here we assume soundness and completion and need no such distinction.}  $A\vdash B$. The syntax of the ZOL language is augmented with  set of syntactic axioms and rewrite rules. A sentence in the language is proven iff it can be constructed from the axioms by an application of a sequence of rewrite rules.
+
+ZOL has a truth table semantics, from the engineering perspective this semantics is the reason why we are interested in the ZOL language. A truth table models a domain of \emph{instances} each {\bf instance} is a row in the table and is built by fixing the truth values of the atomic propositions.  The truth of a ZOL sentence $S$  can be evaluated once for each instance. But when we {\bf assert S}  we are asserting that sentence $S$ is, \emph{\bf valid}, true for all instances. To distinguish these two concepts we use the entailment operator and  write $\vdash S$ for $S$ is valid.  Frequently  entailment is left implicit\label{sec:implicit}.  The sentence $A\vee B \rightarrow B$ is true when $A$ is true but $A\vee B \vdash B$ is invalid.  What is important is that entailment is a  meta logical concept and   is evaluated once pre truth table and  not once per instance whereas implication is an object logic concept $\rightarrow$ that is evaluated once pre instance. When we use Predicate logic as our object logic we find that object level operators can be evaluated once per element of the $DofD$ or once per $DofD$ depending upon where in the FOL term they appear.
+
+\subsection{ZOL meta theory}
+The two statements  $A\rightarrow B$ and $A\vdash B$  define a relation between ZOL sentences and ZOL  Natural Deduction rules
+
+\hspace{\fill}\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$A\vdash B$} \RightLabel{$\rightarrow I$}
+\UnaryInfC{$A\rightarrow B$ }
+\end{prooftree} 
+\end{minipage}
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$A\rightarrow B$} \RightLabel{$\rightarrow E $}
+\UnaryInfC{$A\vdash B$ }
+\end{prooftree} 
+\end{minipage}
+\hspace{\fill}
+
+clearly demonstrate that the preorder on ZOL sentences induced by $\rightarrow$ is exactly that induced by $\vdash$.
+If all that you can observe is the set of valid sentences that can be derived from $A$ then implication $\rightarrow$ and entailment $\vdash$ are observationally indistinguishable as indeed $\rightarrow$ and $\vdash$ define the same pre-order over sentences.  
+
+
+
+The two statements  $A\rightarrow B$ and $A\vdash B$ are different in two related but very distinct ways:
+\begin{enumerate}
+\item $A\rightarrow B$ is an assertion in the ZOL logic
+ whereas  $A\vdash B$ is an assertion about the ZOL logic not in the logic
+ \item The correctness of $A\rightarrow B$ is evaluated once for each instance of the $DofD$ whereas the correctness of $A\vdash B$ is evaluated once and once only pre $DofD$.
+\end{enumerate}
+consequently the assertions are of a different kind. When we consider FOL it is the second difference that becomes important.
+
+
+
+
+On the one hand ZOL entailment $\vdash$ is not a part of ZOL it is a meta assertion about ZOL as such entailment, $A\vdash B$, and implication, $A\rightarrow B$ are  of a distinct type and hence should  not even be compared let alone be thought of as equal. Further implication is evaluated once per instance, many times per Domain of Discourse whereas entailment is evaluated only once per Domain of Discourse hence the two are fundamentally  different.
+
+On the other hand  ZOL entailment, $A\vdash B$, is valid if an only if   the implication, $A\rightarrow B$ is also valid.   This \emph{"equivalence"} can be seen by considering the {\bf Implies Introduction rule, $\rightarrow I$ and Implies Elimination rule $\rightarrow E$} of Natural deduction.
+ 
+ \begin{center}\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$A\vdash B$} \RightLabel{$\rightarrow I$}
+\UnaryInfC{$A\rightarrow B$ }
+\end{prooftree}
+\end{minipage}\quad
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$A\rightarrow B$} \RightLabel{$\rightarrow E$}
+\UnaryInfC{$A\vdash B$}
+\end{prooftree}
+\end{minipage}\end{center}
+
+\noindent Consequently if you only observe  $(A,B)$ when $A\vdash B$ or wnen $A\rightarrow B$ then entailment and implication are observationally indistinguishable.
+ 
+   
+Notice ZOL is a language parametrised on, $Prop$  a set of propositions along with a set rules used to compute syntactic entailment. An alternative but equivalent way to prove a ZOL sentence valid is via semantic entailment, that is to construct its Truth Table semantics. 
+
+
+
+Next we construct a syntactic proof and then the truth table of the assertion 
+\begin{quotation}
+{\bf  $\mathbf{(Pa\wedge Pb)   \rightarrow R}\vdash \mathbf{(Pa\rightarrow R)\vee (Pb\rightarrow R)}$}. \hspace{\fill} {\bf FA}
+\end{quotation}
+ Later in \sref{SetSem} we look at the set theoretic semantics of this ZOL assertion once embedded in FOL.
+
+It is straight forward to   construct a  classical proof of {\bf FA}, in which we use DeMorgans Rules and take implication to be defined in terms of disjunction 
+$\mathbf{A \rightarrow B \triangleq \neg A \vee B}$ and false, $\bot$, to be defined  as short hand for a contradiction $\bot \triangleq  \neg X \wedge X$.
+
+\myfig{\begin{minipage}{3in}
+
+{\sf 
+1. $\mathbf{(Pa\wedge Pg)  \rightarrow R}$ 
+
+2. \hspace{4ex} $\mathbf{\neg ((Pa\rightarrow R)\vee (Pg\rightarrow R))}$ \hspace{\fill} $Ass$
+
+3. \hspace{4ex} $\mathbf{\neg ((\neg Pa   \vee R)\vee (\neg Pb   \vee R))}$ \hspace{\fill} $Def \rightarrow 2$
+
+4. \hspace{4ex} $\mathbf{Pa\wedge \neg R \wedge Pg \wedge \neg R}$ \hspace{\fill} $DeMorgan \:  \neg E$
+
+5. \hspace{4ex} $\mathbf{\neg (Pa\wedge Pg)   \vee R}$ \hspace{\fill} $Def \rightarrow 1$
+
+6.  \hspace{8ex} $\mathbf{\neg (Pa\wedge Pg)}$ \hspace{\fill} $Ass$
+
+7.  \hspace{8ex} $\mathbf{\bot}$ \hspace{\fill} $From \:  4,6$
+
+8.  \hspace{8ex} $\mathbf{R}$ \hspace{\fill} $Ass$
+
+9.  \hspace{8ex} $\mathbf{\bot}$ \hspace{\fill} $From \: 4,8$
+
+10.  \hspace{4ex} $\mathbf{\bot}$ \hspace{\fill} $\vee E \:  5,6,7,8,9$
+
+11. $\mathbf{(Pa\rightarrow R)\vee (Pg \rightarrow R)}$ \hspace{\fill} $Cont \:  2,10$
+} \end{minipage}}{ $\mathbf{(Pa\wedge Pb)   \rightarrow R\vdash (Pa\rightarrow R)\vee (Pb\rightarrow R)}$ by Natural Deduction } {fig:ZolNd}
+
+
+
+\subsection{Truth valued semantics of ZOL}
+  The correctness of the   proof  can easily be checked by constructing the truth table semantics for the assumption and goals. A truth table consists of one row for each \emph{instance}. An instance is an evaluation mapping the \emph{atomic propositions} to truth values. The truth valued semantics of a ZOL term is the set of  instances that map the term to $true$.   Truth tables are a convenient  way to compute the  truth valued semantics, and the  truth valued semantics can be seen in a single column of the truth table.
+  
+  
+  In \fref{TT} you can see the two truth tables for logically equivalent sentences that appear in \fref{ZolNd}.
+  
+  
+ 
+ \myfig{\begin{tabular}{|c|c|c|c|c|} \hline
+ Pa & $\wedge$ & Pg & $\quad\rightarrow\quad$ & R   \\  \hline 
+ T & T & T & T & T  \\  \hline 
+ T & T & T & F & F  \\  \hline 
+ T & F & F & T & T  \\  \hline 
+ T & F & F & T & F  \\  \hline 
+ 
+ F & F & T & T & T  \\  \hline 
+ \rowcolor{lightgray} F & F & T & T & F  \\  \hline 
+ F & F & F & T & T  \\  \hline 
+ F & F & F & T & F  \\  \hline 
+         \end{tabular}\hspace{1cm}
+ \begin{tabular}{|c|c|c|c|c|c|c|} \hline
+  Pa & $\rightarrow$ & R & $\quad\vee\quad$ & Pg & $\rightarrow$ & R   \\  \hline 
+  T & T & T & T & T  & T & T\\  \hline 
+  T & F & F & F & T  & F & F\\  \hline 
+  T & T & T & T & F  & T & T\\  \hline 
+  T & F & F & T & F  & T & F\\  \hline 
+
+  F & T & T & T & T  & T & T\\  \hline 
+ \rowcolor{lightgray} F & T & F & T & T  & F & F\\  \hline 
+  F & T & T & T & F  & T & T\\  \hline 
+  F & T & F & T & F  & T & F\\  \hline 
+ \end{tabular} }{Truth Tables for $\mathbf{(Pa\wedge Pb)   \rightarrow R}$ and  $\mathbf{(Pa\rightarrow R)\vee (Pb\rightarrow R)}$} {fig:TT}
+ 
+ 
+Logically equivalent sentences can have very different Truth Tables hence 
+it is probably more realistic to regard Truth tables as an operational semantics of ZOL sentences. On this operational semantics distinct denotational semantics may be defined. The common denotational semantics of a ZOL term is the mapping from instances to truth values as depicted by a single column  in the truth table.
+ 
+In the truth tables object level operators are evaluated once for each instance whereas  meta logical operators are evaluated once for each  truth table. Hence tautology and entailment are meta level operators. 
+ 
+ 
+\def\firstcircle{(0,0) circle (1.5cm)}
+\def\secondcircle{(45:2cm) circle (1.5cm)}
+\def\thirdcircle{(0:2cm) circle (1.5cm)}
+
+When a propositional term contains $n$ atomic propositions  then the truth table for the term has $2^n$ instances. Reasoning about terms is reasoning about truth tables that is reasoning about  the set  of all instances. Logics are languages, that define syntactic rules how to construct \emph{tautologies} that is  propositional terms that evaluate to true in every instance.
+
+
+With ZOL as an object logic $\vee$ is evaluated once for each instance. Whereas ZOL meta logic "or" is evaluated once and once only. Hence
+\begin{quotation}
+{\bf  $\mathbf{(Pa\wedge Pb)   \rightarrow R}\quad\not\vdash \quad\mathbf{(Pa\rightarrow R){\mathbf \quad"or"\quad } (Pb\rightarrow R)}$}. \hspace{\fill} {\bf Fmeta}
+\end{quotation}
+It is important to understand the difference between object logic and meta logic not only to be better able to understand informal assertions \sref{MetaOr} but also, as we will see later, to better understand the relation between FOL and ZOL \sref{Gal}.
+
+\section{An engineers view of  Predicate Logic}\label{sec:FOL}
+
+
+FOL has $true$, $false$, a set of \emph{names} that come from the \emph{domain of discourse}, $DofD$\footnote{Mathematicians are able to define predicate logic with out explicit reference to the $DofD$ but nonetheless it is a part of the formal definition by virtue of functions (or predicates) being  total.}, a set of \emph{variables} that can range over $DofD$ and  all the operators of ZOL but it replaces the atomic propositions with predicates.  
+
+FOL can be split into two parts 
+\begin{description}
+\item [first] there is what has been called the \emph{non logical part} the definition of the $DofD$ along with names of elements, functions and predicates over the $DofD$.  
+\item [second] the logical part for reasoning about the predicates.
+\end{description}
+
+\subsection{Natural Deduction for FOL}
+
+The FOL language is an extension of the  ZOL language by adding  variables over $DofD$ and the quantifiers $\forall$ and $\exists$. The rules of FOL include the ZOL rules plus the rules for the quantifiers.
+
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$new\; a$} \dottedLine
+\UnaryInfC{$P(a)$} \RightLabel{$\forall I$}
+\UnaryInfC{$\forall x . P(x)$}
+\end{prooftree}
+\end{minipage}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\forall x. P(x)$} \RightLabel{$\forall E$}
+\UnaryInfC{$ P(a)$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+It appears that $\forall x . P(x)$ and $P(x)$ are not related by implication in either direction. According to the rules of natural deduction the universally quantified assertion implies  the predicate over a constant, any constant, but nonetheless a constant not a variable $\forall x . P(x) \rightarrow P(a).$
+
+
+
+The existential quantifier can be added $\exists x.P(x) \defeq \neg \forall x. \neg P(x)$ by definition or by additional rules.
+
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$P(a)$} \RightLabel{$\exists I$}
+\UnaryInfC{$\exists x . P(x)$}
+\end{prooftree}
+\end{minipage}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\exists x. P(x)$}
+\AxiomC{$new \; a$} \RightLabel{$\exists E$}
+\BinaryInfC{$ P(a)$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+
+
+
+\subsection{The semantics of FOL}
+
+
+
+In FOL the are two types of expressions, well formed formulae, {\bf wff}  may have free, unbound, variables whereas  {\bf sentences} have no free variables only  bound variables, bound  by one of the two quantifiers $\forall x.\_$ and $\exists x. \_$. 
+
+
+Restricting ourselves to  {\bf wff} with only one variable and no quantifiers. Each such predicate can be given a set  semantics  and with $\vee, \wedge, \neg$ the semantics of $\cup, \cap, \overline{\color{white} X}$ we have all wff have set semantics. But wrapping the wff with a quantifier transforms the set semantics into a boolean semantics. This is useful when considering the meaning of implication where  $P(x)\rightarrow Q(x)$ has a set semantics of $\overline{P} \cup Q$ but  $\forall x. P(x)\rightarrow Q(x)$ has a boolean semantics of $P \subseteq Q$.
+
+A {\bf ZOL sentence is satisfiable}  iff one line of the truth table evaluates to true and is valid iff all lines of the truth table evaluate to true. {\bf Two ZOL sentences $A$ and $B$ are  equivalent} iff $A\leftrightarrow B$ is valid and hence iff they are satisfied by the same lines of the truth table. 
+
+In  {\bf ZOL}  $P\wedge  \neg P$ is not satisfiable whereas both $P$ and $\neg P$ are satisfiable and hence equisatisfiable. OR NOT
+
+The pair of ZOL sentences:
+\[A\vee B \hspace{3em} (A\vee N) \wedge (\neg N \vee B)\] 
+are equisatisfiable but not equivalent.  View the abstract case as $A\vee B $ any model that satisfies this can be extended to a model that satisfies the more detailed case $(A\vee N) \wedge (\neg N \vee B)$.
+
+Is equisatisfiable really a Galois connection with a onesided inverse  (a retract)?
+  
+
+
+{\bf A model of a FOL sentence $\Phi$} is a mapping from both it's predicates and it's non logical symbols, it's free variables and functions, to sets, elements  and function over the domain of discourse.
+{\bf A FOL sentence $\Phi$ is satisfiable} iff there exists a model in which $\Phi$ is true.   Two FOL sentences $\Phi$ and $\Psi$ are equisatisfiable iff any interpretation of the predicates that makes $\Phi$ true also makes $\Psi$ true. Whereas for $\Phi$ and $\Psi$  to be equivalent their satisfiablity must coincide for any interpretation of the nonlogical elements. Hence {\bf FOL equisatisfiable dose not imply equivalent}.
+
+Scolemization of $\Phi$ introduces a function hence the result is equisatisfiable  but not equivalent to the original $\Phi$.
+
+
+
+\subsection{The set theoretic semantics of Predicate Logic} \label{sec:SetSem}
+FOL is a language that can be defined without explicit reference to a  $DofD$ but it has a parameter a set Predicates. Nonetheless the FOL has a  $DofD$  in the formal definition of both the predicates and the functions.  Hence here we assume that the definition of both the FOL language and its set theoretic semantics takes the $DofD$ set as a parameter.
+
+Some people adopt a convention of not mentioning the DofD and assuming that the $DofD$ is the \emph{universe}, that is is large enough that every thing we possibly could be interested in, now and in all conceivable futures, lies with in it. 
+
+
+The isomorphism between parts of Logic, set theory and order theory are thoroughly discussed in \cite{SVic91}. The standard FOL semantics interpret predicates as the set of elements in the \emph{domain of discourse} for which the predicate is $true$. 
+
+Ven Diagrams represent the entire domain of discourse that is partitioned by the predicates that we are interested in. A FOL sentence, with no more than three predicates,  can be visualised by marking a region black when it's truth value is $false$ and white when valued $true$. In other words black when that region contains no elements that satisfy the sentence and white when  elements in the region can contain elements that satisfy the sentence.
+ 
+
+The three predicates $\mathbf{\{A, G, R\}}$ partition the domain of discourse into  eight regions, see \fref{VenD},  Of these regions one of these regions must be empty  in order to satisfy the sentence $\mathbf{(A\wedge G)   \rightarrow R}$.
+
+\myfig{\fbox{\begin{tikzpicture}
+    \node[anchor=south] at (1,3) {Ven Diagram $\mathbf{(A\wedge G)   \rightarrow R}$};
+    \draw \firstcircle node[left] {};
+    \node[anchor=east] at (-0.6,1.6) {$A$};
+    \draw \secondcircle node [above] {};
+    \node[anchor=west] at (-1.2,0) {$a\in A\wedge$ };
+    \node[anchor=west] at (-1.2,-0.4) {$ a\not\in R\wedge$};
+    \node[anchor=west] at (-1.2,-0.8) {$ a\not\in G$};
+    \node[anchor=west] at (0.3,2.2) {$g\in G\wedge $};
+    \node[anchor=west] at (0.3,1.9) {$g\not\in R\wedge g\not\in A$};
+    \node[anchor=west] at (2.9,1.6) {$G$};
+    \draw \thirdcircle node [below] {};
+    \node[anchor=west] at (1.9,-1.8) {$R$};
+    
+    % Now we want to highlight the intersection of the first and the
+    % second circle:
+
+   \begin{scope}
+      \clip \firstcircle;
+      \fill[black] \secondcircle;
+    \end{scope}
+    \begin{scope}
+      \clip \firstcircle;
+      \clip \secondcircle;
+      \fill[white] \thirdcircle;
+    \end{scope}
+\end{tikzpicture}}
+%\vspace*{1in}
+\hspace{0.5in}
+\begin{minipage}{1.6in}\vspace*{-2in}
+Ven Diagram for both: \\
+$\mathbf{(A\wedge G)   \rightarrow R}$ and \\
+$ \mathbf{(A\rightarrow R)\vee (G\rightarrow R)}$ \\
+establishes their equality.\\ \\
+ In the same diagram we \\
+ have  $(A\cap G) \subseteq R$ is true \\
+ whereas  $A\subseteq R$ and  $G\subseteq R$ \\
+ are false.
+\end{minipage}} {Set semantics for two predicates}{fig:VenD}
+
+
+
+
+%ZOL is a language built from $true$, $false$ and atomic propositions ($P$,$Q$\ldots), In addition to which it has operators, $\wedge$,$\vee$, $\rightarrow$ and $\neg$. All ZOL terms can be given a truth value semantics: that is all terms can be interpreted as a mapping from the truth values of the atomic propositions to  $ Bool: \{true,false\}$
+
+
+
+
+
+Given the  Truth valued semantics of a ZOL term  we  define  a set valued semantics. But a semantics with a fixed enumerable $DofD$. 
+Each of the  instance, row of the two truth tables in \fref{TT}  is mapped to one of the regions in the Ven diagram, \fref{VenD}. The semantics of a proposition is given by the set of instances that map the proposition to $true$ and this maps to the non-empty regions of the Ven diagram.
+
+
+
+\begin{center}\begin{tabular}{|c|c|}
+\hline
+\quad $ZOL_{Prop}$-Truth Semantics\quad . & \quad $FOL_{Pred,Fun,DofD}$ set Semantics\quad . \\ \hline
+instance mapping to $true$ & element \\ \hline
+all $2^{|Prop|}$ instances & $DofD$ \\ \hline
+proposition & predicate \\ \hline 
+%\hline Operational & Denotational \\ \hline
+\end{tabular}\end{center}
+
+The ZOL meta assertion that $A$ is valid is an assertion that in all instances it is true.  This becomes, in FOL, no regions in the Ven Diagram are empty.
+
+The differences between ZOL and FOL include:
+\begin{enumerate}
+\item The FOL $DofD$ is defined prior to the definition of the predicates and can be reused when reasoning about many distinct . Where as the ZOL $DofD$ is the set of instances and this is directly related to both the number of atomic  propositions in what the proposition that  being modelled and the proposition itself.
+
+\item FOL has a language for defining predicates that may either not terminate or may result in an infinite set of predicates. Whereas ZOL has a finite set of atomic propositions and logical equivalence can be computed by the a terminating algorithm that produces  Truth tables. 
+
+\end{enumerate}
+
+
+
+
+
+
+ 
+
+
+
+The white region in \fref{VenD}  represents  
+$ \mathbf{(A\rightarrow R)\vee (G\rightarrow R)}$ where the $\vee$ is in the object logic and hence is represented by union of, the set representation of $A\rightarrow R$ and  the set representation of $G\rightarrow R$. This diagram allows us to visualise the logical equality of $\mathbf{(A\wedge G)   \rightarrow R}$ and 
+$ \mathbf{(A\rightarrow R)\vee (G\rightarrow R)}$ while also showing that neither $\mathbf{A\subseteq R}$ nor $\mathbf{G\subseteq R}$ and hence neither $\mathbf{A\rightarrow R}$ nor $\mathbf{G\rightarrow R}$ are true.  
+
+
+
+In  FOL semantics: $P(x)\vee Q(x)$  is a set and $\forall x. P(x)\vee Q(x)$ is a bool but in both $\vee$ is evaluated once per instance (element of $DofD$) and  $\vee$ means $\cup$. In contrast  the $\vee$ in $\forall x. P(x)\vee \forall y. Q(y)$ is evaluated once per $DofD$ and means "or" not $\cup$.
+ 
+In   $P(y)\vee \forall x. Q(x)$  the $\vee$ has a set on one side and a bool on the other  this can be explained by considering the variables $x$ and $y$ as being orthogonal to each other - the $\vee$ is evaluated once per "instance of $y$ and $DofD$ of $x$". Note the two dimensions of a Ven Diagram are an artefact designed to help visualisation the two dimensions $x$ and $y$ are quite distinct and are a reflection of the structure of the assertion.
+Similar explanations of terms such as   $(\forall x. P(x,y))\vee \forall z. Q(z)$  are possible.
+
+
+ 
+ 
+\section{Interpretation of Informal Assertions} \label{sec:MetaOr}
+In this section we consider how to interpret informal assertions. We conclude that some assertions are better interpreted with a formalisation including both meta and object logic.
+
+ The first assertion we consider is designed to illustrate both the difficulty using natural language to write accurate specification and to illustrate the difficulty understanding formal assertions. It is important to remember that engineers cannot restrict their attention to formal assertions as they are responsible the effect their work has in the informal world around them.
+ 
+
+\begin{quotation}
+ \emph{Given an implementation that will raise an $\mathbf{Error}$ given both $\mathbf{A}$ and $\mathbf{B}$ are true. 
+Is it safe to use in a context that requires  an $\mathbf{Error}$  is raised when $\mathbf{A}$ is true or  requires  an $\mathbf{Error}$  is raised when $\mathbf{B}$ is true? }\hspace{\fill} {\bf IA1}
+ \end{quotation}
+
+  To avoid relying on our intuitions, which past experience has shown can be unreliable, we construct a formal model of  the informal question given above. 
+  Because there is no explicit reference to a domain of discourse or quantifiers we use ZOL to formalise this assertion.
+  Hence  we need to prove the following: 
+
+\hspace{\fill}   $\mathbf{(A\wedge B)   \rightarrow Error} \vdash \mathbf{(A\rightarrow Error)\vee (B\rightarrow Error)}$\hspace{\fill}{\bf FA1} \label{page:FA1}
+
+\noindent The immediate informal questions that needs to  be considered are: How confident are you that {\bf FA1} formally captures the intended meaning of the informal assertion {\bf IA1}? If not confident why?
+
+ Working on the assumption that {\bf FA1} does indeed capture the meaning of {\bf IA1} we proceed by proving the formal   entailment, $\vdash$. From this  it does indeed seem that what we implemented is safe to use in the given context.
+
+
+
+Now I, for one, have a problem.  Based on my informal intuitions about {\bf IA1} I can not accept that  the system is safe to use. Yet I  cannot see anything wrong with the formalisation {\bf FA1} and I know from \sref{ZOL} that the proof is correct and that implies it is safe to use.  
+
+
+ With out an  understanding of the distinction between object logic and meta logic {\bf IA1} was mistakenly interpreted as {\bf FA1}.
+Interpreting  {\bf IA2} in ZOL  using propositions {\bf Pa} fro avocados {\bf Pg} for good and {\bf R} for ripe we constructed {\bf FZ1}. Both formalisations {\bf FZ1} and {\bf FA1} are equivalent upto the renaming of the propositions.
+
+
+
+ 
+ To better understand the gap between informal and formal assertions  we consider different ways  {\bf ``or"} is used in some simple assertions.
+
+
+Our first informal assertion is:
+\begin{quote}
+ \emph{Assuming  {\bf A} or  {\bf B}  can we either conclude  {\bf A}  or conclude  {\bf B}.\hspace{\fill}{\bf OR1}}
+ \end{quote}
+
+The second \emph{or} in the above could be interpreted as meta logical. That  is the assertion could have been rewritten as an equivalent assertion \emph{Assuming  {\bf A} or  {\bf B}  can we conclude  {\bf A}  or assuming  {\bf A} or  {\bf B}  can we conclude  {\bf B}. } 
+The important point being that when talking informally  it is easy to move between object and meta logic.  With such an interpretation a reasonable formalisation   would be:
+
+%\hspace{\fill}\begin{minipage}{1in}
+%\begin{prooftree}
+%\AxiomC{$A\vee B$}
+%\UnaryInfC{$A$ }
+%\end{prooftree}
+%\end{minipage}
+%or
+%\begin{minipage}{1in}
+%\begin{prooftree}
+%\AxiomC{$A\vee B$}
+%\UnaryInfC{$B$}
+%\end{prooftree}
+%\end{minipage}\hspace{\fill}
+
+\hspace{\fill} $A\vee B \vdash A$  \quad or \quad $A\vee B \vdash B $ \hspace{\fill}
+
+\noindent Given this formalisation the assertion  {\bf OR1} is invalid.
+
+Nxst we consider the translation of a related assertion:
+ \begin{quote}
+ \emph{If {\bf A} or {\bf B} is true then is  {\bf A}  true or {\bf B}  true.\hspace{\fill}{\bf OR2}}
+ \end{quote}
+ 
+We consider two possible interpretations of {\bf OR2}. 
+\begin{description}
+\item [Interpretation One ] the``or" is meta-logical (as in {\bf OR1}). Hence the informal assertion {\bf OR2} would be invalid.
+\item [Interpretation Two] the assertion ``A" is simply shorthand for  ``A is true" in which case {\bf OR2} becomes:
+\begin{quote}
+ \emph{If {\bf A} or {\bf B}  then is {\bf A}  or  {\bf B}.\hspace{\fill}{\bf OR3}}
+ \end{quote}
+hence {\bf OR2} would be valid.  
+\end{description}
+Although {\bf OR2} initially seemed very simple upon further investigation it appears to be open to two distinct interpretations one validating the assertion the other falsifying the assertion.
+
+
+We have argued that the examples given here there are best understood by  considering the difference between object logic an meta logic.  But, the informal assertions we considered all have a degree of "wrapping" a proposition, e.g. "is true \_", "conclude \_". This leads to the posibility that the disjunction of "wrapped" propositions may be intended to behave differently to the disjunction of unwrapped propositions.  When we construct truth table semantics of propositions we evaluate a disjunction once per instance (row) whereas we could intend the disjunction to be between different truth tables and hence evaluated once and only once.
+
+
+In the next section we will consider two distinct aspects:  firstly the the formal relation between ZOL and FOL and secondly both how to interpret FOL, predicate logic, assertions and how to use FOL as a language to interpret the meaning of informal assertions.
+
+
+
+\subsection{Interpretation using FOL domains}\label{sec:Domain}
+
+
+Although first order logic, FOL, can be formalised without explicit reference to a domain   FOL is designed to be applied to a domain and its standard semantics   introduces the idea of a domain, or universe, over which the predicates are interpreted.
+ 
+ { \bf Informal Assertion without explicit quantification:} 
+\begin{quotation}
+\emph{If  good avocados  are ripe  then either  avocados are ripe or good things are ripe.} \hspace{\fill}   
+\end{quotation}
+ 
+ Let us now   consider the example  with explicit quantifiers but one where its meaning  appears to be captured by ZOL. 
+ 
+
+{ \bf Informal Assertion:} 
+\begin{quotation}
+\emph{If all good avocados  are ripe  then either all avocados are ripe or all good things are ripe.} \hspace{\fill}   {\bf IA2}
+\end{quotation}
+
+Although my intuitions tell me that this assertion is invalid I would nonetheless like further analysis to confirm this.
+
+The high level structure of this informal assertion is \emph{"if \ldots then \ldots"} and we need to decide should it be interpreted as entails $\vdash$ or implies $\rightarrow$?
+
+\hspace{\fill}   $\mathbf{(A\wedge G)   \rightarrow R} \vdash \mathbf{(A\rightarrow R)\vee (G\rightarrow R)}$\hspace{\fill}{\bf FZ1}
+
+\hspace{\fill}   $\mathbf{((A\wedge G)   \rightarrow R}) \rightarrow \mathbf{((A\rightarrow R)\vee (G\rightarrow R))}$\hspace{\fill}{\bf FZ2}
+
+%Before we go any further notice that {\bf FZ1} and {\bf FA1} from \pref{FA1} are equivalent upto the renaming of propositions.
+
+Formally both {\bf FZ1} and {\bf FZ2} can be proven and this contradicts my intuitive understanding of the assertion.
+Next we  map  {\bf FZ1} into FOL and get:
+
+\noindent \hspace{\fill}$  \forall x.  \mathbf{(A(x)\wedge G(x))   \rightarrow R(x)}\vdash
+\mathbf{\forall x. (A(x)\rightarrow R(x)\vee G(x)\rightarrow R(x))}$\hspace{\fill}{\bf FF1}
+
+and map  {\bf FZ2} into FOL to get:
+
+\noindent \hspace{\fill}$\mathbf{ \forall x. (A(x)\wedge G(x)) \rightarrow R(x)  \rightarrow   (A(x) \rightarrow R(x)) \vee   G(x) \rightarrow R(x)))}$\hspace{\fill} {\bf FF2}
+
+
+\noindent Although {\bf FZ1} and {\bf FZ2} are equivalent {\bf FF1} and {\bf FF2} are not! My interpretation of {\bf IA2} is that the high level \emph{"if \ldots then \ldots"}  is a meta level entailment $\vdash$ and hence I would favour {\bf FF1} but this, just like the ZOL formalisations can be valid and hence also contradicts my intuitive understanding of the assertion. Finally we can interpret the second \emph{"or"} as being ZOL meta logical then we can  formalise {\bf IA2} as   the FOL  assertion:
+
+\noindent \hspace{\fill}$\mathbf {\forall x. (A(x)\wedge G(x)) \rightarrow R(x)  \vdash  
+(\forall x.  A(x) \rightarrow R(x)) \vee (\forall x.  G(x) \rightarrow R(x))}$\hspace{\fill} {\bf FA2}
+
+Notice {\bf FA2} is different from both {\bf FF1} and {\bf FF2}. Consequently if we feel that {\bf FA2} is the better interpretation then we must conclude that it is not always feasible to give assertions a ZOL interpretation and then extend the ZOL interpretation to a FOL interpretation.
+
+It is hard to see how any  ZOL sentence that can be mapped onto the conclusion in  {\bf FA2} as  ZOL sentences lack any guidance as to where to place the universal quantifiers. 
+
+
+
+
+
+\section{A Galois  mappings between $ZOL+$ and FOL} 
+\label{sec:Gal}
+
+
+
+
+
+\subsection{Examples:}
+
+
+To better understand the FOL use of disjunction we construct informal interpretations of two FOL sentences used to describe the values that  $x$,  a program variable,  can take while the program is executing. Hence the $DofD$ is the set of values the variable $x$ takes.
+
+
+\begin{description}
+\item [One] $\forall x. (Even(x) \vee LessThan10(x))$ informally means: during the program execution  $x$ is either less than 10 or is even.
+\item [Two] $\forall x. (Even(x)) \vee \forall x.(LessThan10(x))$ informally means: the program can execute in one of  two ways, either $x$ is always less than 10 or $x$ is always even.
+\end{description}
+
+The two disjunctions above both mean "or" but are talking about distinctly different things. The disjunction in One is evaluated once for each value or element in the $DofD$, whereas in Two the disjunction  is evaluated once and once only for the whole $DofD$. 
+
+
+
+Remember $\forall x.\_$ maps FOL sentences from ZOL object logic to  FOL sentences from ZOL meta logic.
+
+
+\[A \; \aroel{}{\models_{ZOL}\;}{}\; 
+\begin{tabular}{|c|} \hline
+ A    \\  \hline 
+ T  \\  \hline 
+ F   \\  \hline 
+  \end{tabular} \; \aroel{}{\;\gamma_s\;\;}{}\;
+  A_s = \{a\} \;  \aroel{}{\models^{-1}_{FOL}\;}{}\;
+ A(\_))
+\]
+
+Thew reason for using $A(\_)$ and not $\forall x. (A(x))$ can be seen in the following example where the disjunction needs to appear in the term under the quantifier and not above it.
+
+%\[\Big(A(\alpha),\: new(\{\alpha\})\Big) \vee \Big(B(\beta),\: new(\{\beta\})\Big)\; \defeq  \;  \Big(A(\alpha) \vee B(\alpha))\Big) \]
+
+
+\[(A \vee B) \; \aroel{}{\models_{ZOL}\;}{}\; 
+\begin{tabular}{|c|c|c|} \hline
+ A & $\vee$ & B   \\  \hline 
+ T & T & T  \\  \hline 
+ F & T & T   \\  \hline
+ T & T & F  \\  \hline 
+ F & F & F  \\  \hline 
+  \end{tabular} \; \aroel{}{\;\gamma_s\;\;}{}
+ \begin{tabular} {c}
+ $A_s = \{a,ab\}$ \\
+ $B_s = \{b,ab\}$ \\
+ $ A_s \cup  B_s = \{ab,b,a\}$\\
+  \end{tabular}   
+  \aroel{}{\models^{-1}_{FOL}\;}{}\;
+  \begin{tabular} {c}
+  $A(\_) \vee B(\_)$\\  
+  \end{tabular}
+\]
+
+%\[\Big(A(\alpha) \vee B(\beta),\; new(\{\alpha,\beta\})\Big)
+%\; \leadsto_{\forall I}  \;  \forall x. (A(x) \vee B(x))\]
+
+
+
+\[(A \,or\, B) \; \aroel{}{\models_{ZOL}\;}{}\; 
+\begin{tabular}{|c|} \hline
+ A    \\  \hline 
+ T  \\  \hline 
+ F   \\  \hline 
+  \end{tabular} \,or\,
+  \begin{tabular}{|c|} \hline
+ B    \\  \hline 
+ T  \\  \hline 
+ F   \\  \hline 
+  \end{tabular}\; \aroel{}{\;\gamma_s\;\;}{}\;
+  A_s \,or\,  B_s \;  \aroel{}{\;\models^{-1}_{FOL}\;}{}\;
+  \forall x. (A(x)) \;or\; \forall x.(B(x))
+\]
+
+
+
+Although $\gamma_s$ is fiddly to define it, being based on simple intuitions, is easy to understand and is more well behaved than {\bf Z2F} the syntactic  embedding of ZOL into FOL. If the semantic concretion mapping $\gamma_s$ is a left/right mapping of a Galois connection then it uniquely defines a right/left  abstraction mapping $\alpha_s$ \cite{GaloisPeter}. Abstraction $\alpha_s$ first maps the FOL sentence to a Ven diagram and then the Ven Diagram to a truth table. It simply forgets the DofD and is the inverse of the bijection between predicates and propositions defined by $\gamma_s$.
+
+\[\alpha_s(A) \vee \alpha_s(B) == \alpha_s(A(e) \cup  B(e))\]
+
+
+
+
+Clearly $(\gamma_s,\alpha_s)$ is a Galois connection between $\mathsf{ZOL(Pro)}$ and  $\mathsf{FOL(Pd,DofD)}$ where the number of propositions in ZOL is the same as the number of predicates in FOL. 
+ 
+
+
+\subsection{Testing Semantics}
+The uniform definition of testing semantics can be made concrete by defining a set of contexts and a set of observations. Let the contexts $\Xi$ be terms built from signature $\Sigma$ with a single hole $\_$ in which the system under test is placed. Now the Galois connections of interest will be pairs of functions that are  $\Sigma$ homomorphic.
+
+$ZOL(Prop)$ tests where $Prop$ is a sequence of $n$ The system under test is a ZOL sentence and  contexts have input a sequence of $n$ bools and output  a single boolean.   Hence an observation is a pair $(in,out)$ where $in$ is the sequence of $n$ bools, one for each proposition and $out$ is a single bool.
+
+A ZOL test is a comment about a single instance whereas Meta ZOL sentences are comments about the entire truth table.
+
+$FOL(Pred,DofD)$ first order logical wff over domain of discourse $DofD$ and $Pred$ is a sequence of $n$ predicates. The system under test is a FOL wff, not necessarily a sentence, and is restricted to wff with single unbound variables\footnote{Adding records and functions allows multiple unbound variables to be modeled.}.  The context has inputs to the wff of one DofD element and output a single bool.
+
+A FOL test comments about he relation a wff has with a single element of the $DofD$ whereas FOL sentences with quantifiers comment about the entire $DofD$.
+ 
+
+Mapping into a limited domain of discourse is no real restriction as the domain can always be extended  by defining a relation between it and a larger domain.  Using  the standard construction  \cite{GaloisPeter}, any relation between the two \emph{domains of discourse} can be lifted to define a Galois connection between the two First Order Logic. These Galois connections can then be composed with the Galois connection between ZOL and FOL.
+
+In the set theoretic semantics  ZOL/FOL object logic implication: $Set\rightarrow Set\rightarrow Set$ is of a different type to the meta logic implication which is subset: $Set\rightarrow Set\rightarrow Bool$. 
+
+
+
+%\bibliographystyle{ieee}
+\bibliographystyle{splncs03}
+%\bibliographystyle{plain}
+%\bibliography{refs} % Your .bib file.
+\bibliography{localrefs} % Your .bib file.
+
+
+\section{From ZOL to Zol' to ZOL+ }
+Classical  ZOL has been formalised by a set of   Natural Deduction Rules\footnote{\bf  Each rule is a single step deduction: when  the terms above the line are valid then the term below the line is valid.}. Although there are introduction and elimination rules for each operator.  But all of ZOL  natural Deduction can be defined upon just two operators and their ND rules. 
+\subsection{ZOL}
+
+We define the  ZOL Natural Deduction Rules on just  two operators falsity, $\bot$ and implication, $\rightarrow$.
+
+
+
+
+\hspace{\fill}
+%\fbox{
+\begin{minipage}{0.6in}
+\begin{prooftree}
+\AxiomC{$\bot$ } \RightLabel{$\bot$ E}
+\UnaryInfC{$A$}
+\end{prooftree}
+\end{minipage}%}
+\hspace{\fill}\begin{minipage}{0.6in}
+\begin{prooftree}
+\AxiomC{$A$}\RightLabel{$A$}
+\UnaryInfC{$A$ }
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}\begin{minipage}{0.8in}
+\begin{prooftree}
+\AxiomC{\text{\cancel{A}}} \dottedLine
+\UnaryInfC{$B$}\RightLabel{$\rightarrow I$}
+\UnaryInfC{$A\rightarrow B$ }
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+\begin{minipage}{1.5in}
+\begin{prooftree}
+\AxiomC{$A\rightarrow B$} \AxiomC{$A$} \RightLabel{$\rightarrow E$}
+\BinaryInfC{$ B$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+
+
+
+
+Using the rules for implication and falsity all of ZOL can be defined:
+
+\begin{center}\begin{tabular}{rcl}
+$\neg A$ & $\defeq$ & $A\rightarrow \bot$ \\
+$A \vee B$ & $\defeq$ & $ (\neg A) \rightarrow B$\\ 
+$A \wedge B $ & $\defeq$ & $ \neg (A \rightarrow \neg B)$ \\  
+\end{tabular} \end{center}
+
+
+\subsection{ZOL computed Rules}
+
+From which the normal Natural deduction rules can proven.
+
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\neg A$} \AxiomC{$A$} \RightLabel{$\bot I$}
+\BinaryInfC{$\bot$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$A$} \AxiomC{$B$}\RightLabel{$\wedge I$}
+\BinaryInfC{$A\wedge B$ }
+\end{prooftree}
+\end{minipage}\qquad
+\begin{minipage}{0.8in}
+\begin{prooftree}
+\AxiomC{$A\wedge B$} \RightLabel{$\wedge El$}
+\UnaryInfC{$A$ }
+\end{prooftree}
+\end{minipage} \quad
+\begin{minipage}{0.8in}
+\begin{prooftree}
+\AxiomC{$A\wedge B$} \RightLabel{$\wedge Er$}
+\UnaryInfC{$B$ }
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+
+
+\hspace{\fill}\begin{minipage}{0.8in}
+\begin{prooftree}
+\AxiomC{$A$} \RightLabel{$\vee Il$}
+\UnaryInfC{$A\vee B$ }
+\end{prooftree}
+\end{minipage}
+\begin{minipage}{0.8in}
+\begin{prooftree}
+\AxiomC{$B$} \RightLabel{$\vee Ir$}
+\UnaryInfC{$A\vee B$ }
+\end{prooftree}
+\end{minipage}\qquad
+\begin{minipage}{2in}
+\begin{prooftree}
+\AxiomC{$A\vee B$} 
+%\AxiomC{\text{\cancel{A}}}\dottedLine\UnaryInfC{$C$ } 
+%\AxiomC{\text{\cancel{B}}}\dottedLine\UnaryInfC{$C$ } 
+\AxiomC{$A\rightarrow C$ }
+\AxiomC{$B\rightarrow C$ } \RightLabel{$\vee E$}
+
+\TrinaryInfC{$C$}
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+
+
+
+ 
+
+\hspace{\fill}\begin{minipage}{1.1in}
+\begin{prooftree}
+\AxiomC{\text{\cancel{$\neg A$}}} \dottedLine
+\UnaryInfC{$\bot$}  \RightLabel{$RAA\; (c)$}
+\UnaryInfC{$ A$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+\begin{minipage}{1.1in}
+\begin{prooftree}
+\AxiomC{$\neg \neg A $}  \RightLabel{$\neg\neg E\;(c)$}
+\UnaryInfC{ $A$ } 
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+\begin{minipage}{1.1in}
+\begin{prooftree}
+\AxiomC{} \RightLabel{$ExM$}
+\UnaryInfC{$A\vee \neg A$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+ZOL sentences  can be given a truth table semantics where truth is independently evaluated for each instance. But the rules of ND above construct valid terms from valid terms.
+
+\hspace{\fill}%\fbox{
+\begin{minipage}{3.5in}
+\begin{prooftree}
+\AxiomC{} \RightLabel{$ExM$}
+\UnaryInfC{$A\vee \neg A$}
+\AxiomC{$A\vee B$ } \RightLabel{$def_{\vee}$}
+\UnaryInfC{$ (\neg A) \rightarrow B$} 
+%\AxiomC{\text{\cancel{A}}}\dottedLine\UnaryInfC{$C$ } 
+%\AxiomC{\text{\cancel{B}}}\dottedLine\UnaryInfC{$C$ } 
+\AxiomC{$A\rightarrow C$ \quad $B\rightarrow C$ } \RightLabel{$\vee E$}
+\TrinaryInfC{$C$}
+\end{prooftree}
+\end{minipage}%}
+\hspace{\fill}
+
+
+\subsection{ZOL sequent calculus}
+The proof methodology is to increasingly move any  sequent towards an axiom.
+
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\Gamma,A, B\vdash \Delta$ }  \RightLabel{$L\wedge$}
+\UnaryInfC{$\Gamma,A\wedge B\vdash \Delta$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}\begin{minipage}{1.5in}
+\begin{prooftree}
+\AxiomC{$\Gamma\vdash A,\Delta$}  \AxiomC{$\Gamma\vdash B,\Delta$}  \RightLabel{$R\wedge$}
+\BinaryInfC{$\Gamma\vdash  A\wedge B, \Delta$ }
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+\hspace{\fill}
+\begin{minipage}{1.5in}
+\begin{prooftree}
+\AxiomC{$\Gamma,A \vdash \Delta$}  \AxiomC{$\Gamma,B \vdash \Delta$}  \RightLabel{$L\vee$}
+\BinaryInfC{$\Gamma, A\vee B \vdash  \Delta$ }
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\Gamma\vdash A, B,\Delta$ }  \RightLabel{$R\vee$}
+\UnaryInfC{$\Gamma\vdash A\vee B, \Delta$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+\hspace{\fill}
+\begin{minipage}{1.5in}
+\begin{prooftree}
+\AxiomC{$\Gamma,A \vdash \Delta$}  \AxiomC{$\Gamma \vdash B,\Delta$}  \RightLabel{$L\rightarrow$}
+\BinaryInfC{$\Gamma, A\rightarrow B \vdash  \Delta$ }
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\Gamma,A\vdash B,\Delta$ }  \RightLabel{$R\rightarrow$}
+\UnaryInfC{$\Gamma\vdash A\rightarrow B, \Delta$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash A,\Delta$}   \RightLabel{$L\neg$}
+\UnaryInfC{$\Gamma,\neg A \vdash  \Delta$ }
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\Gamma,A\vdash \Delta$ }  \RightLabel{$R\neg$}
+\UnaryInfC{$\Gamma\vdash \neg A, \Delta$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{ }  \RightLabel{$Axiom$}
+\UnaryInfC{$\Gamma,A \vdash A, \Delta$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+This extension: fails as results in $\neg[A] = [\neg A]$
+
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$A \vdash $}   \RightLabel{$L[]$}
+\UnaryInfC{$[A] \vdash  $ }
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$ \vdash A$ }  \RightLabel{$R[]$}
+\UnaryInfC{$\vdash [A]$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+\subsection{$ZOL^*$} The ZOL natural Deduction rules contain propositional variables and are valid how every they are instantiated. To ZOL we add an operator that converts a ZOL propositions $A$ to the validity assertion $[A]$. The meaning of $[A]$ is  that for every evaluation $\rho$ $\rho A =true$. 
+ A logical operator applied to a proposition must be evaluated once for each instance whereas the same operator applied to a validity assertion is evaluated only once for the domain of all instances. 
+
+The ND Rules of $ZOL^*$ include  $ZOL_{ND}$, the ND Rules of ZOL, as well as    three rules to capture the fact that $A$ and $[A]$ are related to each other.  An additional equality    $[\bot]\defeq \bot$ is also needed.
+
+The $ZOL(Prop)$ Natural Deduction Rules are applied to all the $ZOL^*(Prop^*)$ propositions. Where:
+ \[Prop^*\defeq Prop\cup \{A_n.A\in Prop\wedge n \in Name\}\cup \{[A] | A\in Prop\}\]  
+  
+
+ 
+
+
+
+
+  The following introduction and elimination rules $[] I$  and $[] E$ Rules  use \emph{new} names and  \emph{named} propositions $A_n$.  
+
+
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[A]$} \RightLabel{$[] E$}
+\UnaryInfC{$A_a$} 
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{new a} \dottedLine  % new x Not needed because of alpha conversion
+\UnaryInfC{$A_a$} \RightLabel{ $[] I$ } %\doubleLine
+\UnaryInfC{$[A]$ }
+\end{prooftree} 
+\end{minipage}\hspace{\fill}
+
+
+
+
+
+
+
+With these two rules we can establish the following rules, that we know we want from the semantics. We adopt the following naming convention: rules that move an operator $op$ out of $[\_]$ will be named by with  the operator with superscript $op^*$ whereas moving in the other direction with subscript $op_*$.
+ 
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[A\rightarrow B]$} 
+\UnaryInfC{$[A]$} 
+\UnaryInfC{$new \quad n$} \RightLabel{$[] $}
+\UnaryInfC{$A_n\rightarrow B_n$} \RightLabel{$[] $}
+\UnaryInfC{$A_n$} 
+\UnaryInfC{$B_n$} \RightLabel{$[] I$}
+\UnaryInfC{$[B]$}  \LeftLabel{$\rightarrow^*$}
+\UnaryInfC{$[A]\rightarrow [B]$}
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[\neg A]$}\RightLabel{$def_{\neg}$}
+\UnaryInfC{$[A\rightarrow \bot]$} \RightLabel{$\rightarrow^*$}
+\UnaryInfC{$[A]\rightarrow [\bot]$} \RightLabel{$def_{\bot}$}
+\UnaryInfC{$[A]\rightarrow \bot$} \RightLabel{$def_{\neg}$}\LeftLabel{$\neg^*$}
+\UnaryInfC{$\neg^*$} 
+\end{prooftree}
+\end{minipage} \hspace{\fill}
+
+
+
+\hspace{\fill}
+
+\begin{minipage}{1.5in}
+\begin{prooftree}
+\AxiomC{$[A\wedge B]$}
+\UnaryInfC{$new \quad n$} \RightLabel{$[]E$}
+\UnaryInfC{$A_n \wedge B_n$} \RightLabel{$\wedge E$}
+
+\UnaryInfC{$A_n$} \RightLabel{$[]I$}\LeftLabel{1}
+\UnaryInfC{$[A]$} \RightLabel{-}
+
+\AxiomC{$[A\wedge B]$} \RightLabel{$copy$}
+\UnaryInfC{$new \quad m$} \RightLabel{$[]E$}
+\UnaryInfC{$A_m \wedge B_m$} \RightLabel{$\wedge E$}
+
+\UnaryInfC{$B_m$} \RightLabel{$[]I$}\LeftLabel{2}
+\UnaryInfC{$[B]$} \RightLabel{$\wedge$ I 1,2} \LeftLabel{$\wedge^*$}
+
+\BinaryInfC{$[A] \wedge [B]$} 
+\end{prooftree}
+\end{minipage}%}
+\hspace{\fill}
+\begin{minipage}{1.5in}
+\begin{prooftree}
+\AxiomC{$[A]\wedge [B]$} \RightLabel{$ass$}\LeftLabel{1}
+\UnaryInfC{\text{\cancel{$\neg[A\wedge B]$}}} \RightLabel{$def_{\wedge}$}
+\UnaryInfC{$\neg[\neg (A\rightarrow \neg B)]$} \RightLabel{$\neg^*$}
+\UnaryInfC{$\neg\neg([A \rightarrow\neg B])$} \RightLabel{$\neg\neg E$}
+\UnaryInfC{$[A \rightarrow\neg B]$} \RightLabel{$\rightarrow^*$}
+\UnaryInfC{$[A] \rightarrow [\neg B]$} \RightLabel{$\wedge E1$} \LeftLabel{2}
+\UnaryInfC{$[A]$} \RightLabel{$\rightarrow E2,3$} \LeftLabel{3}
+\UnaryInfC{$[\neg B]$} \RightLabel{$\wedge E1$} \LeftLabel{4}
+\UnaryInfC{$[B]$} \RightLabel{$\bot I$}\LeftLabel{5}
+\UnaryInfC{$\bot$} \RightLabel{$RAA$} \LeftLabel{$\wedge_*$}
+\UnaryInfC{$[A \wedge B]$} 
+\end{prooftree}
+\end{minipage}%}
+\hspace{\fill}
+
+\hspace{\fill}
+\begin{minipage}{4in}
+\begin{prooftree}
+\AxiomC{$[A]\vee[B]$} 
+\UnaryInfC{$new \quad n$} 
+
+\AxiomC{\text{\cancel{$[A]$}}} \RightLabel{$[]E$}
+\UnaryInfC{$A_n$} \RightLabel{$\vee I$}
+\UnaryInfC{$A_n\vee B_n$} \RightLabel{$[] I$}
+\UnaryInfC{$[A] \rightarrow A_n\vee B_n$}  %$[A]\rightarrow [A\vee B]$ }
+
+\AxiomC{\text{\cancel{$[B]$}}} \RightLabel{$[]E$}
+\UnaryInfC{$B_n$} \RightLabel{$\vee I$}
+\UnaryInfC{$A_n\vee B_n$} \RightLabel{$[] I$}
+\UnaryInfC{$[A] \rightarrow A_n\vee B_n$}  %$[A]\rightarrow [A\vee B]$ }
+
+\TrinaryInfC{$A_n\vee B_n$}\RightLabel{[]I} \LeftLabel{$\vee^*$}
+\UnaryInfC{$[A\vee B]$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+The rules $\rightarrow_*$, $\neg_*$ and $\vee^*$ are not wanted and appear to be unprovable.
+
+
+\subsubsection{Language  of} {\bf $ZOL^*$}
+Let $Prop:AP $ be a set of atomic propositions then the $ZOL^*$ language is  the term Algebra  $T_{\Sigma_{ZOL^*}}$ where:
+
+
+\hspace{\fill} 
+$\Sigma_{ZOL^*}\defeq Prop:AP \cup  \{[\_], \neg_P\_, \_\vee\_,\_\wedge\_,\_\rightarrow\_\} $  \hspace{\fill}
+
+We write $\varphi \vdash \psi$ when  from the assumption $\varphi$ the $ZOL^*$ ND Rules can produce $\psi$.
+
+\subsubsection{Semantics of} {\bf $ZOL^*$} %,\psi
+Let $Eval$ be the set of all evaluation of propositions $Prop$. Hence $Eval =Prop\rightarrow\{1,0\}$
+Let $v$ be a valuation,  $v\in Eval$.  Let $v$ be  model for $\varphi$, a $ZOL^*$ term, be written $v\vDash \varphi$: 
+
+Definition:
+
+   $v\vDash p\in Prop\iff v p = true$ 
+   
+   $v\vDash \neg \varphi \iff v \vDash \varphi = false$
+
+  $v\vDash \psi \vee \varphi \iff ((v \vDash \psi)\; or\; (v\vDash\varphi))= true$
+
+  $v\vDash \psi \wedge \varphi \iff ((v \vDash \psi)\; and \;(v\vDash\varphi))= true$
+
+$v\vDash \psi \rightarrow \varphi \iff (v \vDash \psi)= false \; or \;(v\vDash\varphi)= true$
+
+   $v\vDash  [\varphi] \iff \forall v'. v'\in Eval\Rightarrow v' \vDash \varphi = true$
+ 
+Definition: the semantics of a $ZOL^*$ term:
+
+  \[\llbracket \varphi\rrbracket \defeq \{v. v\vDash \varphi\}\qquad   \psi \vDash \varphi \iff \llbracket \psi\rrbracket \subseteq \llbracket \varphi\rrbracket\] 
+ 
+ 
+\subsubsection{Soundness and Completeness of} {\bf $ZOL^*$}
+
+{\bf First Soundness:}
+Let $\delta\in \Delta$ and $\Delta$ be a set of $ZOL^*$ sentences.
+
+\[ \Delta \vdash \beta  \Rightarrow \Delta \vDash \beta \]
+
+We assume the soundness of ZOL applied to propositions and similarly when applied to validity assertions, where the validity assertions are taken to be atomic propositions, the ZOL rules will be sound. 
+
+{\bf Lemma Box}: from the definition $[A]$ is either $true$ or $false$.
+This leave the :
+
+\begin{description}
+\item [equality] $[\bot]\defeq \bot$ the assertion that for all $\rho$, $\rho\bot = true$ is a falsity, is $\bot$.
+\item [Rule] Soundness of $\rightarrow^*$ rule:
+From the assumption that for every $\rho$ we have $\rho(A\rightarrow B) = true$ then if for every $\rho$ we have $\rho(A) = true$ we can conclude that $\rho(B) = true$.
+\item [Rule]  $[]E$  From lemma Box $[[A]] = [A]$
+\item [Rule]   $[\vee]E$ From lemma Box, If  $[A]= true$ then $[[A]\vee B ] = true = [A]\vee [B]$ else $[[A]\vee B ] = [B] = [A]\vee [B]$. Hence $[[A]\vee B ] = [A]\vee [B]$
+\end{description}
+
+\noindent{\bf Second Completeness:}
+
+\[ \Gamma \vDash \beta  \Rightarrow \Gamma \vdash \beta \]
+
+
+The proof of completeness comes in many well studied  forms and at both distinct degrees of rigour and distinct levels of abstraction.  Thus some proofs in Isabelle can be applied to FOL with a variety of different non logical components. 
+
+For $\Gamma \defeq \{\gamma_1,\gamma_2,.... \gamma_i\}$
+we have:
+
+{\bf Lemma 1}
+If $\Gamma \vDash \beta \Rightarrow \emptyset \vDash \gamma_1 \rightarrow (\gamma_2 \rightarrow (....(\gamma_i\rightarrow \beta)..))$
+
+{\bf Lemma 2}
+$ \emptyset\vDash \gamma  \Rightarrow \emptyset\vdash \gamma $
+
+{\bf Lemma 3} $\emptyset \vdash \gamma_1 \rightarrow (\gamma_2 \rightarrow (....(\gamma_i\rightarrow \beta)..))\Rightarrow \Gamma \vdash \beta$
+
+
+Lemma 2 is the crux. 
+
+$ \emptyset\vDash \gamma  \Rightarrow \forall v\in Eval \Rightarrow v\gamma\; = \;true$
+
+for some $v$ compute $\hat{v_j}$ so that $\{\hat{v_1},\hat{v_2},.. \hat{v_i}\} \vdash \gamma$
+
+%\begin{equation} %\label{eq1}
+%\begin{split}
+% \vDash \beta & \Rightarrow v\in \llbracket \alpha \rrbracket \Rightarrow  v\in \llbracket \beta \rrbracket \\
+% & \Rightarrow v\vDash \alpha \Rightarrow  v\vDash \beta 
+%\end{split}
+%\end{equation}
+
+
+\noindent {\bf Completeness by counter model (Type 1), applicable to FOL:}
+Not constructive but generalises to FOL and other classical logics. Is used in semi-automatic theorem provers. 
+ \[ \Gamma \not\vdash \beta  \Rightarrow \Gamma \not\vDash \beta \]
+
+Using proof by \emph{contrapositive} gives access to proof by structural induction.
+Using Lemma 1 and Lemma 3 above all we need to prove is:
+ \[  \not\vdash \beta  \Rightarrow  \not\vDash \beta \]
+
+Proof by defining how to build a counter model for $\beta$ given it has no proof.  The counter model is no more than a valuation for which $\beta$ is not a \emph{tautology}
+
+The proof makes use of the properties of a \emph{consistent set of sentences}, a set that has a model (or no contradiction can be proven)  and a \emph{complete set of sentences} forall sentences $\alpha$ the set either contain $\alpha$ or $\neg \alpha$.
+
+1. Every consistent set of sentences, $\Delta$,  can be extended to a complete consistent set, $\Delta^*$. In the construction of $\Delta^*$ a sequence of sentences $\delta_i$ are added to $\Delta$.
+
+
+
+
+
+\noindent {\bf Completeness by counter model (Type 2), applicable to FOL:}
+
+{\bf An abstract version has been embedded in Isabelle}. Proceeds  by contrapositive reasoning thus allowing the use of structural co-induction\footnote{co-induction is used to define infinite and/or cyclic structures}.  Finite but unbounded  trees are defined inductively  whereas infinite trees are defined co-inductively, albeit with the same constructors (destructor). 
+
+
+Logic is formalised with a Rule System\footnote{Rule Systems are semantic, a rule maps states to sets of states } defined with an {\bf effect}, a mapping from the syntax of a rule to its effect on the semantic state, finite sets of sentences. Proofs are well formed finite Derivation trees built from the Rule system. Infinite paths on a well formed Rule System are called escape paths
+
+
+A counter model paths are escape paths from  which no finite path is possible, no proof is possible. These counter model paths must have tried all possible proofs. If  the escape path is \emph{saturated} - any rule enabled in the path must eventually be taken then it is a counter model path. 
+
+
+Although \emph{saturated} is stronger than \emph{fairness} and \emph{justice} all three properties coincide for \emph{persistent} paths\footnote{enabled rules only become un-enabled after they are taken.}.
+   {\bf It is shown if a  Rule System is   available and persistent then every state admits a proof or a counter model path. }
+     Such abstract persistence rule systems are complete.
+
+{\bf To apply the abstract result to a concrete object logic} you need to connect  the syntax to the rules and the counter model paths to concrete models.
+\begin{enumerate}
+\item prove the object logic  defines a Rule System
+\item define a mapping from counter model paths to concrete  models that invalidate the proof.
+\end{enumerate}
+
+\noindent {\bf ToDo: apply to $ZOL$, $ZOL^*$ and $ZOL+$.}
+
+
+
+\subsection{ZOL+}
+The reason to define ZOL+ moved from including ZOL meta reasoning to better modelling operators, like "or", that can evaluated not only once per instance but also once per $DofD$. Like in FOL but with out needing to define functions and predicates. 
+  ZOL+ extends ZOL by:
+\begin{enumerate}
+\item along with each proposition  $P$ there are propositions $P_a$ where $a$ is from a set of names.
+\item  adding  a \emph{lifting} operator $[\_]_x$\footnote{de Bruijn notation could be used to encode the effect of the bound variables thus avoiding all used of bound variables but this abstracts nothing.} that applied to a ZOL assertion $A$ returns $[A]_x$ and any operator applied to this lifted proposition will only be evaluated once for any value of $x$
+\end{enumerate}  
+ 
+The ZOL Natural Deduction Rules are applied to all the ZOL+ propositions $A$, $A_a$ and $[A]_x$ treating each atomic.  
+  
+
+ 
+
+\hspace{\fill}\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{\text{\cancel{$[A]_x$}}} \dottedLine
+\UnaryInfC{$[B]_y$}\RightLabel{$\rightarrow I$}
+\UnaryInfC{$[A]_x\rightarrow [B]_y$ }
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+
+  The following $[] E$  and $[] I$ Rules define the relation between the $A_a$ ans $[A]_x$ propositions.  
+
+
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[A]_x$} \RightLabel{$[] E$}
+\UnaryInfC{$A_a$} 
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{new a} \dottedLine  % new x Not needed because of alpha conversion
+\UnaryInfC{$A_a$} \RightLabel{ $[] I$ } %\doubleLine
+\UnaryInfC{$[A]_x$ }
+\end{prooftree} 
+\end{minipage}\hspace{\fill}
+%\begin{minipage}{1in}
+%\begin{prooftree}
+%\AxiomC{$[A\wedge B]$} \RightLabel{oop} %\doubleLine
+%\UnaryInfC{$A$ }
+%\end{prooftree} 
+%\end{minipage}
+
+
+The rules $[] I$ and $[] E$ are simple transliterations of the FOL rules $\forall I$ and $\forall E$. So what has been achieved by defining ZOL+.
+\begin{enumerate}
+\item ZOL+ more abstract than FOL and is decidable.
+\item there is an isomorphism between ZOL+ and FOL restricted to a finit collection of decidable predicates. 
+\item The informal assertions that we viewed in \sref{} that did not contain any indication of quantification yet could not be adequately formalised in ZOL can be be formalised in ZOL+.
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+\subsection{Example proofs}
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[A\rightarrow B]_x$} \RightLabel{$\rightarrow^* I$}
+\UnaryInfC{$[A]_x\rightarrow [B]_x$ }
+\end{prooftree} 
+\end{minipage}
+\hspace{\fill}
+\begin{minipage}{2in}
+\begin{prooftree}
+\AxiomC{$[A\rightarrow B]_x $} \RightLabel{1 $\rightarrow_F I$}
+\UnaryInfC{$ [A]_x$} \RightLabel{2}
+\UnaryInfC{$ new\; a$}\RightLabel{3 $[] E_2$}
+
+\UnaryInfC{$  A_a$}\RightLabel{4 $[] E_1$}
+\UnaryInfC{$  A_a\rightarrow B_a$} \RightLabel{5 $\rightarrow E_{4,5}$}
+\UnaryInfC{$  B_a$} \RightLabel{6 $[] I_{3,6}$}
+\UnaryInfC{$ [B]_x$} \RightLabel{$\rightarrow I$}
+\UnaryInfC{$ [A]_x \rightarrow [B]_x$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+The rule $\rightarrow^* I$  is a consequence of the other ND rules and extracts structure from within "$[...]X$".  
+
+
+
+The $\alpha$ conversion of bound variables $[A]_x \Rightarrow [A]_y$ is a consequence of the two $[]$ rules. The $\rightarrow^*$ is not reversible and consequently the $[\neg A]_x \Rightarrow \neg[A]_x$ rule is also not reversible.
+
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[ A]_y$}%\RightLabel{$[] E$}
+\UnaryInfC{new a} \RightLabel{$[] I$}
+\UnaryInfC{$A_a$} \RightLabel{$[] E$}
+\UnaryInfC{$[A]_x$}  %\RightLabel{$[] I$}
+%\UnaryInfC{}  \noLine
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[\neg A]_x$}\RightLabel{$def$}
+\UnaryInfC{$[A\rightarrow \bot]_x$} \RightLabel{$\rightarrow^*$}
+\UnaryInfC{$[A]_x\rightarrow [\bot]_x$} \RightLabel{$def$}
+\UnaryInfC{$[A]_x\rightarrow \bot$} \RightLabel{$def$}
+\UnaryInfC{$\neg[A]_x$} 
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+\hspace{\fill}
+\begin{minipage}{4in}
+\begin{prooftree}
+\AxiomC{$[A]_x\vee[B]_x$} 
+
+\AxiomC{new a} 
+\UnaryInfC{\text{\cancel{$A_a$}}} \RightLabel{$\vee Ir$}
+\UnaryInfC{$A_a\vee B_a$} \RightLabel{$\rightarrow I$}
+\UnaryInfC{$(A\rightarrow (A\vee B))_a$ }  \RightLabel{$[]$ I}
+%\UnaryInfC{$[A\rightarrow (A\vee B)]_y$} \RightLabel{$\alpha$}
+\UnaryInfC{$[A\rightarrow (A\vee B)]_x$} \RightLabel{$\rightarrow^*$}
+\UnaryInfC{$[A]_x\rightarrow [A\vee B]_x$ }
+
+\AxiomC{new a'} 
+\UnaryInfC{\text{\cancel{$B_{a'}$}}} \RightLabel{$\vee Ir$}
+\UnaryInfC{$A_{a'}\vee B_{a'}$} \RightLabel{$\rightarrow I$}
+\UnaryInfC{$(B\rightarrow (A\vee B))_{a'}$ }  \RightLabel{$[]$ I}
+%\UnaryInfC{$[A\rightarrow (A\vee B)]_y$} \RightLabel{$\alpha$}
+\UnaryInfC{$[B\rightarrow (A\vee B)]_x$} \RightLabel{$\rightarrow^*$}
+\UnaryInfC{$[B]_x\rightarrow [A\vee B]_x$ }
+
+\TrinaryInfC{$[A\vee B]_z$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+
+
+Using ZOL+ rules we  prove some  results that are necessary if $\alpha$ and $\gamma$ are components of a  homomorphic Galois connection.
+
+
+
+ \newpage 
+ \subsection{ZOL+ semantics}
+ ZOL+ semantics is designed to mimic the semantics of FOL.
+ ZOL operators are evaluated once per instance whereas ZOL+ introduces situations where they are evaluated once per Domain of Discourse.
+ 
+ 
+ 
+ 
+ Note  In FOL terms variable names have a meaning that can span all of the term and  $\alpha$ must preserve this to allow $\gamma$ to rebuild an appropriate but more abstract FOL terms. One way to achieve this is to include the variable names in the Proposition name along with numeric markers for bound variables. Hence in what follows $P_{(1,y)})$ and $P_{(1,2)}$ are distinct propositions both from the same predicate $P_2$.
+ 
+ \[\gamma:: ZOL+(Prop) \Rightarrow FOL(Pred_{n},Fun_{n}) \] 
+ \[ P(x,y) \vee Q(x) \Rightarrow P_{(x,y)}\vee Q_{(x)} \Rightarrow P(x,y) \vee Q(x) \]
+ \[(\forall x.\forall y. P(x,y) \vee Q(x) ) \Rightarrow [[P_{x,y}\vee Q_{x}]_y]_x \Rightarrow  \forall x,y. P(x,y) \vee Q(x)\]
+\[(\forall x. \forall y.P(x,y) \vee Q(x,z) ) \Rightarrow [[P_{x,y}\vee Q_{(x,z)}]_y]_x \] 
+%\Rightarrow  \forall x'.\forall y'. P(x',y') \vee Q(x',z)\]
+  \[(\forall x. P(x,y)) \vee \forall z. Q(z)  \Rightarrow [P_{x,y}] \vee [Q_{z}]_x \] %\Rightarrow (\forall x. P(y,x)) \vee \forall z. Q(z) \]
+
+
+
+\section{FOL}
+
+
+The ZOL language can be defined as a data type, a signature and set of equalities or Natural Deduction Rules.  The set of Atomic Propositions can be assumed to be finite or at least countable and Implication is a pre-order over ZOL sentences that can be defined by rule induction.
+
+The FOL language is considerably more complex than ZOL is several distinct but important ways:
+
+\begin{enumerate}
+\item FOL includes a $DofD$ along with functions from  $DofD$ to $DofD$ 
+
+\item The atomic propositions of ZOL are replaced with predicates that are interpreted as maps from the $DofD$ to \emph{bool}
+
+
+\item The ZOL boolean operators can be applied to predicates even though they are maps and not booleans
+
+\item quantifiers can be applied to predicates  to change them from maps to bools. And the ZOL boolean operators can be applied to the quantified predicates
+
+\item the Natural Deduction rules for the quantifiers have side conditions.
+\end{enumerate}
+
+The use of recursively defined functions and predicates to define the structure of the $DofD$ introduces potential understandability but once a finite set of predicates have been defined we have a system of reasoning that is closer to but not the same as ZOL. In what follows we let $atom$ stand for either a literal value from the $DofD$ or a variable that can range over the $DofD$
+
+ \hspace{\fill}
+\begin{minipage}{2in}
+\begin{tabular}{ll}
+FOL fmla \; = & \; Pred atom  \\ 
+& $|$ Bot\\ 
+& $|$  Imp fmla fmla \\ 
+& $|$  p(x) \\
+& $|$  All var fmla \\
+
+\end{tabular}
+\end{minipage}
+ \hspace{\fill}
+ \begin{minipage}{2in}
+ \begin{tabular}{ll}
+ZOL+ fmla \; = & \; Prop   \\ 
+& $|$ Bot\\ 
+& $|$  Imp fmla fmla \\ 
+& $|$  [fmla] \\ 
+\end{tabular}
+ \end{minipage}  
+\hspace{\fill}\\
+
+The FOL quantified sentences contain variables but can be alpha converted without changing their meaning, as long as variable capture is avoided. The FOL Natural Deduction rules include those of ZOL. And have additional rules for the quantifies. 
+
+\hspace{\fill}
+\begin{minipage}{2in}
+\begin{prooftree}
+\AxiomC{$new\; a$}
+\UnaryInfC{$P(a)$} \RightLabel{$\forall I$}
+\UnaryInfC{$\forall x . P(x)$}
+\end{prooftree}
+\end{minipage}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\forall x. P(x)$} \RightLabel{$\forall E$}
+\UnaryInfC{$ P(a)$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+The $\forall I$ rule is unusual in that it has a side effect \emph{new a}. Unlike all other rules $\forall I$ dose not directly result in adding steps to the implication pre-order on FOL assertions. The existential quantifier can be defined $\exists x.P(x) \defeq \neg \forall x. \neg P(x)$ .
+
+%\hspace{\fill}
+%\begin{minipage}{1in}
+%\begin{prooftree}
+%\AxiomC{$P(a)$} \RightLabel{$\exists I$}
+%\UnaryInfC{$\exists x . P(x)$}
+%\end{prooftree}
+%\end{minipage}
+%\begin{minipage}{1in}
+%\begin{prooftree}
+%\AxiomC{$\exists x. P(x)$}
+%\AxiomC{$new \; a$} \RightLabel{$\exists E$}
+%\BinaryInfC{$ P(a)$}
+%\end{prooftree}
+%\end{minipage}
+%\hspace{\fill}
+
+The following FOL result is needed to ensure that ZOL+ $\rightarrow^*$ rule is preserved when mapped into FOL.
+
+
+\hspace{\fill}
+\begin{minipage}{2in}
+\begin{prooftree}
+\AxiomC{$(\forall x. A(x)\rightarrow B(x)) $} 
+\UnaryInfC{$ (\forall x. A(x)) \rightarrow \forall x. B(x)$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+\begin{minipage}{2in}
+\begin{prooftree}
+\AxiomC{$(\forall x. A(x)\rightarrow B(x)) $} \RightLabel{1 $\rightarrow_F I$}
+\UnaryInfC{$ \forall x. A(x)$} \RightLabel{2}
+\UnaryInfC{$ new\; a$}\RightLabel{3 $\forall E_2$}
+
+\UnaryInfC{$  A(a)$}\RightLabel{4 $\forall E_1$}
+\UnaryInfC{$  A(a)\rightarrow B(a)$} \RightLabel{5 $\rightarrow E_{4,5}$}
+\UnaryInfC{$  B(a)$} \RightLabel{6 $\forall I_{3,6}$}
+\UnaryInfC{$ \forall x. B(x)$} \RightLabel{$\rightarrow I$}
+\UnaryInfC{$ (\forall x. A(x)) \rightarrow \forall x. B(x)$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+\subsection{From ZOL+ to FOL}
+
+Both ZOL+ and FOL use ZOL most of the ZOL operators but extended with some additional operators of their own. Further ZOL+ and FOL  have all the ZOL rules + a few additional Rules. ZOL+ is the more abstract of the two logics and the concretion mapping injects ZOL+ into FOL.
+
+$\gamma(\bot) = \bot$ and $\alpha(\bot)\ \bot$ 
+
+$\gamma(X\rightarrow Y) = \gamma(X) \rightarrow \gamma(Y)$ and 
+$\alpha(X\rightarrow Y) = \alpha(X) \rightarrow \alpha(Y)$
+
+
+Let $A? \in \{(\forall x .A(x)), A(x), A(a)\}$ in
+
+$\gamma ([A]) = \forall x. \gamma(A)$ and $\alpha(A?) = A$
+
+\subsection{Galois connections and Logic}
+Several distinct situations of practical interest all make use of homomorphic Galois connections with a one sided inverse. Hence proving results in Isabelle and at the more abstract level may prove very useful in practice. 
+Galois connections are based on a pair of homomorphic mappings between  two pre-orders with properties that have made them of particular use both when relating syntax and semantics as well as for transforming one semantics into another. 
+
+
+In order that $\alpha$ and $\gamma$ of \sref{} are components of a Galois relation between FOL and ZOL+ the two mappings must preserve logical implication. 
+
+The abstraction morphism $\alpha$ from FOL to ZOL+ is defied by mutual recursion of the term structure:
+
+\begin{center}
+\begin{minipage}{3in}
+fun $\alpha :: "FOL \Rightarrow ZOL+"$  and \newline
+\hspace{5mm}  $\quad\alpha' :: "FOL \Rightarrow ZOL+"$ where \\
+\hspace{10mm}\begin{tabular}{lclc}
+$\quad\alpha$ $ Pred P(x)$ & = & Prop \; $P_x$ &  $|$ \\ 
+$\quad\alpha$ $ \forall x. fol $ & =  & $[ \alpha' fol]$ &  $|$ \\ 
+$\quad\alpha'$ $ Pred P(x)$ & =  & Prop  $P$ &  $|$ \\ 
+\end{tabular} 
+
+
+\end{minipage}
+  \end{center}  
+
+
+
+
+
+
+\newpage 
+\section{Appendix B.}
+There are many equivalent ways to formalise  The propositional part of a Hilbert system uses two operators  $\rightarrow$ and $\bot$ 
+
+\hspace{\fill}\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{\text{\cancel{A}}} \dottedLine
+\UnaryInfC{$B$}\RightLabel{$\rightarrow I$}
+\UnaryInfC{$A\rightarrow B$ }
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+\begin{minipage}{2in}
+\begin{prooftree}
+\AxiomC{$A\rightarrow B$} \AxiomC{$A$} \RightLabel{$\rightarrow E$\quad (mp)}
+\BinaryInfC{$ B$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+
+
+\hspace{\fill}\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$A$}\RightLabel{$Again$}
+\UnaryInfC{$A$ }
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\bot$ } \RightLabel{$\bot$ E \quad (m,i,c)}
+\UnaryInfC{$A$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+\begin{center}\begin{tabular}{rcl}
+$\neg A$ & $\defeq$ & $A\rightarrow \bot$ \\
+$A \vee B$ & $\defeq$ & $ (\neg A) \rightarrow B$\\ 
+$A \wedge B $ & $\defeq$ & $ \neg (A \rightarrow \neg B)$ \\  
+\end{tabular} \end{center}
+
+
+
+
+\hspace{\fill}\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{\text{\cancel{$\neg A$}}}\RightLabel{ $Again_0$}
+\UnaryInfC{$\neg A$}\RightLabel{ $\rightarrow I$}
+\UnaryInfC{$\neg A\rightarrow  \neg A$}\RightLabel{$def_{\vee}$}
+\UnaryInfC{$A\vee  \neg A$ }
+\end{prooftree}
+\end{minipage} \hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$A$}
+\UnaryInfC{\text{\cancel{$\neg A$}}}\RightLabel{ $ass$}
+\UnaryInfC{$A\rightarrow \bot$}\RightLabel{ $def_{\neg}$}
+\UnaryInfC{$\bot$}\RightLabel{ $\rightarrow E$}
+\UnaryInfC{$B$}\RightLabel{ $\bot E$}
+\UnaryInfC{$\neg A\rightarrow  B$}\RightLabel{ $\rightarrow I$}
+\UnaryInfC{$A\vee  B$ }
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+ 
+ 
+ 
+ %\hspace{\fill}
+ \noindent
+ %\fbox{
+ \begin{minipage}{3.7in}
+\begin{prooftree}
+\AxiomC{} \RightLabel{ $ExM$}
+\UnaryInfC{$A\vee  \neg A$ } 
+\AxiomC{$A\vee B$} \RightLabel{ $def_{\vee}$}
+\UnaryInfC{$\neg A\rightarrow  B$} 
+%\AxiomC{\text{\cancel{A}}}\dottedLine\UnaryInfC{$C$ } 
+%\AxiomC{\text{\cancel{B}}}\dottedLine\UnaryInfC{$C$ } 
+\AxiomC{$B\rightarrow C\qquad A\rightarrow C$} 
+
+\TrinaryInfC{\text{\cancel{$\neg A$}}} \RightLabel{ $\rightarrow E$}
+\UnaryInfC{$B$} \RightLabel{ $\rightarrow E$}
+\UnaryInfC{$C$} 
+\UnaryInfC{\text{\cancel{$A$}}} \RightLabel{ $\rightarrow E$}
+\UnaryInfC{$C$} \RightLabel{ $\vee E$}
+
+\UnaryInfC{$C$} 
+\end{prooftree}
+\end{minipage} %}
+\hspace{\fill}
+%\fbox{
+\begin{minipage}{1.3in}
+\begin{prooftree}
+\AxiomC{$A\wedge B$}\RightLabel{ $def_{\wedge}$}
+\UnaryInfC{$(A\rightarrow \neg B)\rightarrow \bot$} \RightLabel{ $def_{\neg}$}
+\UnaryInfC{\text{\cancel{$A\rightarrow \neg B$}}}\RightLabel{ $def_{\neg}$}
+\UnaryInfC{$\bot$}\RightLabel{ $\rightarrow E$}
+\UnaryInfC{$B$}\RightLabel{ $\bot E$}
+\UnaryInfC{$\neg A\rightarrow  B$}\RightLabel{ $\rightarrow I$}
+\UnaryInfC{$A$ }
+\end{prooftree}
+\end{minipage}%}
+\hspace{\fill}
+ 
+ 
+ \hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$A$}
+\AxiomC{$B$}
+\BinaryInfC{\text{\cancel{$A\rightarrow \neg B$}}}\RightLabel{ $\rightarrow E$}
+\UnaryInfC{$\neg B$}\RightLabel{ $\bot I$}
+\UnaryInfC{$\bot$}\RightLabel{ $\rightarrow I$}
+\UnaryInfC{$(A\rightarrow  \neg B)\rightarrow \bot $}\RightLabel{ $def_{\neg}$ }
+\UnaryInfC{$\neg (A\rightarrow  \neg B)$}\RightLabel{ $def_{\wedge}$}
+\UnaryInfC{$A\wedge  B$ }
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+
+ \subsection{ZOL+}
+
+
+
+\def\ruleScoreFiller{\hrule height 1pt}
+
+
+\hspace{\fill}\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[A]\rightarrow [B]$}\RightLabel{$[\rightarrow] I$}
+\UnaryInfC{$[A\rightarrow B]$ }
+\end{prooftree}
+\end{minipage}\quad
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[A\rightarrow B]\wedge [A]$} \RightLabel{$[\rightarrow]E$}
+\UnaryInfC{$ [B]$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{}
+\UnaryInfC{$A$} \RightLabel{imp} \doubleLine
+\UnaryInfC{$[A]$ }
+\end{prooftree} 
+\end{minipage}\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[A\rightarrow B]$} \RightLabel{$\rightarrow^* I$}
+\UnaryInfC{$[A]\rightarrow [B]$ }
+\end{prooftree} 
+\end{minipage}
+\hspace{\fill}
+
+
+from definitions
+\[[A]\vee [B] \triangleq_{[\vee]} \neg [A] \rightarrow [B], \qquad [A]\wedge [B] \triangleq_{[\wedge]}  \neg([A]\rightarrow \neg [B])\]
+
+ can the following be established!
+ \[ [\neg A] \rightarrow \neg [A] \qquad[A]\vee [B] \rightarrow [A\vee B]\]
+ 
+
+\hspace{\fill}\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[\neg \neg A]$} \RightLabel{$RAA$}
+\UnaryInfC{\quad $[A]$ \quad} 
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{} \RightLabel{magic}
+\UnaryInfC{$[A\vee \neg A]$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill} 
+
+
+
+
+
+
+
+\subsection{FOL results}
+The following results will ensure that ZOL+ implication is preserved by $\gamma$.
+Because the quantifier rules replace the quantified terms with similar terms but with names no named term can be proven that when converted back to {\bf ????} 
+
+\hspace{\fill}\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\forall x. A(x)\rightarrow \forall x. B(x)$}\RightLabel{$\rightarrow_F I$}
+\UnaryInfC{$\forall x. A(x)\rightarrow B(x)$ }
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$(\forall x. A(x)\rightarrow B(x))\wedge \forall x. A(x)$} \RightLabel{$\rightarrow_F E$}
+\UnaryInfC{$ \forall x. B(x)$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+
+
+\hspace{\fill}\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$ \neg \neg \forall x. A(x)$} \RightLabel{$RAA_F$}
+\UnaryInfC{\quad $\forall x. A(x)$ \quad} 
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{} \RightLabel{$magic_F$}
+\UnaryInfC{$\forall x. A(x)\vee (\neg \forall x. A(x))$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+
+\section{Isabelle Nightmare}
+{\bf To save your self a lot of time write a manual proof before machine checking!}
+
+To remove  {\bf pingu} in the goal or hypothesis try {\bf find\_theorem pingu} and {\bf find\_theorem name: pingu} to get a theorem and if that fails to find anything then pingu may be an abbreviation so search for pingu in the current theory. 
+
+Some commands that may be typed into the editor:
+
+\begin{enumerate}
+\item find\_theorems pingu
+\item find\_theorems  name:  pingu
+\item apply (auto simp: pingu)  and apply (auto simp add: pingu)
+\item apply auto sledgehammer  (* simplify  before  sledgehammer *) 
+\item  sledgehammer  [max\_facts = 50, timeout = 240, verbose]
+\end{enumerate}
+
+
+
+*****************************
+
+\newpage
+
+
+
+
+The difference between the syntactic rules of implication of assertions evaluated at the instance level $\rightarrow$ and implication evaluated only once, at the level of the $DofD$ $\rightarrow^*$ is designed to model this underlying semantics difference. All other rules are, hopefully,  as you might expect but baring in mind  when there are more than one assumption they can be combined with $\wedge^*$
+
+
+
+
+\hspace{\fill}
+\begin{minipage}{2in}
+\begin{prooftree}
+\AxiomC{$[A]\rightarrow^* [B]$} \AxiomC{$[A]$} \RightLabel{$\rightarrow ^*E$\quad (mp)}
+\BinaryInfC{$ [B]$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+%
+%\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\neg^* [A]$} \AxiomC{$[A]$} \RightLabel{$\bot I$}
+\BinaryInfC{$\bot$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$\bot$ } \RightLabel{$\bot$ E \, (i)}
+\UnaryInfC{$[A]$}
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+%\begin{minipage}{1in}
+%\begin{prooftree}
+%\AxiomC{\text{\cancel{$\neg A$}}}
+%\UnaryInfC{$\bot$ } \RightLabel{C}
+%\UnaryInfC{$A$}
+%\end{prooftree}
+%\end{minipage}\hspace{\fill}
+
+\hspace{\fill}\begin{minipage}{1.2in}
+\begin{prooftree}
+\AxiomC{$[A]$} \RightLabel{$\vee^* Il$}
+\UnaryInfC{$[A]\vee^* [B]$ }
+\end{prooftree}
+\end{minipage}
+\begin{minipage}{1.2in}
+\begin{prooftree}
+\AxiomC{$[B]$} \RightLabel{$\vee^* Ir$}
+\UnaryInfC{$[A]\vee^* [B]$ }
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+
+\hspace{\fill}
+\begin{minipage}{2in}
+\begin{prooftree}
+\AxiomC{$[A]\vee^* [B]$} 
+%\AxiomC{\text{\cancel{A}}}\dottedLine\UnaryInfC{$C$ } 
+%\AxiomC{\text{\cancel{B}}}\dottedLine\UnaryInfC{$C$ } 
+\AxiomC{$[A]\rightarrow^* [C]$ }
+\AxiomC{$[B]\rightarrow^*[C]$ } \RightLabel{$\vee^* E$}
+
+\TrinaryInfC{$[C]$}
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+
+\hspace{\fill}\begin{minipage}{1.3in}
+\begin{prooftree}
+\AxiomC{$[A]$} \AxiomC{$[B]$}\RightLabel{$\wedge^* I$}
+\BinaryInfC{$[A]\wedge^* [B]$ }
+\end{prooftree}
+\end{minipage}\qquad
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[A]\wedge^* [B]$} \RightLabel{$\wedge^* El$}
+\UnaryInfC{$[A]$ }
+\end{prooftree}
+\end{minipage} \quad
+\begin{minipage}{1in}
+\begin{prooftree}
+\AxiomC{$[A]\wedge^* [B]$} \RightLabel{$\wedge^* Er$}
+\UnaryInfC{$[B]$ }
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+
+
+%\hspace{\fill}\begin{minipage}{1.1in}
+%\begin{prooftree}
+%\AxiomC{\text{\cancel{$\neg [A]$}}} \dottedLine
+%\UnaryInfC{$\bot$}  \RightLabel{$RAA\; (c)$}
+%\UnaryInfC{$ [A]$}
+%\end{prooftree}
+%\end{minipage}
+\hspace{\fill}
+\begin{minipage}{1.1in}
+\begin{prooftree}
+\AxiomC{$\neg^* \neg^* [A] $}  \RightLabel{$\neg^*\neg^* E\;(c)$}
+\UnaryInfC{ $[A]$ } 
+\end{prooftree}
+\end{minipage}\hspace{\fill}
+\begin{minipage}{1.1in}
+\begin{prooftree}
+\AxiomC{} \RightLabel{$ (c)$}
+\UnaryInfC{$[A]\vee^* \neg^* [A]$}
+\end{prooftree}
+\end{minipage}
+\hspace{\fill}
+
+
+
+
+
+
+
+
+
+
+Mathematical logic provides an elegant mechanism for rigorous reasoning from a formal assertion to a formal conclusion. But engineers are obliged to consider both the formal and the informal in order to give assurances like \emph{the plane will not fall out of the sky}. This paper considers how we might build a formal assertion from an informal assertion and in doing so is forced to investigate the relation between Propositional Logic, \emph{Zero Order Logic (ZOL}, and Predicate Logic, \emph{First Order Logic (FOL)}.
+
+Loosely speaking ZOL has a set of atomic propositions that take a boolean value, $\{true,false\}$ and a small set of boolean operators, $\wedge,\vee,\neg, \Leftarrow$. Whereas FOL has a domain of discourse over which functions and more importantly predicates are defined, these predicates map the domain of discourse to $\{true,false\}$. In addition to the same boolean operators $\wedge,\vee,\neg, \Leftarrow$ as can be found in ZOL, FOL has the two quantifiers $\forall x.\_$  and  $\exists x.\_$ 
+
+How ZOL is related to, embedded in, FOL is both complicated and in certain situations makes the translation of informal assertions into formal logic quite problematic. 
+
+
+It can be quite insightful to ask why a software  engineer might use mathematics. Some of the greatest advantages are:
+\begin{enumerate}
+\item provide a means of unambiguous communication
+\item avoid using intuitions when reasoning about specifications and code
+\end{enumerate}
+But, this has to be done very carefully as mathematics does not provide a perfect solution to either problem and it is important not to ask to much from mathematics. Problems include: 
+\begin{enumerate}
+\item Classical logic is not an arbiter of truth against which all else can be judged. Classical logic is only one of many logics.
+\item It is now known that people understand by building a hierarchy of world models and continually adjusting them as they experience more examples. Whereas building a hierarchy of logical models is far from standard and thus 
+\end{enumerate} 
+
+Formal mathematics can be seen as a glass bead game where every symbol is glass bead stripped of meaning. The rules of the game define how to build one sentence, valid string of beads,  from another. Engineering on the other hand  requires the meaning, the interpretation of the glass beads, to be considered in some detail. It is not good engineering for the mathematics used to  prove properties of  software to be correct yet the 
+software to not satisfy these properties.
+
+We will use logic to describe both software specifications and implementations. Stepwise software development will require that the implementation logically implies the specification. Hence reasoning about software development becomes reasoning about proof, that is, proof within the \emph{object logic} used in the specifications.
+
+When the proofs constructed within an objects logic themselves  become the objects that we wish to reason about we have to step outside of the object logic and make use of some {\bf meta logical reasoning}. Meta logic has been defined in great detail but in a wide variety of ways. This paper is not about the details of meta logic it is about the problems that engineers may come across when trying to reason about software development. What has come as a surprise is how some simple informal assertions mix both object logic and meta logic. These mixed assertions may become difficult to formalise but are nonetheless used quite rigorously by engineers.
+
+If logic $A$ is embedded within logic $B$ and the embedding is not surjective then some of the $B$s assertions can be viewed as assertions within the object logic $A$ and other of $B$ assertions as being assertions about $A$ as such some of $B$s assertions can be viewed as meta logical to $A$.
+
+
+$$
+\begin{matrix}
+  ZOL_{Clasical}       & \arrow{r}{\bf Z2F}   & FOL_{Clasical} \cr
+  \arrow{d}{\neg\neg} &                           & \arrow{d}{\neg\neg} \cr
+  ZOL_{Constructice}   & \arrow{r}{\bf Z2F}   & FOL_{Constructice}                 \cr
+\end{matrix}
+$$
+
+ We will consider both the, {\bf Z2F}, embedding of ZOL into FOL and the double negation embedding,$\neg\neg$ of classical logic into constructive logic. It is interesting that the embedding of classical FOL into constructive FOL is homomorphic and the classical operators are closed on the range of the embedding whereas the embedding of ZOL into FOL sentences is  neither (a) homomorphic nor (b) are the ZOL operators closed on the range of the embedding.
+ 
+These features of the embedding of ZOL into FOL sentences clearly contribute to some of the misunderstandings of natural language assertions. Nonetheless it is informative to formalise the relation between ZOL and FOL.
+
+
+
+
+In $ZOL_{Constructice} $  there are no quantifiers but there are two disjunctions the classical, $\vee$, and the constructive, $+$.
+To compare  $ZOL_{Constructice} $ with ${\bf Z2F}(ZOL_{Clasical})$ we would need to equate $A+B$  with $(\forall x. A(x)) \vee (\forall x. B(x))$ and investigate the distinct properties of these two operators. In addition we would need to check that the above diagram is a commutative square.
+
+Is it reasonable to view both or either  $FOL_{Clasical}$ and $ZOL_{Constructice}$ as refinements of the more abstract $ZOL_{Classical}$? Although neural science is telling us that building a hierarchical stack of models of the world around us is an integral part of human reasoning we still need to formulate the relationship  between models at different levels of abstraction. Indeed what properties do these relations  need in order to useful to an engineer.
+
+Testing refinement within a layer and Galois connections, retracts, between layers appears to work linking definitions from distinct approaches. Within logic we have  the injection of one domain of discourse into another lifts to a retract between the two logics.
+
+
+Before  looking at this particular question a small amount of terminology is introduced.  In the case where   the English language is used to talk about the Chinese language then the  Chinese language would be referred to as the \emph{object language} and English as the \emph{meta language}. Similarly if  English is used to reason about classical logic proofs then classical logic is an \emph{object logic} and the English reasoning used an, as yet, unspecified \emph{meta logic}.
+
+Computer scientists and software engineers often make use of mathematics as a tool for unambiguous communication and rigorous reasoning. Whereas, in the pursuit of rigour Mathematicians sometimes  forgo semantic reasoning and adopt a purely syntactic approach. Essentially this reduces mathematics to a glass bead game where each symbol. The advantage of formal mathematics is that relying on informal assertions can lead to mistakes.  But, of course, semantics need not be informal and engineers may find it easier to reason about semantic models of logical sentences than to reason by performing  detailed syntactic rewriting.
+
+ Although formalising specifications can be hard formalising reasoning can be far harder as it is questionable weather reasoning about implication is more accurately done with constructive logic or with classical logic. As software correctness is often formalised by the  \emph{implication implying the specification} we can see that reasoning about implications is common practice for software engineers.
+ 
+There are two, related, but  separate  skills an engineers needs: 
+\begin{enumerate}
+\item to translate there informal ideas into a formal language
+\item to interpret formal assertions, that is to describe what a formal assertion means in the domain of interest
+\end{enumerate}
+ 
+ At its mathematical center formality reduces to a \emph{glass bead game} where each assertion is written down as a sentence composed of meaningless symbols. The meaning of a sentence is captured by strict rewrite rules that tell us how to construct a true sentence from other sentences that re assumed true. Although this may be how some mathematicians think it not how many engineers think. Engineers are interested in applying logic in specific domains and frequently think rigorously about the semantics, or about the domain.
+\newpage
+
+Informal assertions need to be translated into some formal language prior to formal reasoning. Consequently the first step is the selection of the formal language  to be used. Here the options we only consider are ZOL and FOL. Plainly if the informal assertion explicitly contains quantifiers then in order to capture this detail FOL must be used.
+
+
+\section{Meta logical, or first order reasoning with Ven Diagrams}
+
+Their is a simple relation between truth tables and Ven Diagrams:  each \emph{instance} has a specific region in the diagram, there are $2^n$ instances in the truth table and $2^n$ regions in the Ven Diagram. 
+
+There are other ways to interpret Ven Diagrams. For example the above Ven Diagram can be thought of as representing three sets $A=avocados $, 
+$G=$\emph{ good things} and $R=$\emph{ripe things}.  The blacked out portion is a set that is  empty.  That is to say in the world represented by the Ven diagram   \emph{all good avocados are ripe}. But in such a world it is not true that \emph{all avocados are ripe} or that \emph{all good things are ripe}.
+
+
+The region representing the $G\wedge\neg A \wedge \neg R$ row also represents the  case when $g\in G \wedge b\not\in A \wedge g\not\in R$ When we think about the Ven diagram this way it has many properties including: 
+\begin{enumerate}
+\item  $(A\cup G) \subseteq R$ and 
+\item  not $(A \subseteq R)$ and
+\item  not $(G \subseteq R)$
+\end{enumerate}
+
+
+ The first property is the semantics for the proposition  $(A\wedge G) \rightarrow R$ is true and from the  last two properties we can conclude   $A \rightarrow R$ and $  G\rightarrow R$ are both false. 
+ \begin{quotation}
+ \emph{Although  $(A\wedge G) \rightarrow R$  is true  neither $(A \rightarrow R)$ OR $  (G\rightarrow R)$ is true. }
+\end{quotation}   
+ This appears to contradict what the truth table confirms. But, it does not. Actually the two assertions are not directly related to each other. This can be seen from:
+ \begin{enumerate}
+ \item the disjunction in  $ \mathbf{(A\rightarrow R)\vee (G\rightarrow R)}$ is evaluated once in each interpretation, row of the truth table. The disjunction exists in a term with in the logic.
+ \item whereas the {\bf OR} in \emph{$(A \rightarrow R)$ OR $  (G\rightarrow R)$ are false} is evaluated once in the universe, or domain of discourse. The {\bf OR} exists in a phrase that is outside of ZOL logic. That is the {\bf OR} should be interpreted as meta logical.
+ \end{enumerate}
+
+FOL is more expressive than ZOL  and  distinguishes   $ \mathbf{\forall x. (A\rightarrow R)\vee (G\rightarrow R)}$ from  $ \mathbf{(\forall x. A(x)\rightarrow R(x))\vee (\forall x. G(x)\rightarrow R(x))}$, a term that has no interpretation in ZOL.
+
+
+Thus a Ven Diagram  can be used both to reason within classical logic and to reason about classical logic reasoning, that is to reason meta-logically. 
+
+
+  
+  \section{Embedding classical logic on constructive logic}
+ 
+Let us quickly recap what was achieved in \sref{ex}. We wished to establish the truth of the informal assertion {\bf IA} to do this we formalised it as assertion {\bf FA} which we then rigorously proved using classical logic. We completely accept that the truth of {\bf FA} was correctly established so now we  need to look in more detail at the relation between {\bf IA} and {\bf FA}.
+
+ {\bf IA}  refers to three proofs that we can formalise in some object logic as:
+\begin{enumerate}
+\item \emph{proof of $\mathbf{R}$ from $\mathbf{Pa\wedge Pg}$}, formalised as $\mathbf{Pa\wedge Pg \vdash R}$ 
+\item \emph{proof of  $\mathbf{R}$ from $\mathbf{Pa}$}, formalised as $\mathbf{Pa \vdash R}$  
+\item \emph{proof of $\mathbf{R}$ from $\mathbf{Pg}$}, formalised as $\mathbf{Pg \vdash R}$. 
+\end{enumerate}
+The meta logical assertion  $\mathbf{X \vdash R}$ is valid if and only if the logical assertion $\mathbf{X \rightarrow R}$ is valid.
+We have the semi-formal interpretation of {\bf IA}:
+\begin{quotation}
+Given $\mathbf{(Pa\wedge Pg) \rightarrow R}$   then  $\mathbf{Pa \rightarrow R }$ {\bf OR} $\mathbf{Pg \rightarrow R}$   \hspace{\fill}{\bf SF}
+\end{quotation}
+Clearly the semi-formal assertion {\bf SF}  refers to three proofs in an unspecified {\bf object logic} and the remaining part of {\bf SF}, written in English is a {\bf meta logical} assertion. A key insight is that the {\bf OR} in {\bf SF} is evaluated once  for the set of all instances whereas the disjunction $\vee$ in {\bf FA} mad have a different  evaluation for each instance. 
+
+Truth tables can be used to establish the validity of meta logical assertions, i.e. semantic entailment or implication, $\vDash$ and tautology $\equiv$\footnote{Let tautology $A\equiv G$ be defined as $A\vDash G$ and $G\vDash A$}. 
+
+Looking at the discussion in the opposite direction we view {\bf IA} as an informal interpretation of he formal assertion {\bf FA}. Hence we cannot interpret $\mathbf{(Pa\rightarrow R)\vee (Pg \rightarrow R)}$  as \emph{"either Pa implies R or Pb implies R"} even though it is an obvious transliteration. This is because the \emph{"or"} in the proposed interpretation is a meta or and hence is not the same as the object level disjunction $\vee$ in the formal assertion.
+
+%\end{document}
+ 
+
+
+None of this new to mathematics. Since the 1930s mathematicians have been referring to one logic for propositions, classical logic, and another logic for problems, constructive logic. The proofs in {\bf IA} can be thought of  as ``problems" and hence need to be reasoned about using constructive logic. This is consistent with our observation that object logic conjunction  implies meta logic conjunction with constructive logic but not with classical logic. 
+
+%\end{document}
+Remember the mathematical description is  for  Classical Logic to be a logic for \emph{propositions} whereas Constructive Logic is a logic for \emph{problems}. So it may be that which meaning is to be assigned to $\vee$ should be  inferred from the nature of the operands and need not be explicitly stated. With this interpretation there is no need to either embed one logic in the other or to select one logic as a ``correct logic" against which others are to be measured. The 
+
+So one way to help students avoid  loosing confidence either in their intuitions or in mathematics is to give  them the tools to formalise the assertion {\bf IA}.
+\begin{enumerate}
+\item  To use constructive logic when reasoning about proofs and classical logic when reasoning about state
+\item the distinction between object and meta logic.
+\end{enumerate} 
+
+
+
+ 
+ 
+Classical logic can be given very attractive set theoretic and order theoretic semantics. The sets can be constructed for any classical logic term over $\top,\bot,\vee,\land, \_^c$. two terms are logically equivalent iff they are represented by the same set.
+Constructive logic  has distinct but related topological semantics (any $T^0$ topology) where propositions, predicates have open set semantics \cite{topo19,ConstructClassical}. This allows for the construction of counter examples from a wide range of topologies but, alas, does not provide an easy way to establish the truth of an assertion. By adopting the view that classical logic is a component of constructive logic and not a competitor in a winner takes all game allows for the adoption of constructive logic while retaining the retaining the ease of  classical semantics in some situations (double negation stable).
+
+Classical and constructive logic have the same natural deduction rules for $\land,\Rightarrow,\top,\bot, \forall, Nat,Bool$ After which they differ:
+\begin{description}
+\item [Classical] $\vee, \neg, \exists$ can be defined in terms to the  common operations.
+\begin{align}
+\neg \phi  \defeq & \phi \Rightarrow \bot \\
+\phi \vee \varphi \defeq & \neg(\neg \phi \land \neg \varphi) \\
+\exists a:A. \phi(a) \defeq & \neg \forall a:A . \neg \phi(a)
+\end{align}
+ This defines classical logic as a component of constructive logic and  we have an inductive proof of $\neg\neg \phi = \phi$.
+
+\item [Constructive] operators  $+$ and $\sigma $ for constructive disjunction and existential with the standard constructive natural deduction rules. The constructive disjunction and exisential are stronger than their classical versions as can be seen by:
+\begin{align}
+\phi + \varphi \Rightarrow & \phi \vee \varphi \\
+\Sigma a:A .\phi(a) \Rightarrow & \exists a:A .\phi(a)
+\end{align}
+
+In \cite{LMN13} we have:
+\begin{quotation}
+\emph{"ideological intuitionists in the tradition of Brouwer and Heyting deny the validity of the law of excluded middle when infinite domains are under discussion"}
+\end{quotation}
+
+\end{description}
+
+
+\subsection{Classical ZOL in Constructive ZOL and then  Constructive ZOL in  Constructive FOL}
+
+The first step Classical in Constructive ZOL. Look straight forward when using the double negation embedding.
+
+
+%\subsubsection{Constructive ZOL in  Constructive FOL}
+%Both logics are based on the double negation embedding of classical logic in constructive logic.
+%
+%The abstraction function $\alpha$  simply drops all quantifiers.
+%
+%The concretion function $\gamma$
+%
+%
+% \[\forall x.A(x) \vee \forall x.B(x) \rightarrow \gamma\alpha(\forall x.A(x)\vee \forall x.B(x)) = \Sigma x. (A(x) \vee B(x))\]
+%  \[ \exists x. A(x) \leftarrow \gamma \alpha(\exists x. A(x)) = \Sigma x. A(x) \]
+\subsection{What is Mathematics?}
+It is interesting to ask the question: what is mathematics? but here we will restrict our attention to the questions: \emph{what is a mathematical proof?}.
+
+In \cite{BPT00} the book ``Basic Proof Theory'' they say: %\cite{TrSc}
+\begin{quotation}
+\emph{Proof theory may be roughly divided into two parts: structural proof theory and interpretational proof theory. .. \\
+In interpretational proof theory, the tools are (often semantically motivated) syntactical translations of one formal theory into another. }
+\end{quotation}
+
+This we interpret as structural proof theory is defined by a formal theory, that is by a collection of rules for the manipulation of uninterpreted syntax. Any interpretation of the syntax is formalized by building another formal theory  where any informal interpretation of  new theory is thought to be straight forward.
+
+In any formal theory each mathematical symbol can be represented by a glass bead. Then each assertion becomes a thread or,  sequence of glass beads.  Hence logic becomes a set of rules to construct  threads that represent true assertions. The result of a mathematical proof would be an uninterpreted  thread of glass beads  Any interpretation of  what is proven must be given by a formal translation into a more semantically motivated formal theory.
+
+Before an engineer can safely  use a formal theory  they need guidance both:
+\begin{enumerate}
+\item when the theory should be applied and when it is not safe to apply it
+\item how to translate an informal statement into a formal statement, that is how the formal statements should be informally interpreted
+\end{enumerate}
+
+To a mathematician a statement is formally proven within a given theory it is not necessarily true outside of that theory. To an engineer a statement is true if it is true in the world around them. The engineer gains confidence in  mathematical truth when the theory has previously give results that conform to practice.
+
+
+Knowing only classical logic and having little guidance as to it should not be applied can lead to erroneous results that undermine confidence in mathematics.
+
+
+It is well known that Constructive logic has  all bar one of the rules of classical logic in particular  the classical law of the excluded middle is neither a rule of  constructive logic nor can be derived by applying the rules of constructive.  If we assume that the corresponding classical and constructive operators   are represented by the same glass beads then the set of  constructively valid threads of glass beads is a strict subset of the classically valid threads. This leave the question: ``\emph{are there some classically valid assertions that can nor be proven constructively?}'' 
+
+
+
+  Although an easy answer is:  ``\emph{yes of course}''  but it hides the translation between the two logics. This translation is the syntactic identity mapping  and thus has the significant weakness that it identifies constructive an classical disjunction  $\vee_{co}=\vee_{cl}$ even though, as is well known, they do not mean the same thing.  Not only is Constructive proof more demanding that Classical proof  but also Constructive disjunction is harder to establish than Classical disjunction $\vee_{co}\Rightarrow \vee_{cl} $ whereas $\vee_{cl}\not\Rightarrow\vee_{co} $.
+
+Under this syntactic mapping 
+%everything that can be proven constructively can be proven classically but 
+some classical proofs are not valid constructive proofs but the mapping is not semantics preserving hence:
+\begin{quotation}
+\emph{by  assuming  constructive conjunction means something that you know it does not , you can conclude that Constructive Logic is weaker than Classical logic.} 
+\end{quotation}
+
+
+An alternative to the syntax preserving mapping is to define a semantics preserving, \emph{double negation}, mapping from classical logic into constructive logic \cite{} With this mapping every thing that can be proven classically can also be proven constructively. Another consequence, arising from constructive disjunctions  greater discrimination than classical disjunction,  is  that  some constructive statements have no classical counterpart. 
+
+These two equally valid and well known ways to relate classical and constructive logic are of interest in and of themselves. But, it may be of less use, in practice,  to relate these logics than  to know which one to use in any given situation. 
+
+
+Knowing only classical logic and having little guidance as to it should not be applied can lead to erroneous results that undermine confidence in mathematics.
+
+
+ An important point being that defining any semantics of classical logic requires the introduction of {\bf a Universe}.  Despite its name the Universe can be any set, consequently we will refer to them as $Domains$.   Two logical domains can be related by Galios connections and Galois connections can be built upon any relation $Domain\times Domain$
+
+If we have two descriptions of  the same system where each description is given at distinct levels of detail, or different levels of abstraction,  then how do we expect these descriptions to be related?
+
+
+\subsection{ZOL and  FOL are NOT related by a Galois connection with a one sided identity}
+  There is an  injection of ZOL into FOL sentences without quantifiers but with newly named elements in the domain of discourse. But there are numerous way to extend this into an embedding of ZOL sentences into quantified FOL sentences. 
+   
+  \hspace{\fill} $P_{ZOL} \rightarrow P(a) \rightarrow \forall x. P(x)$ \hspace{\fill}new  $a$ then $\forall$I
+  
+   From the standard  FOL set theoretic semantics $\gamma_{Gen}$ is built from First Order Logic's \emph{Generalisation Rule} $P(a), \quad new \quad a\vdash \forall x. P(x)$, also known as $\forall$ introduction rule.
+  
+Once ZOL hs been embedded into FOL it is reasonable to view FOL object logic disjunction as in some cases being ZOL object logic disjunction and in other cases being ZOL meta logical or. Distinguishing  when the use of "or" in an informal statement is ZOL object logic or ZOL meta logic is hard. Thus  can easily lead to misunderstanding and miss-formalisation of informal assertions.
+  
+ 
+  
+ There are two mappings the concretion mapping, $\gamma$  of ZOL into FOL and an abstraction function $\alpha$ from FOL onto ZOL. In order for these  functions to form a Galois connection  it is necessary that either for all F $F \leftarrow \gamma_{Gen}(\alpha(F))$ or for all F $ F\rightarrow \gamma_{Gen}(\alpha(F)) $. But
+  
+   \[\forall x.A(x) \vee \forall x.B(x) \not\leftarrow \gamma_{Gen}\alpha(\forall x.A(x)\vee \forall x.B(x)) = \forall x. (A(x) \vee B(x))\]
+  \[ \exists x. A(x) \not\rightarrow \gamma_{Gen} \alpha(\exists x. A(x)) = \forall x. A(x) \]
+  
+ {\bf There can be no homomorphic Galois connection between ZOL and FOL!}  The abstraction must forget the quantifiers and when $\alpha$ only forgets the quantifiers...
+ 
+ each of $\alpha$ and $\gamma$ is defined b the other from the maximal/minimal property.
+ 
+  Changing the generalisation rule to introduce multiple  universal quantifications each  applied  to single  atomic predicates. Then $(ZOL, \alpha, \gamma,  FOL)$ constitutes a Galois connection can be seen from the following four lemmas.
+  
+% Using a \emph{Specialisation Rule}  $P(x)\vdash \exists x. P(x)$ the  functions do form a Galois connection with a one sided inverse on ZOL, the abstract model.
+% 
+  {\bf Lemma 1}   $\gamma(\alpha(P(x))) \vdash_{FOL} P(x)$ 
+Let $A$ and $B$ be elements of $Pred$.
+%\[\forall x. A(x) \vee \forall x.B(x)  \]
+\[\gamma(\alpha(\forall x.A(x)\vee B(x)) = \forall x.A(x)\vee\forall x.B(x)  \vdash_{FOL}\forall x. (A(x) \vee B(x))\]
+%\[  \forall x. A(x) = \gamma  \]
+\[ \gamma(\alpha(\exists x. A(x)) =  \forall x. A(x) \vdash_{FOL}  \exists x. A(x) \]
+
+  
+{\bf Lemma 2} if $A\vdash_{FOL} B$   then $\alpha(A)\vdash_{ZOL} \alpha(B)$
+
+The natural Deduction rules of ZOL and FOL consist of introduction and elimination rules for each operator. The ND rules of FOL are the natural deduction rules of ZOL plus the introduction and elimination rules for the two quantifiers. As all four ND Rules for the quantifiers do not change the underlying structure of the terms. Hence  dropping quantifiers from a FOL sentence builds a ZOL sentence and dropping the proof rules  produces a valid ZOL proof.\hspace{\fill} $\Box$
+ 
+ {\bf Lemma 3} if $A\vdash_{ZOL} B$   then $\gamma(A)\vdash_{FOL} \gamma(B)$
+
+The terms   $\gamma(A)$ and $\gamma(B)$ only have quantifiers at eh leaf of the parse tree. Then ZOL proof, $A\vdash_{ZOL} B$  is also a valid FOL proof, $\gamma(A)\vdash_{FOL} \gamma(B)$. \hspace{\fill} $\Box$
+
+{\bf Lemma 4}  $A =_{ZOL} \alpha(\gamma(A))$ 
+
+Obvious from definitions. \hspace{\fill} $\Box$
+
+
+
+Galois connections, like category theory  adjunctions, can be viewed as defining a weak form of equality.  What we have is that the mapping $\gamma$ from ZOL into FOL is homomorphic by definition. Hence the relation between ZOL and FOL is mathematically reasonable but is no longer based on
+  the standard set theoretic semantics of FOL. 
+
+ \section{Things of different type should not be equated }
+With Classical Logic there is the tautology, \emph{an assertion that is true in every interpretation},every world:
+\[ \neg \alpha \vee \beta \Leftrightarrow \alpha \rightarrow \beta \] 
+
+In the logical syntax both $\vee$ and $\rightarrow$ have the same type $bool\Rightarrow bool\Rightarrow bool$. Whereas in the set theoretic semantics $\cup$ has type $set\Rightarrow set\Rightarrow set$ but $\rightarrow$ has type $set\Rightarrow set\Rightarrow bool$. Adopting the set theoretic point of view this type mismatch calls into question the above equality. 
+
+ Ignoring the type issue we can interpret $\alpha \rightarrow \beta$ as an assertion that the set $\alpha$ is a subset of the set $\beta$. Hence you could be forgiven for  interpreting 
+$ \mathbf{(A\rightarrow R)\vee (G\rightarrow R)}$ as an assertion that either $A$ is a subset of $R$ or $G$ is a subset of $R$.  But that is interpreting the disjunction $\vee$ as a meta-logical connective where as it is an object logical connective
+and according to classical logic it has quite a different meaning. 
+
+
+It has been shown \cite{ConstructClassical} that constructive logic can be defined as an extension to classical logic by adding  constructive disjunction and existential quantification.
+Put another way around Classical logic is a component of, and embedded in, constructive logic. {\color{red} Can we view constructive logic as a meta logic to the embedded Classical object logic?} 
+
+
+
+
+If so \cite{ConstructClassical} defines how a fragment of Classical logic can be lifted directly into the meta logic, let $\alpha$ be atomic:
+\[ \alpha   \quad \text{if and only if} \quad \vdash \alpha \]
+\[ \alpha  \rightarrow \beta \quad \text{if and only if} \quad \alpha \vdash \beta \]
+\[ \alpha  \wedge \beta \quad \text{if and only if} \quad (\vdash \alpha) \wedge (\vdash \beta) \]
+whereas some of the object logic operators are not so easily lifted into the meta logic:
+\[ \alpha \vee  \beta \quad \text{dose not imply} \quad  \vdash \alpha \textsc{ OR } \vdash \beta \quad  \vdash \alpha \vee \vdash \beta\]
+\[ \alpha \vee  \beta \quad \text{ if and only if } \quad \neg (\neg \vdash \alpha \wedge \neg \vdash \beta ) \]
+
+Alternatively \cite[Section 5]{ConstructClassical}  using $+$ as constructive/meta disjunction we can use double negation to map object/classical disjunction into the constructive/meta logic:
+\[ \alpha \vee  \beta \quad \text{ if and only if } \quad \neg \neg (\vdash \alpha + \vdash \beta ) \]
+ 
+ 
+
+
+
+
+
+
+\section{Below is just from other STUFF }\label{sec:xintro}
+Here we view Refinement as the introduction of detail to a specification and that the reverse, the removal of detail is abstraction. We are only interested in refinement that both introduces detail and preserves the original specification. We discuss three entry points refinement:
+\begin{enumerate}
+\item refinement as expanding domain of discourse \sref{Ldd}  becomes silent outside of frame in both \sref{Href} and  \sref{DofD}
+
+\item sub-concept \sref{Cref} in Formal concept Analysis over a frame of entities and  attributes.
+\item testing refinement, \sref{Equ} built from logical equality without symmetry
+ %and is a generational of Z schema expansion
+ \end{enumerate}
+ 
+In the first part of this work programs are considered as indivisible atoms, the properties of programs is revealed by how they interact with the world around them. Finally in \sref{Prog}  more concrete notions of refinement  are defined by looking inside the programs at their  operational semantics. The abstract models in \sref{M2E} and \sref{Equ} can be applied to both transactional systems and interactive systems simply by instantiating the parameters appropriately.
+
+In \sref{Math} we review know Mathematical results about Logic and Galois connections.
+
+In \sref{M2E} we define both an  extensional semantics, a set of entities - $E$,  and an intentional semantics, a set of attributes - $A$, of predicates. The Formal Concept Analysis frame is the triple $(E,A,R)$  where an entity attribute relation $R$ formalizes the knowledge of a domain at some level of detail.  Within $R$  both concepts and subconcept   can be found.  A subconcept can be  defined to be a {\bf refinement}   pre order ,$\sqsubseteq_{Atomic}$. Each entity has no internal structure, is atomic, hence we refer to this definition of refinement as {\bf atomic refinement}. Interestingly atomic refinement is identical to both attribute addition and to entity reduction.  
+ 
+%\cite{HFCA05}
+In \cite{HFCA05} they build an  abstraction of a FCA Frame $(E,A,R)$ by constructing a relation between partitions of both $E$ and $A$ that builds an equivalent FCA Frame. What interests us here is a) to go in the other direction and start with an abstract $(E,A,R)$ and b) to add concepts  to the Frame while preserving the original concept lattice.
+
+In \sref{Equ} we look in some detail at what equality means and find that it is parametrized on set of contexts and an observation function. By dropping symmetry we have what has been referred to as {\bf testing refinement}. This is a relation between entities and not, as is the case in \sref{Pred},  between sets of entities.   Nonetheless they induce the same refinement lattice simply by mapping specifications to sets of programs that implement it. 
+
+ In \sref{Prog}  we consider the refinement of specifications into programs. This is more usually defined on the operational semantics of the programs. That is to say defined on the internal structure. By fixing  the  sets programs, entities we are interested in, the set of contexts in which they may be placed and how we observe them we have fixed a testing refinement. This can be done both for transactional programs or for interacting programs. 
+
+
+
+
+\section{The Maths bit}\label{sec:Math}
+
+Reversing the order of a pre orders $ (\mathcal{A},\leq_\mathcal{A})$ builds the \emph{duel pre order}. Hence definitions and results on pre orders  all have duel definitions and results.
+
+ A function $f:A\rightarrow B$ can be used to partition  the elements of its domain, $A$, 
+ \[ f^{-1}(b) \defeq \{ x. f(x)=b \}\]
+ \[ A_{[f]} \defeq \{ f^{-1}(b). \quad  b\in B    \}  \]
+  a \emph{fiber} of the function under $b$ is $f|_{f^{-1}(b)}$ the restriction of the function to the domain that maps to $b$.
+  
+  We use $f^{\leftarrow}$ for the domain of $f$ and $f^{\rightarrow}$ for the range.
+
+Point wise lifting of partial functions $f: A \rightarrow C$ to functions over sets $f^{\{\}}: 2^A \rightarrow 2^B$
+\[f^{\{\}} S \defeq \{f a .  a\in S \} \]
+
+
+
+\subsection{Galois}\label{sec:Gal}
+ As there are two pre orders in the definition of a Galois connection there  are four duel definitions. Here we give all these duel definitions the same name, \emph{Galois connections} but each has  been given more than one name in the literature.
+
+A Galois connections is a four tuple  $( \alpha, (\mathcal{A},\leq_\mathcal{A}), (\mathcal{C},  \leq_\mathcal{C}),\gamma)$ consisting of two  pre orders $(\mathcal{A},\leq_\mathcal{A})$ and  $(\mathcal{C},\leq_\mathcal{C})$
+and mappings between them $\alpha : \mathcal{C} \rightarrow \mathcal{A}$ and  $\gamma : \mathcal{A} \rightarrow \mathcal{C}$
+ defined by, the four rules:
+ \[   \mathcal{ X_C  \leq_\mathcal{C}  Y_C \Rightarrow \alpha(X_C) \leq_\mathcal{A} \alpha(Y_C)  \qquad 
+	 X_A  \leq_\mathcal{A}  Y_A \Rightarrow \gamma(X_A) \leq_\mathcal{C} \gamma(Y_A) } \]
+\[ \mathcal{ \gamma(\alpha(X_C))  \leq_\mathcal{C}  X_C\qquad 
+   \alpha(\gamma(X_A))   \leq_\mathcal{A}  X_A }  \]
+     
+
+These rules illustrate why the connections are of such interest in practice. 
+The first pair of rules states that the Galois mappings $\alpha$ and $\gamma$ preserve  the pre-order (e.g. logical implication in the two theories).
+
+
+The second pair of rules states that mapping from one theory to another and back returns you to a point that either you could have got to by the implication at that layer or to a point from which you could get to the starting point via implication at that layer.
+
+
+Our definition of Galois connection uses $\gamma$ and $\alpha$ as monotone functions. In the literature on Galois connections they are some times defined as we have and sometimes defined using $\gamma$ and $\alpha$ as antitone functions. These definitions are the duals of each other.
+
+Galois connections are very common and there is a bijection between the relations of ${\sf A \times C}$ and the set of Galois connections over pre orders $\supseteq_\mathcal{A}$ and  $\subseteq_\mathcal{C}$ (plus of course their dules). From each relation there is a \emph{standard construction} to build an antitone Galois connection 
+\[\gamma(A) = \{c | \forall a. (a\in A \leftarrow aRc)\} \]
+\[\alpha(C) = \{a | \forall c. (c\in C \leftarrow aRc)\} \]
+
+and from each Galois connection you can build the underlying relation \cite{}.
+
+
+
+
+
+\vspace*{5mm}{\bf Notation:} we can lift a function $f:X\rightarrow Y$ to a powerset function  $f^{\uparrow}:2^X\rightarrow 2^Y$.
+
+Galois connection, $( \alpha, (2^{\sf A},\leq_{2^{\sf A}}), (2^{\sf C},  \leq_{2^{\sf C}}),\gamma)$,  properties:
+\begin{enumerate}
+\item Each of $\gamma$ and  $\alpha$ can be defined in terms of the other. But it may be that $\alpha/\gamma$ has  both an upper Galois $\gamma/\alpha$ and a lower Galois $\gamma/\alpha$
+\item A Galois connection is a one sided inverse iff $\gamma$ is an injection iff $\alpha$ in surjective
+\item From the definitions we have  $\alpha \gamma$ is either always expanding or always contracting and can never change direction. Thus the two limits  $limit_{n\rightarrow\infty} (\alpha \gamma)^n (x)$ and $limit_{n\rightarrow\infty} (\gamma\alpha)^n (x)$ exist.
+% \alpha \gamma(x), \alpha \gamma(\alpha \gamma(x)), .. (\alpha \gamma)^n (x)$
+
+\item $\gamma \alpha \gamma = \gamma$ and  $\alpha \gamma \alpha = \alpha$. This means that: $\alpha(c) \in A_{\gamma,c}$  
+\end{enumerate}
+
+\subsection{Logic}
+\emph{The language of first-order logic is completely formal, so that it can be mechanically determined whether a given expression is well formed.  \ldots \\
+As with all formal languages, the nature of the symbols themselves is outside the scope of formal logic}
+
+
+\emph {The non-logical symbols represent predicates (relations), functions and constants on the domain of discourse. It used to be standard practice to use a fixed, infinite set of non-logical symbols for all purposes. A more recent practice is to use different non-logical symbols according to the application one has in mind. Therefore, it has become necessary to name the set of all non-logical symbols used in a particular application. This choice is made via a signature}
+
+\emph{An interpretation (or model) of a first-order formula specifies what each predicate means, and the entities that can instantiate the variables. These entities form the domain of discourse or universe, which is usually required to be a nonempty set.}
+
+
+In First order logic predicates are a mapping from a domain of discourse to $Bool=\{true,false\}$. The semantics of the predicate can be given by the subset of the domain for which the predicate maps to $true$.
+Predicates in first order logic are ambiguous  until the domain of discourse, \DofD  has been defined. 
+
+
+Functions are mappings from the domain of discourse to the domain of discourse. As functions can be defined by sets of pairs they can  be defined using predicates with two parameters. 
+
+
+\subsection{Logic with implicit domain of discourse}
+
+The domain of discourse need not be explicitly given. Whenever a logical assertion contains named elements these elements are implicitly assumed to be in the domain of discourse. Hence implicit domains of discourse can be thought of as being the entire \emph{Universe}. 
+ We will show that being explicit about the domain of discourse in more flexible in as much as you can interpret logics with an explicit domain   in such a way that they behave just like logics with an implicit domain.
+
+
+\subsection{Logic with an explicit domain of discourse}\label{sec:Ldd}
+
+
+
+  In this section we will explicitly give the \DofD of any logic we use. It needs to be noted that the same predicate with different \DofD may have different set theoretic semantics.
+
+
+First order Logic $L$ has a set of rules over $( \DofD_L, Pred_L)$   names may be chosen from $\DofD_L$ and variables may range over $\DofD_L$. The $Theory_L$ of the logic is taken to be the well formed sentences along with the the pre-order defined by logical implication $\Rightarrow_L$. 
+
+
+In the next two examples we consider two versions of the same First Order Logic (they have the same rules)  but  over different domains of discourse $L\defeq (\DofD_L,\subseteq )$  whereas  $L'\defeq (\DofD_{L'},\subseteq)$. 
+The relation between two logics is given by a Galois connection between them. Here we are only interested in the relation between logics where one is an extension, upto isomorphism, of the other. That is to say we are interested in the case where their is an injection $inj$ from one domain, $\DofD_L$,  into the other $\DofD_{L'}$. 
+With these Galois connections we can view the $L$ logic an being an abstract logic, the $L'$ logic a concrete logic and the step from $L$ to $L'$ as a refinement.
+
+%Note $inj^{\{\}}$ is also an injection.
+
+  The elements not in the range of the injection will be referred to as the {\sf new} elements ${\sf new} \defeq \DofD_{L'} - inj^{\rightarrow}$
+
+As the {\sf new} elements are not in the domain of discourse of $L$ the logic has nothing to say about them. In particular no $L$ predicate is  $true$ nor is any $L$ predicate $false$ for any {\sf new} value.
+
+\subsubsection{Frozen refinement Example 1:} 
+ 
+
+\myfig{\tikzfig{DofD3}}{Example 1: $\gamma$ lower adjoint to $\alpha$} {fig:DofD}
+
+
+The abstraction $\alpha$ is the lifting of the element wise partial function that forgets all the {\sf new} elements  
+
+\[\alpha Y \defeq \{x. y\in Y \wedge (y,x)\in inj\}\].  
+
+
+The concretion $\gamma$ is the set lifting of an injection, $inj$ 
+
+\[\gamma \defeq inj^{\{\}}\]
+
+
+
+
+
+As $c$ is not an element of $\DofD_L$  we know that  $C(c)$ is not well defined.  Thus it  is no more false,  $C(c') = false$, than it is true, $C(c') = true$. 
+
+
+
+
+Frozen refinement steps interpret the abstract predicate in the same way as predicates in a logic with implicit domains. If name $c$ is not mentioned then for any predicate $P$ we assume $P c = false$.
+
+Using the Fixed refinement  is the  design decision $c\in {\sf new} \rightarrow P c = false$.
+
+ 
+\subsubsection{Flexible refinement Example 2:} 
+\myfig{\tikzfig{DofD4}}{Example 2: $\gamma$ upper adjoint to $\alpha$} {fig:DofD2}
+
+
+The abstraction mapping in this example is the same as that from Example 1, 
+\[\alpha X \defeq \{y. x\in X \wedge (y,x)\in inj\}\]
+
+The concretion $\gamma$ is different in that all {\sf new} elements appear in all the sets $\gamma$ maps to.
+\[\gamma Y \defeq \{x. y\in Y\wedge  (x,y)\in inj \}\cup {\sf new}\]
+
+
+Using the Flexible  refinement  is the  design decision $c\in {\sf new} \rightarrow P c = true$.
+
+\subsubsection{Stepwise refinement}
+Taking the view that complex systems are initially specified with only a partial understanding of the system. Hence the domain of discourse is limited $L$  and only later, as  understanding is improved, does the domain expand $L'$. Ideally we want nothing of the initial specification to be lost when the domain of discourse is expanded. This is certainly  achieved with both the Frozen and Flexible refinements we have outlined.
+
+
+
+
+
+\section{Mind the gap - between Mathematics and Engineering} \label{sec:M2E}
+
+It is interesting to ask the question: what is mathematics? but here we will restrict our attention to the questions: \emph{what is a mathematical proof?}.
+
+In \cite{BPT00} the book ``Basic Proof Theory'' they say:
+\begin{quotation}
+\emph{Proof theory may be roughly divided into two parts: structural proof theory and interpretational proof theory. .. \\
+In interpretational proof theory, the tools are (often semantically motivated) syntactical translations of one formal theory into another. }
+\end{quotation}
+
+This we interpret as structural proof theory is defined by a formal theory, that is by a collection of rules for the manipulation of uninterpreted syntax. Any interpretation of the syntax is formalized by building another formal theory  where any informal interpretation of  new theory is thought to be straight forward.
+
+In any formal theory the mathematical symbols are meaningless. Thus each can be represented by a glass bead. Each formal assertion becomes a well formed thread or,  sequence of glass beads and the rules of what is well formed must be explicitly stated.  Logic becomes a set of rules to construct  one  formal assertion from a set of smaller formal assertions. The result of a mathematical proof is a formal assertion or an uninterpreted  sequence of glass beads. Engineers are not directly interested in  sequences of glass beads. They are only interested in the interpretation of these formal assertions.  Any interpretation of  what is proven can be given by a formal translation into a more semantically motivated formal theory but, unavoidably, there is always a gap between formal assertions and the interests of an engineer.
+
+Before an engineer can safely  use a formal theory  they need guidance both:
+\begin{enumerate}
+\item when the theory should be applied and when it is not safe to apply it
+\item how to translate an informal statement into a formal statement, that is how the formal statements should be informally interpreted
+\end{enumerate}
+
+To a mathematician a statement is formally proven within a given theory it is not necessarily true outside of that theory. To an engineer a statement is true if it is true in the world around them. The engineer gains confidence in  mathematical truth when the theory has previously give results that conform to practice.
+
+
+\subsection{What does a predicate mean?} \label{sec:Pred}
+
+The meaning of a predicate can, extensionally  be defined as the set of {\bf entities} that satisfy the predicate. But a richer semantics can be given to predicates that hopefully better explains how engineers might actually think. If the only meaning given to the predicate \emph{domestic cat} is a set then when I first arrive at you house you might quite reasonably run to the door to reassure me that the animal in the kitchen was indeed just a domestic cat. As having never seen you pet I could not be expected to know if it was a domestic cat or a saber-tooth tiger.
+
+
+But the meaning of a predicate can intentionally be defined as the set of {\bf attributes}, such as {\it ``has a tail"} and {\it ``does not have long teeth"}, that characterize the predicate, ${\sf Cat}_A = \{ catAtt1,catAtt2,\ldots\}$. That is the extensional semantics of predicate {\sf Cat} is $ {\sf Cat}_E$ the set of entities that are cats and the intentional semantics of {\sf Cat} is the set of attributes of a cat.
+\[{\sf Cat}_E= \{ e | \forall_{ a\in {\sf Cat}_A } a(e) \} \]
+
+
+The intentional and extensional semantics have a natural relation:
+\begin{quotation} \emph{each entity in the extensional semantics satisfies all the  attributes in the intentional semantics} and \emph{the set of all entities that satisfy all the attributes in the  intentional semantics is the extensional semantics} \end{quotation}. 
+\[{\sf Cat}_R = \{ (e,a)  | e\in {\sf Cat}_E \land a\in {\sf Cat}_A \land a(e)= true  \} \]
+
+\subsection{Concept refinement} \label{sec:Cref}
+
+ Formal Concept Analysis is based on a frame $F$ the triple $(En_F, At_F, Rl_F)$ consisting of a set of entities $En_F$, a set of  attributes $At_F$ and an entity attribute relation $Rl_F$.  A formal concept $C$ is a pair $(En_C,At_C)$  consisting of a set of entities $En_C$ and a set of  attributes $At_C$ so that all entities  in $En_C$ have all the attributes in $At_C$ and any entity that has all  the attributes in $At$ is in $En_C$.  In any frame when  one concept has a subset of entities  $En_C \subseteq En_A$ then the concept $C$ is a subconcept of $A$.
+
+Fix the three components a set of entities, a set of attributes, and an entity attribute relation then not all sets of entities nor all sets of attributes can be considered as a concept. 
+
+It is quite natural to view sub concepts as refinements of the initial concept. For example the concept {\sf Cat} as a refinement of {\sf Mammal} and {\sf Mammal} as a refinement of {\sf Animal}. This being based on the set {\sf Cat} entities being a subset of the set of {\sf Mammal} entities, etc. This being equivalent to the predicate {\sf Cat} implying {\sf Mammal}.
+$$
+{\sf A} \sqsubseteq_{Atomic} {\sf  C} \triangleq   {\sf En_C} \subseteq  {\sf  En_A}
+$$
+This defines the idea of refinement of concepts with in a single frame.
+$$
+{\sf En_C} \subseteq  {\sf  En_A} \iff   {\sf At_C} \supseteq  {\sf  At_A}
+$$
+the mappings between entities and attributes defined by FCA are \emph{order reversing} that is are antitone. The attributes are used to distinguish entities of a different type and group together entities of the same type. Similarly the entities are used to distinguish attributes that partition the entities in different ways and group together attributes that are redundant. 
+
+
+In \cite{HFCA05} a hierarchical decomposition of a FCA Domain ${\sf En_C}$ is achieved by  partitioning the relation using  equivalence classes. Given  a FCA Domain :
+
+\myfig{
+\begin{tabular} { |c | |c | c| c| c| c| c| c|c| c| c| c|c|}
+  \hline			
+   & \sa{a} & \sa{b} & \sa{c}    & \sa{d} & \sa{e} & \sa{f} & \sa{g} & \sa{h} &\sa{i} & \sa{j} & \sa{k} & \sa{l}\\ \hline   
+  1 & 1 & 1 & 0  & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 &  1\\ \hline  
+  2 & 1 & 1 & 0  & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 &  1\\ \hline  
+  3 & 1 & 1 & 0  & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 &  1\\ \hline  
+  4 & 0 & 0  & 1 & 1 & 1 & 1 & 0 & 0& 0 & 1 & 1 & 1\\  \hline  
+  5 & 0 & 0  & 1 & 1 & 1 & 1 & 0 & 0& 0 & 1 & 1 & 1\\  \hline  
+ 6 &0 & 0& 0 & 0 & 0 & 0& 1 & 1  & 1 & 1 & 1 & 1 \\  \hline  
+  7 &0 & 0& 0 & 0 & 0 & 0& 1 & 1  & 1 & 1 & 1 & 1 \\  \hline  
+  8 &0 & 0 & 1 & 1  & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1\\  \hline  
+  9 &0 & 0 & 1 & 1  & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1\\ \hline  
+  10 & 1 & 1  & 1 & 1 & 1 & 1 & 1  & 1 & 1 & 1 & 1 & 1\\  \hline  
+ \end{tabular}} {Frame One}{fig:fr1}
+ 
+ 
+we can equate the entities that satisfy the same attributes and similarly  identify the attributes that are satisfied by the same set of entities.
+By selecting a single element from each equivalence class  we have  the formal context frame \fref{fr2}.
+ 
+\myfig{
+\begin{tabular} { |c | |c | c| c| c| c| c|c| c| c| }
+  \hline			
+   & \sa{{\bf a}} & \sa{{\bf c}} & \sa{{\bf e}} & \sa{{\bf g}} & \sa{{\bf j}} & \sa{{\bf l}}\\ \hline   
+  {\bf 1} & 1  & 0  & 1  & 0  & 0 &  1\\ \hline  
+  {\bf 4} & 0   & 1 & 1   & 0 &  1 & 1\\  \hline  
+ {\bf 6} &0 &  0 & 0 &  1 & 1 & 1  \\  \hline  
+  {\bf 8} &0 &  1 & 1  & 1 &  1 & 1  \\  \hline  
+  {\bf 10} & 1   & 1 & 1 & 1 &  1  & 1  \\  \hline  
+ \end{tabular} \hspace{5mm}\tikzfig{concept} } {Frame Two $F_{Two}$ and Concept latice}{fig:fr2}
+
+ %\myfig{\tikzfig{concept}} {Concept diagram for Frame two \fref{fr2} }{fig:concept1}
+
+
+ 
+  
+
+
+The concept lattice  of \fref{fr1} are isomorphic to the concept lattice  in \fref{fr2} all that has changed is that redundant entities and attributes have been removed. 
+  
+ \subsection{Hierarchical Refinement or Frame Refinement}\label{sec:Href}
+ The refinement of concepts defines the concept lattice of the concepts with in a FCA Frame.   Both Frame One and Two have the same concepts whereas frame Three may contain more but must contain the concepts of One and Two. Too distinguish between frames we will, when helpful, add the frame name as a super script.
+
+  
+ When refining the FCA Frame we are interested in a  hierarchical relationship that expands the concept lattice while, in some sense, preserving the original concept lattice.
+
+\myfig{
+\begin{tabular} { |c | |c | c| c| c| c| c| c|c| }
+  \hline			
+   & \sa{\bf a} & \sa{\bf c} & \sa{\bf e}    & \sa{\bf g} & \shl   h & \sa{\bf j} & \sa{\bf l} & \shd p  \\ \hline  \hline 
+  {\bf  1} & 1 & 0 & 1  & 0 & \shl 0 & 0 & 1 &   \shd  0   \\ \hline 
+ \shd  2 & \shd 1 & \shd 0 & \shd 1  & \shd 0 & \shd 0 & \shd 0 & \shd  1 &   \shd 1  \\ \hline  
+  {\bf 4} & 0 & 1  & 1 & 0 & \shl 0 & 1 & 1 & \shd  0   \\  \hline  
+  \shl  5 & \shl 0 & \shl 1  & \shl 1 & \shl 0 & \shl 1 & \shl 1 & \shl 1 & \shd 0    \\  \hline  
+  {\bf 6} &0 & 0& 0 & 1 & \shl  1 &1 & 1 & \shd 0   \\  \hline    
+  {\bf 8} &0 & 1 & 1 & 1  & \shl 1 & 1 & 1  & \shd 0  \\  \hline  
+ {\bf 10} & 1 & 1  & 1 & 1 & \shl 1 & 1 &  1 & \shd 0   \\  \hline  
+ 
+ \shll  21 & \shll 0 & \shll  0 & \shll  0  & \shll  0 
+  & \shl  0 &  \shll  0 & \shll 0 & \shd  1   \\ \hline   
+ \end{tabular}\tikzfig{concept2}}{Frame Three $F_{Two}\sqsubseteq F_{Three} $ and Concept latice  after Step One} {fig:fr3}
+ 
+No mater what values are given for any of the shaded cells in \fref{fr3} there is an obvious injection $\gamma$  of \fref{fr2} into \fref{fr3}. Using this injection the concepts of \fref{fr2} are injected into the concepts of  \fref{fr3}.  
+
+ 
+ %\myfig{\tikzfig{concept2}}{Concept latice  after Step One} {fig:concept2}
+
+\myfig{\tikzfig{concept3}}{Concept latice  after Step Two} {fig:concept3}
+
+Starting with \fref{fr2} and building \fref{fr3} one step at a time:
+\begin{description}
+\item[ Step One] 
+ adding entity 2 on its own  only changes the  concept lattice is by adding 2 to any set containing 1. Adding attribute p on its own introduces  the new concept $(\{\},\{a,c,e,g,l,p\})$.  Adding both entity 2 and attribute $p$ so that only entity 2 satisfies $p$ introduces a three new concept $(\{2\},\{a,e,l,p\})$, $(\{\},\{a,c,e,g,l,p\})$  and $(\{1,2,4,6,8,10\},\{\})$ see \fref{fr3}.
+
+\item[Step Two] either adding  entity 5 on its own or attribute h will preserve the concept lattice, the 5 is added where ever a 4 is and the h is added where ever  the g is. Adding them both the h attribute differentiates the 4 and 5 entities. See \fref{concept3}
+
+\item [Step Three]  Adding entity 21 will introduce the concept $(\{2,21\},\{p\})$ to the latice in \fref{concept3}
+\end{description}
+
+The concretion function $\gamma$ between Frame Two and Frame Three is the obvious injection but a realistic  abstraction function $\alpha$ is slightly less obvious
+
+\[ \alpha_{En}^{Three \rightarrow Two}(x) = if (x\in \gamma^{\rightarrow}) \quad then \quad x\quad  else \quad {\bf 10} \]
+\[ \alpha_{At}^{Three\rightarrow Two}(x) = if (x\in \gamma^{\rightarrow}) \quad then \quad x\quad  else \quad {\bf l} \]
+\[\alpha^{Three\rightarrow Two} = (\alpha_{En}^{Three \rightarrow Two},\alpha_{At}^{Three \rightarrow Two}) \]
+
+
+The bottom elements have 1s in all cells - {\bf 10} and {\bf l} are bottom elements of Frame Two but Frame Three has no such bottom elements. Consequently generalising this abstraction function to map to Frame Three can not be done until bottom elements are added. 
+
+In any FCA Frame $F$ the concept with every entity and no attributes is \emph{True} in the frame $True_{F}$, and the concept with empty entities and all attributes is $False_{F}$.
+
+
+
+\subsection{Building a FCA frame for stepwise development of code}
+In the next section we define an abstract notion of program testing and refinement.  FCA for stepwise development of programs can use:
+\begin{description}
+\item[Programs] are entities
+\item[Specifications] are concepts, sets of programs
+\item[Test results] are attributes
+\end{description}
+
+
+
+
+
+\section{One plus one equals two and other lies we tell small children} \label{sec:Equ}
+
+Although the statement $1+1=2$ is undoubtedly true it is also true that $1+1$ is not the same as $2$. As software engineers we know that $1+1$ takes longer to compute than $2$ and it takes more memory to compute. 
+
+\noindent\hspace{\fill}
+\begin{tabular} { |c | |c |  }
+  \hline			
+   & \sa{Evaluates to 2}  \\ \hline   
+  1+1 & 1    \\ \hline  
+  2 & 1       \\  \hline  
+ \end{tabular} \hspace{\fill}
+\begin{tabular} { |c | |c | c| }
+  \hline			
+   & \sa{Evaluates to 2} & \sa{1 clock cycle} \\ \hline   
+  1+1 & 1  & 0  \\ \hline  
+  2 & 1   & 1    \\  \hline  
+ 1+2 &0 &  0  \\  \hline  
+  3 &0 &  1  \\  \hline  
+ \end{tabular}\hspace{\fill}
+
+\noindent We are very used to partitioning arithmetic terms according to what they evaluate to. This requires that we ignore the time it take to perform the evaluation, attribute. Adding this attribute refines how we view arithmetic terms and allows us to distinguish $1+1$ from $2$
+
+
+In fact in mathematics it is only interesting  to say two things are equal when they are not or at least when they can be distinguished by exercising greater scrutiny.  To  decide how to interpret this flexible notion of equality  we take a closer look at  how equality has been defined in mathematical logic.
+
+We define   an {\bf Equality} to be   more than just an equivalence relation over a set of entities. It has  three distinct features:
+\begin{description}
+\item [Equivalence Relation] is
+   \begin{enumerate}
+     \item reflexive $x=x$
+     \item symmetric  if $x=y$ then $y=x$
+     \item transitive if $x=y$ and $y=z$ then $x=z$
+   \end{enumerate}
+ \item [Substitutable] if $f$ is a valid context, $f\in \Xi$, and $x=y$ then $f(x) = f(y)$
+ \item [Indistinguishable] Equals can not be distinguished.  Hence we need  $Obs$, a function from entities to sets  $O$ of  observations.   What you can observe of Equals is the same.  If $Obs(x) = Obs(y)$ then $x= y$.
+\end{description}
+
+
+Unfortunately the three features are not always made explicit and some times equalities are defined that do not satisfy the substitutability  and those that  are substitutable are referred to as a congruence. 
+A consequence of equals being  {\bf Indistinguishable} and {\bf Substitutable}  is that equality is not fixed but contains two parameters $\Xi$ and $Obs$.  Thus equality is more accurately written $=_{(\Xi,Obs)}$ as the  exact nature of an equality depends upon how these parameters are instantiated. 
+
+Consequently stating that we beleive the equality $1+1=2$ is true informs us that we are not observing how long each expression will take to evaluate nor how much memory is used in the evaluation. Which, of course, is a convention we all knew already. If the this equality  had been given with the parameters that define it there would be no confusion.
+
+How to observer computer systems has been formalised, in the literature, as a testing semantics. Testing semantics with different definitions of observation and contexts give different equalities. By formalising observation we make it explicit and introduce the ability to define mappings between systems that can be observed differently.
+
+As software engineers we wish to reason both about  initial and abstract specification and about the final implementation. How an abstract specification might be observed is likely to be very different from how an implementation might be observed.
+
+\subsection{Entity refinement}\label{sec:Eref}
+ Although an implementation may not be equal to a specification when both implementation and specification are viewed as logical assertions then then the implementation should imply the specification.  Removing the symmetry property from an equivalence relation and replacing set equality with subset you have a  \emph{Refinement preorder} that is again parametrised on $\Xi$ and $Obs$:
+
+
+\begin{description}
+\item [Preorder] is
+   \begin{enumerate}
+     \item reflexive $x\leq x$
+      \item transitive if $x\leq y$ and $y\leq z$ then $x\leq z$
+   \end{enumerate}
+ \item [Monotonicity] if $x\leq y$ then $f(x) \leq  f(y)$ where $f\in \Xi$ and $\Xi$ is the set of contexts in which the entities can be placed
+ \item [ Indistinguishable]
+ The  refined {\bf C} has more properties than the abstract {\bf A}.  Hence given $Obs$  we have:  $Obs(A) \supseteq  Obs(C)$ if and only if $A\leq C$.
+\end{description}
+It is important to note the key role played by \emph{Observation}. Anything we can observe of $C$, the implementation it was expectable to have  observed of $A$, the specification.
+
+Combining monotonicity and indistinguishable  we have:
+
+\begin{mypdef}\label{def:ref} 
+Let $\Xi$ be a set of contexts each of which the entities {\sf A} and {\sf C} can communicate privately with, and let $Obs$ be a function which returns a set of traces, each trace being what a user observes of an execution. Then\footnote{$[{\sf E}]_f$ denotes the execution of entity {\sf E} in context $f$.}
+
+$$
+{\sf A} \sqsubseteq_{\Xi, Obs} {\sf  C} \triangleq   \forall {f \in \Xi }.Obs([{\sf C}]_f) \subseteq  Obs([{\sf  A}]_f)
+$$
+\end{mypdef} 
+
+The semantics of any system $S$ can be given by the relation between contexts and observations $Sem(S) = \Xi\times Obs^{\rightarrow}$. it can easily be seen that:
+$$
+{\sf A} \sqsubseteq_{\Xi, Obs} {\sf  C} =   Sem(C) \subseteq Sem(C)).
+$$
+
+This definition of entity refinement is between two entities whereas the definition of 
+
+Given a refinement pre-order $\sqsubseteq_{\Xi,Obs}$ their is a natural  mapping  $Gtl$ that maps an  entity to the set of entities that are larger than or equal to it. 
+$$ Gtl(x) \defeq \{e . x \sqsubseteq_{\Xi,Obs} e \}$$
+Intuitively the $Gtl$ mapping takes an entity and returns all the entities that it can be refined into. Clearly all these elements can satisfy the tests it can satisfy. With out changing the pre order  the meaning of a specification is the set programs that implements it.
+We need to establish that for all $x$ the set $ Gtl(x)$ is a concept as outlined in \sref{Pred}.
+
+
+Using such a mapping we have:
+$${\sf A}\sqsubseteq_{\Xi,Obs}{\sf  C} \Rightarrow   Gtl({\sf C})\subseteq Gtl({\sf A})\ $$
+From the definition of contexts and an observation function we can view tests as attributes. Further  from refinement as superset of attributes, behaviours, we can relate the  refinement of concepts, sets of entities to the refinement of entities them selves.
+$${\sf A}\sqsubseteq_{\Xi,Obs}{\sf  C} \Rightarrow   Gtl({\sf A})\sqsubseteq_{Atomic} Gtl({\sf C})\ $$
+
+This abstract definition of refinement can be instantiated to transactional program refinement, abstract data refinement and process refinement (both CSP and IOA style processes). Hence this abstract definition of refinementcan be used  as a bridge between these distinct systems.
+
+\subsection{Logic and the refinement of the Domain of discourse}\label{sec:DofD}
+
+
+ To model the stepwise refinement of programs we are interested in domain refinement where the abstract domain in injected into the concrete domain. A refinement step can add new contexts and new observations but must still allow the initial observations of the initial programs.
+
+A universal set or \emph{Domain of Discourse}, must be defined  so that the quantified  variables in statements $\forall x. P(x)$ and $\exists x. P(x)$ range over this domain. Without  a domain being defined the quantified statements are ambiguous.
+
+
+
+\section{Refinement of programs}\label{sec:Prog}
+Programs, and specifications, are not treated as atomic entities they are given internal structure. In particular both can be given an operational semantics. A common definition of refinement from abstract specification to more concrete implementation is defined on the operational semantics. In addition  programs can be given a testing semantics in the form of \sref{Equ} this defines a relation between program refinement and the refinement of concepts  of \sref{Pred}.
+
+
+
+
+\subsection{Transactional Systems}\label{sec:tran} Programs that have variables and start with, $Eval$ some evaluation of these variables and if they terminate they terminate  with another evaluation $Eval'$. Specifications can be non deterministic hence need to be  modelled as a relation and not as a function. Such specifications can be given a testing semantics by instantiating  $\Xi$ with  $Eval$  and $Obs$ with $Eval \times Eval'_{\bot}$
+
+  Specifications are given by predicates. Remember \sref{Math} all predicates are until the \emph{Domain of discourse} is defined, even though the domain is frequently left implicit.
+
+\[ Spec \defeq \llbracket Pred, Domain \rrbracket \]
+
+
+\subsubsection{Example} compute the sum of the first $n$ integers in array $ar$
+
+\begin{description}
+\item[Initial Specification]  The initial domain of discourse used by logic $I$ does not include errors:  
+\[\llbracket \Sigma^{i=1}_{i=n} ar[i] \geq_{Nat} 2an[0], Nat\rrbracket \]
+
+\item[Refinement 1]  The initial specification is given using a logic with an explicitly defined domain thereby giving the development  flexibility illustrated in \sref{Ldd}.
+
+
+The logic used to define the refined specification, $Ref1$ is built from the logic $I$ by replacing the domain of discourse $Nat$ with one that also contains  Errors $\bot$ and using the relation that gives the Flexible  refinement see \sref{Ldd}.  The choice between Flexible or Fixed  fixes $\gamma$ and  is a design decision that should be recorded for future reference.  
+This replacement is an expansion upto isomorphism of the theory over  $Nat$ into  a theory over $Nat\cup\{\bot\}$ 
+
+\[\llbracket (\gamma (\Sigma^{i=1}_{i=n} ar[i] \geq_{Nat} 2ar[1])) , (Nat\cup \{\bot\})\rrbracket \]
+
+%\[\llbracket \Sigma^{i=1}_{i=n} ar[i] \geq_I 2ar[1], (Nat\cup \{\bot\})\rrbracket \]
+
+
+
+\item[Refinement 2]  Correctly report out of bound errors for  an array of size $|ar|$.
+\[\Sigma^{i=1}_{i=n} ar[i] \geq_{Nat\cup\{\bot\}} 2ar[1] =  if (n< |ar|) \; then  \; \Sigma^{i=1}_{i=n} ar[i] \geq_{Nat} 2ar[1] \; else \; \bot \]
+
+The effect of expanding the domain of discourse in {\sf Refinement 1} is to increases the non determinism whereas This refinement step simply reduces the non-determinism to arrive at the definition you might have reasonably expected. It should be noted that the behaviour given by the 
+Initial specification has been preserved only in as much that domain extension can not redefine the  $Nat$ value computed by $\Sigma^{i=1}_{i=n} ar[i]$. 
+
+\end{description}
+
+
+f you chose to interpret the specification in {\sf Initial} as defining the relational semantics to be, implicitly, over the entire Universe then this is not a refinement at all. Naturally as the method we propose allows the domain of discourse  to be explicitly given  then if that was what was intended it could have been specified that way.  
+
+
+the reduction of non determinism in {\sf Refinement 2} is quite standard.
+
+
+Quantified predicates are ambiguous with out a definition of the domain being used. When the domain is thought to be fixed it is frequently left implicit. Here because the domain is changing with the development of the program it is best to explicitly record the domains and the $\gamma$ functions between them.
+
+
+
+\subsection{Interacting programs and process calculi} \label{sec:pc}
+Instantiate $\Xi: Proc_{[\_]}$  and $Obs : Proc\rightarrow 2^{Act^*}$
+
+
+Abstraction of events can be achieved in two quite distinct ways:  mapping observable events to either $\tau$ events or $\delta$ events.
+
+a network protocol layer being a specification to an underlying layer that implements it. For example implementing handshake communication on a layer providing broadcast communication as primitive
+
+$\alpha$, $\gamma$ mappings relating one process to another not one event to another. Lower layer that has loops on start state will allow lower layer to observe  $\pi$ sets and this is not permitted on the higher layer.
+
+The mapping from event based programs to testing semantics of 
+
+
+\subsection{Problems and solutions for both transactional and interactive systems}
+
+\subsubsection{Expanding the Domain to include Error handling attributes and entities}
+It is not unusual to find a specification, even formal specifications, that includes the use of integers or real numbers even though it is well know that computers are finite state machines and can not model either. These specifications are quite intelligible. Although adopting an inflexible interpretation of the specification  would mean that extending them to more accurately model the more realistic bounded versions of integers and real numbers might be thought of as breaking the original specification.
+
+A natural way to formally extend such specifications is to interpret any specification as being formulated  within  a \emph{Domain of discourse} weather given explicitly or implicitly.
+
+
+
+
+
+\subsubsection{introduction of real time behaviour}
+ Each observation is recorded with the time at which it was made.  Using time variables time intervals can be encoded.
+ 
+ 
+\subsubsection{introduction of probabilistic behaviour}  For non deterministic  process observation records the set of observations.  For deterministic probabilistic process observation records the multi-set of observations, he probabilities can be computed from the multi-sets. For specifications that may be both non deterministic and probabilistic observation records sets of multi-sets.  
+
+Th abstract non probabilistic semantics, $A$,  is of type $\Xi \times Att$ probabilistic semantics is of type  $\Xi \times (Att\times Real_{Var})$. The abstraction function $\alpha$ is simply the forgetful function and the concretion function maps each pair $(c,o)$ to $(c,(o,x_p))$ where $x_p$ is a new probability variable.
+\[ \gamma\circ\alpha = id_A\]
+
+
+\section{Tool architecture }
+
+Isabelle/HOL is designed for machine checked mathematics.  Isabelle Pure is the meta logic in which  HOL, a simply typed higher order object logic is defined.The definition of explicit domains of discourse becomes the definition of types, domain refinement becomes the definition of super types.  Ideally Logic with an  explicit domain of discourse would be encoded  directly on Pure or as an extension to HOL not sure how to do this!
+
+ \begin{description}
+ \item [deep embedding] - syntax tree as datatype access to term structure and variables in an expression good for reasoning about language properties not so good  for using language to reason about a program (used in Concrete )
+ \item [shallow embedding] - implicit syntax tree.  Lack of  access to variables can cause problems!
+ \begin{enumerate}
+ \item fix state space
+ \item programs as pre - post predicates 
+ \end{enumerate}
+ \end{description}
+ 
+ Using the shallow embedding with a definition of Hoare triples the Hoare Logic axioms can be derived.
+  
+\subsubsection{Unifying Semantic Foundations for Automated Verification Tools in Isabelle/UTP}
+UTP is encoded as an extension to HOL and is a shallow embedding but  given access to variables - state  modelled by Lenses $(S,V,get:S\leftarrow V, put:S\leftarrow V \leftarrow S)$ where $S$ is the state and $V$ the view (observable sub-state). Lenses are an abstraction of variables and are given an Axiomatic definition. Further properties such as independence are also give an axiomatic definition put another way a well-defied predicate is given as a sanity check. A consequence of these axioms many algebraic properties are established 
+
+
+
+Lenses can be defined for simple variables, int,nat,.. of for the components of records and Cartesian products.
+Lens combinators allow for the definition of lenses for structured data. 
+ Lenses can be chained together if $S_X=V_Y$
+
+
+
+UTP then defines expression constructors (rather than using syntax translations).Expressions become functions on the observation space. Then builds a relational algebra upon which an operational semantics and Hoare Logic are defined.
+To model more complex systems, timed, interactive, ... the {\bf observational space is extended} such semantic extensions define a   UTP model or semantics. Each UTP theory is used to establish its algebraic properties  that are subsequently used to verify programs.
+
+It may be possible to rephrase the relational semantics of transactional programs  to being tests, relations between context to observation sequences. Then to {\bf extend the tests} to model the more complex systems and establish their algebraic properties.
+
+One: define the testing semantics and establish its algebraic semantics. 
+
+Two: establish a Galois mapping between a testing semantics and a UPT semantics. 
+
+
+UTP -  pre post observations then additional observations
+
+UTT - contexts + observations
+
+Maybe the observation space is our domain of discourse and we just need to {\bf define constructors for the mapping between two observation spaces!}
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+\section{Semantics}
+
+
+
+
+
+
+
+
+
+
+
+
+
+Give this proof what is wrong with our informal argument?
+Surprisingly    {\bf nothing} is wrong with this argument! 
+
+Given that we were going to use CFOL the mistake was introduced   before we even considered the particular statement and certainly before the informal argument had been started. 
+
+If we are to use CFOL then  we need to reason about \emph{truth} not \emph{proof}.  The semantics of CFOL is a truth semantics. It is IFOL that has a \emph{proof} semantics and indeed the original implication is false in IFOL just as our informal argument led us to believe.
+
+This illustrates how important it is to select the correct semantics  and that an apparently innocent change to the semantics can have disastrous effects. Worse still by considering the formal arguments alone such mistakes can not be found. 
+
+%$\exists x. P(x) \rightarrow R$ has as proof a function that given a proof of   $\exists x.P(x)$ (which is a pair (v,q) where v is a value for x and q   is a proof that P(v) holds) can construct a proof of R
+
+%$\exists x. (P(x) \rightarrow  R)$ has a proof a pair (w,p) where w is a value for   x  and p is a function that given a proof of P(w) constructs a proof  of R
+
+
+\subsection{Example}\label{sec:ex}
+
+By reasoning about what can be proved we are going to offer a rigorous but informal argument  about the validity of a formal logical statement.
+
+$(\forall x. P(x))  \rightarrow R$ implies $\exists x.  (P(x)\rightarrow R)$  \hspace{\fill}{\bf FS}
+
+
+to decide if this is a valid statement we build  the following informal argument.
+
+
+{\bf Informal Argument:} The assumption is that  from a proof of $P(x)$  for all $x$ we can construct a proof of  $R$.  But this dose not mean that we for some $x$, say $w$,  we can expect to to construct a proof of $R$ from a proof of $P(w)$ alone. As clearly a proof of  $P(w)$ dose no imply that a proof of $P(x)$  for all $x$ can be constructed.
+
+
+
+
+But  despite this convincing if informal argument we can provide a formal Classical First Order Logic   CFOL proof that $(\forall x. P(x))  \rightarrow R$ does indeed imply $\exists x.  (P(x)\rightarrow R)$ 
+
+1. $(\forall x. P(x))  \rightarrow R$ 
+
+2. \hspace{2ex} $\neg (\exists x.  (P(x)\rightarrow R))$ \hspace{\fill} $Ass$
+
+3. \hspace{2ex} $\forall x.  \neg (P(x)\rightarrow R)$
+
+4. \hspace{2ex} $\forall x.  (P(x)\wedge  \neg R)$
+
+5. \hspace{2ex} $\forall x.  (P(x)) \wedge  \neg R$
+
+6. \hspace{2ex} $\neg \forall x.  (P(x)) \vee  R$  \hspace{\fill} from 1
+
+7. \hspace{4ex}    $\neg \forall x.  (P(x))$  \hspace{\fill} From 6. Case
+
+8.  \hspace{4ex} $\bot$  \hspace{\fill} From 7 and 5
+
+9. \hspace{4ex}    $R$  \hspace{\fill} From 6. Case
+
+10.  \hspace{3ex} $\bot$  \hspace{\fill} From 9 and 5
+
+11. \hspace{1ex} $\bot$ \hspace{\fill} $\vee E$ on 6
+
+12. $\exists x.  (P(x)\rightarrow R)$ \hspace{\fill} $Cont$ on 2
+
+Give this proof what is wrong with our informal argument?
+Surprisingly    {\bf nothing} is wrong with this argument! 
+
+Given that we were going to use CFOL the mistake was introduced   before we even considered the particular statement and certainly before the informal argument had been started. 
+
+If we are to use CFOL then  we need to reason about \emph{truth} not \emph{proof}.  The semantics of CFOL is a truth semantics. It is IFOL that has a \emph{proof} semantics and indeed the original implication is false in IFOL just as our informal argument led us to believe.
+1. $(\forall x. P(x))  \rightarrow R$ 
+
+2. \hspace{2em} $\neg ((\exists x.  P(x))\rightarrow R)$ \hspace{\fill} Cont
+
+3. \hspace{2em} $ \neg (\neg (\exists x. P(x))\vee  R)$
+
+4. \hspace{2em} $(\exists  x.  P(x)\wedge  \neg R)$
+
+5.  \hspace{2em} $\neg \forall x.  (P(x)) \vee  R$  \hspace{\fill} from 1
+
+7. \hspace{4em}    $\exists x.  \neg P(x)$  \hspace{\fill} From 5. Case
+
+8.  \hspace{4em} ?  \hspace{\fill} From 7 and 4
+
+9. \hspace{4em}    $R$  \hspace{\fill} From 6. Case
+
+10.  \hspace{4em} $\bot$  \hspace{\fill} From 9 and 5
+
+11. \hspace{2em} $\bot$ \hspace{\fill} $\vee E$ on 6
+
+12. $(\exists x.  P(x))\rightarrow R$ \hspace{\fill}  $Cont$ on 2=
+
+
+
+WRONG embedding
+As engineers we are interested in using logic and hence understanding the semantics of, how to interpret, logic is crucial. The range of the mapping ${\bf Z2wwf}$ of ZOL into  FOL well form formula is a homomorphic injection but:
+
+\begin{enumerate}
+\item wff can not be given a boolean interpretation
+\item although $\vee$ and $\wedge$ between wff are both of type $set\rightarrow Set \rightarrow Set$. implication between wff has a different  type $set\rightarrow Set \rightarrow Bool$
+\end{enumerate}   
+In and of itself this does not cause a problem as FOL possess a \emph{Rule of Generalisation} $\vdash P(x)$ implies $\vdash \forall x. P(x)$ and hence the  open formula can be equated with FOL sentences  that posses a boolean interpretation.
+
+We will use ${\bf Z2F}\_$ for  the embedding of ZOL sentences into FOL sentences.  This will be built by first mapping ZOL sentences into FOL wff followed by the application of the Generalisation rule ${\bf Gen\circ Z2wwf}(\_)$ . There are two closely related weaknesses of ${\bf Z2F}\_$ 
+\begin{enumerate}
+\item The range of ${\bf Z2F}$ is not closed under ZOL operators in particular  there is no ZOL term $X$ such that $Z2L(X) == Z2L(P) \vee Z2L(Q)$. 
+
+\item $Z2F$ is not homomorphic, it does not preserve $\vee$, that is:
+
+\[Z2L(P\vee Q) \not= Z2L(P) \vee Z2L(Q)\]  
+as can be seen from:
+\[Z2L(P\vee Q) == \forall x. (P(x)\vee Q(x))\] 
+\[Z2L(P) \vee Z2L(Q) == \forall x. P(x)\vee \forall x. Q(x)\]
+\end{enumerate}
+
+Because there is no ZOL $X$ such that $Z2L(X) == Z2L(P) \vee Z2L(Q)$ we can view FOL $\vee$ as being used both to model  $\vee$ in the object ZOL  and as OR in  ZOL meta logic. Indeed a valid way to interpret $Z2L(P) \vee Z2L(Q)$ in ZOL is to interpret the disjunction as a meta logical assertion.
+
+
+
+
+Although $ZOL$ can be embedded into $FOL$ such an embedding, from a semantic or engineering point of view,  is a very poor embedding.
+It would be unrealistic to consider ZOL and FOL as unrelated but the relation between them is far from simple. The point at which this difficulty  manifests itself is the point at which logical terms become hard to interpret and informal assertions become hard to formalise.
+
+Given {\bf IA1} it is not clear that it needs to be modelled in FOL it appears  that it can be adequately modelled in ZOL. 
+
+
+\end{document}

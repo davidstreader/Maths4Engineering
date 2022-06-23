@@ -1,0 +1,595 @@
+\documentclass{article}      
+\usepackage{color}           
+\usepackage{alltt}           
+\usepackage[latin1]{inputenc}
+\usepackage{hyperref}
+\title{PreGalois.thy}
+
+\newcommand{\syntaxNULL}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTA}[1]{\textcolor[rgb]{0.8,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTB}[1]{\textcolor[rgb]{1.0,0.5176470588235295,0.0}{#1}}
+\newcommand{\syntaxCOMMENTC}[1]{\textcolor[rgb]{0.4,0.0,0.8}{#1}}
+\newcommand{\syntaxCOMMENTD}[1]{\textcolor[rgb]{0.8,0.4,0.0}{#1}}
+\newcommand{\syntaxDIGIT}[1]{\textcolor[rgb]{1.0,0.0,0.0}{#1}}
+\newcommand{\syntaxFUNCTION}[1]{\textcolor[rgb]{0.6,0.4,1.0}{#1}}
+\newcommand{\syntaxINVALID}[1]{\colorbox[rgb]{1.0,1.0,0.8}{\textcolor[rgb]{1.0,0.0,0.4}{#1}}}
+\newcommand{\syntaxKEYWORDA}[1]{\textcolor[rgb]{0.0,0.4,0.6}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDB}[1]{\textcolor[rgb]{0.0,0.6,0.4}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDC}[1]{\textcolor[rgb]{0.0,0.6,1.0}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDD}[1]{\textcolor[rgb]{0.4,0.8,1.0}{\textbf{#1}}}
+\newcommand{\syntaxLABEL}[1]{\textcolor[rgb]{0.00784313725490196,0.7254901960784313,0.00784313725490196}{#1}}
+\newcommand{\syntaxLITERALA}[1]{\textcolor[rgb]{1.0,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALB}[1]{\textcolor[rgb]{0.8,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALC}[1]{\textcolor[rgb]{0.6,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALD}[1]{\textcolor[rgb]{0.4,0.0,0.8}{#1}}
+\newcommand{\syntaxMARKUP}[1]{\textcolor[rgb]{0.0,0.0,1.0}{#1}}
+\newcommand{\syntaxOPERATOR}[1]{\textcolor[rgb]{0.0,0.0,0.0}{\textbf{#1}}}
+\newcommand{\syntaxNULL}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTA}[1]{\textcolor[rgb]{0.8,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTB}[1]{\textcolor[rgb]{1.0,0.5176470588235295,0.0}{#1}}
+\newcommand{\syntaxCOMMENTC}[1]{\textcolor[rgb]{0.4,0.0,0.8}{#1}}
+\newcommand{\syntaxCOMMENTD}[1]{\textcolor[rgb]{0.8,0.4,0.0}{#1}}
+\newcommand{\syntaxDIGIT}[1]{\textcolor[rgb]{1.0,0.0,0.0}{#1}}
+\newcommand{\syntaxFUNCTION}[1]{\textcolor[rgb]{0.6,0.4,1.0}{#1}}
+\newcommand{\syntaxINVALID}[1]{\colorbox[rgb]{1.0,1.0,0.8}{\textcolor[rgb]{1.0,0.0,0.4}{#1}}}
+\newcommand{\syntaxKEYWORDA}[1]{\textcolor[rgb]{0.0,0.4,0.6}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDB}[1]{\textcolor[rgb]{0.0,0.6,0.4}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDC}[1]{\textcolor[rgb]{0.0,0.6,1.0}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDD}[1]{\textcolor[rgb]{0.4,0.8,1.0}{\textbf{#1}}}
+\newcommand{\syntaxLABEL}[1]{\textcolor[rgb]{0.00784313725490196,0.7254901960784313,0.00784313725490196}{#1}}
+\newcommand{\syntaxLITERALA}[1]{\textcolor[rgb]{1.0,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALB}[1]{\textcolor[rgb]{0.8,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALC}[1]{\textcolor[rgb]{0.6,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALD}[1]{\textcolor[rgb]{0.4,0.0,0.8}{#1}}
+\newcommand{\syntaxMARKUP}[1]{\textcolor[rgb]{0.0,0.0,1.0}{#1}}
+\newcommand{\syntaxOPERATOR}[1]{\textcolor[rgb]{0.0,0.0,0.0}{\textbf{#1}}}
+\newcommand{\syntaxNULL}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTA}[1]{\textcolor[rgb]{0.8,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTB}[1]{\textcolor[rgb]{1.0,0.5176470588235295,0.0}{#1}}
+\newcommand{\syntaxCOMMENTC}[1]{\textcolor[rgb]{0.4,0.0,0.8}{#1}}
+\newcommand{\syntaxCOMMENTD}[1]{\textcolor[rgb]{0.8,0.4,0.0}{#1}}
+\newcommand{\syntaxDIGIT}[1]{\textcolor[rgb]{1.0,0.0,0.0}{#1}}
+\newcommand{\syntaxFUNCTION}[1]{\textcolor[rgb]{0.6,0.4,1.0}{#1}}
+\newcommand{\syntaxINVALID}[1]{\colorbox[rgb]{1.0,1.0,0.8}{\textcolor[rgb]{1.0,0.0,0.4}{#1}}}
+\newcommand{\syntaxKEYWORDA}[1]{\textcolor[rgb]{0.0,0.4,0.6}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDB}[1]{\textcolor[rgb]{0.0,0.6,0.4}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDC}[1]{\textcolor[rgb]{0.0,0.6,1.0}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDD}[1]{\textcolor[rgb]{0.4,0.8,1.0}{\textbf{#1}}}
+\newcommand{\syntaxLABEL}[1]{\textcolor[rgb]{0.00784313725490196,0.7254901960784313,0.00784313725490196}{#1}}
+\newcommand{\syntaxLITERALA}[1]{\textcolor[rgb]{1.0,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALB}[1]{\textcolor[rgb]{0.8,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALC}[1]{\textcolor[rgb]{0.6,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALD}[1]{\textcolor[rgb]{0.4,0.0,0.8}{#1}}
+\newcommand{\syntaxMARKUP}[1]{\textcolor[rgb]{0.0,0.0,1.0}{#1}}
+\newcommand{\syntaxOPERATOR}[1]{\textcolor[rgb]{0.0,0.0,0.0}{\textbf{#1}}}
+\newcommand{\syntaxNULL}[1]{\textcolor[rgb]{0.0,0.0,0.0}{\textbf{#1}}}
+\newcommand{\syntaxCOMMENTA}[1]{\textcolor[rgb]{0.8,0.0,0.0}{\textbf{#1}}}
+\newcommand{\syntaxCOMMENTB}[1]{\textcolor[rgb]{1.0,0.5176470588235295,0.0}{\textbf{#1}}}
+\newcommand{\syntaxCOMMENTC}[1]{\textcolor[rgb]{0.4,0.0,0.8}{\textbf{#1}}}
+\newcommand{\syntaxCOMMENTD}[1]{\textcolor[rgb]{0.8,0.4,0.0}{\textbf{#1}}}
+\newcommand{\syntaxDIGIT}[1]{\textcolor[rgb]{1.0,0.0,0.0}{\textbf{#1}}}
+\newcommand{\syntaxFUNCTION}[1]{\textcolor[rgb]{0.6,0.4,1.0}{\textbf{#1}}}
+\newcommand{\syntaxINVALID}[1]{\colorbox[rgb]{1.0,1.0,0.8}{\textcolor[rgb]{1.0,0.0,0.4}{\textbf{#1}}}}
+\newcommand{\syntaxKEYWORDA}[1]{\textcolor[rgb]{0.0,0.4,0.6}{#1}}
+\newcommand{\syntaxKEYWORDB}[1]{\textcolor[rgb]{0.0,0.6,0.4}{#1}}
+\newcommand{\syntaxKEYWORDC}[1]{\textcolor[rgb]{0.0,0.6,1.0}{#1}}
+\newcommand{\syntaxKEYWORDD}[1]{\textcolor[rgb]{0.4,0.8,1.0}{#1}}
+\newcommand{\syntaxLABEL}[1]{\textcolor[rgb]{0.00784313725490196,0.7254901960784313,0.00784313725490196}{\textbf{#1}}}
+\newcommand{\syntaxLITERALA}[1]{\textcolor[rgb]{1.0,0.0,0.8}{\textbf{#1}}}
+\newcommand{\syntaxLITERALB}[1]{\textcolor[rgb]{0.8,0.0,0.8}{\textbf{#1}}}
+\newcommand{\syntaxLITERALC}[1]{\textcolor[rgb]{0.6,0.0,0.8}{\textbf{#1}}}
+\newcommand{\syntaxLITERALD}[1]{\textcolor[rgb]{0.4,0.0,0.8}{\textbf{#1}}}
+\newcommand{\syntaxMARKUP}[1]{\textcolor[rgb]{0.0,0.0,1.0}{\textbf{#1}}}
+\newcommand{\syntaxOPERATOR}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxNULL}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTA}[1]{\textcolor[rgb]{0.8,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTB}[1]{\textcolor[rgb]{1.0,0.5176470588235295,0.0}{#1}}
+\newcommand{\syntaxCOMMENTC}[1]{\textcolor[rgb]{0.4,0.0,0.8}{#1}}
+\newcommand{\syntaxCOMMENTD}[1]{\textcolor[rgb]{0.8,0.4,0.0}{#1}}
+\newcommand{\syntaxDIGIT}[1]{\textcolor[rgb]{1.0,0.0,0.0}{#1}}
+\newcommand{\syntaxFUNCTION}[1]{\textcolor[rgb]{0.6,0.4,1.0}{#1}}
+\newcommand{\syntaxINVALID}[1]{\colorbox[rgb]{1.0,1.0,0.8}{\textcolor[rgb]{1.0,0.0,0.4}{#1}}}
+\newcommand{\syntaxKEYWORDA}[1]{\textcolor[rgb]{0.0,0.4,0.6}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDB}[1]{\textcolor[rgb]{0.0,0.6,0.4}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDC}[1]{\textcolor[rgb]{0.0,0.6,1.0}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDD}[1]{\textcolor[rgb]{0.4,0.8,1.0}{\textbf{#1}}}
+\newcommand{\syntaxLABEL}[1]{\textcolor[rgb]{0.00784313725490196,0.7254901960784313,0.00784313725490196}{#1}}
+\newcommand{\syntaxLITERALA}[1]{\textcolor[rgb]{1.0,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALB}[1]{\textcolor[rgb]{0.8,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALC}[1]{\textcolor[rgb]{0.6,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALD}[1]{\textcolor[rgb]{0.4,0.0,0.8}{#1}}
+\newcommand{\syntaxMARKUP}[1]{\textcolor[rgb]{0.0,0.0,1.0}{#1}}
+\newcommand{\syntaxOPERATOR}[1]{\textcolor[rgb]{0.0,0.0,0.0}{\textbf{#1}}}
+\newcommand{\syntaxNULL}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTA}[1]{\textcolor[rgb]{0.8,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTB}[1]{\textcolor[rgb]{1.0,0.5176470588235295,0.0}{#1}}
+\newcommand{\syntaxCOMMENTC}[1]{\textcolor[rgb]{0.4,0.0,0.8}{#1}}
+\newcommand{\syntaxCOMMENTD}[1]{\textcolor[rgb]{0.8,0.4,0.0}{#1}}
+\newcommand{\syntaxDIGIT}[1]{\textcolor[rgb]{1.0,0.0,0.0}{#1}}
+\newcommand{\syntaxFUNCTION}[1]{\textcolor[rgb]{0.6,0.4,1.0}{#1}}
+\newcommand{\syntaxINVALID}[1]{\colorbox[rgb]{1.0,1.0,0.8}{\textcolor[rgb]{1.0,0.0,0.4}{#1}}}
+\newcommand{\syntaxKEYWORDA}[1]{\textcolor[rgb]{0.0,0.4,0.6}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDB}[1]{\textcolor[rgb]{0.0,0.6,0.4}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDC}[1]{\textcolor[rgb]{0.0,0.6,1.0}{\textbf{#1}}}
+\newcommand{\syntaxKEYWORDD}[1]{\textcolor[rgb]{0.4,0.8,1.0}{\textbf{#1}}}
+\newcommand{\syntaxLABEL}[1]{\textcolor[rgb]{0.00784313725490196,0.7254901960784313,0.00784313725490196}{#1}}
+\newcommand{\syntaxLITERALA}[1]{\textcolor[rgb]{1.0,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALB}[1]{\textcolor[rgb]{0.8,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALC}[1]{\textcolor[rgb]{0.6,0.0,0.8}{#1}}
+\newcommand{\syntaxLITERALD}[1]{\textcolor[rgb]{0.4,0.0,0.8}{#1}}
+\newcommand{\syntaxMARKUP}[1]{\textcolor[rgb]{0.0,0.0,1.0}{#1}}
+\newcommand{\syntaxOPERATOR}[1]{\textcolor[rgb]{0.0,0.0,0.0}{\textbf{#1}}}
+\newcommand{\syntaxNULL}[1]{\textcolor[rgb]{1.0,1.0,1.0}{#1}}
+\newcommand{\syntaxCOMMENTA}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTB}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTC}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxCOMMENTD}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxDIGIT}[1]{\textcolor[rgb]{0.0,0.0,0.0}{\textbf{{\it #1}}}}
+\newcommand{\syntaxFUNCTION}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxINVALID}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxKEYWORDA}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxKEYWORDB}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxKEYWORDC}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxKEYWORDD}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+\newcommand{\syntaxLABEL}[1]{\textcolor[rgb]{0.0,0.0,0.0}{#1}}
+
+\newcommand{\gutter}[1]{\textcolor[rgb]{0,0,0}{{|}#1}}
+\newcommand{\gutterH}[1]{\textcolor[rgb]{1,0,0}{{|}#1}}
+
+\definecolor{bgcolor}{rgb}{1.0,1.0,1.0}
+\newsavebox{\opencurlybracket}%
+\newsavebox{\closecurlybracket}%
+\newsavebox{\lessthan}%
+\newsavebox{\greaterthan}%
+\newsavebox{\dollarbox}%
+\newsavebox{\underscorebox}%
+\newsavebox{\andbox}%
+\newsavebox{\hashbox}%
+\newsavebox{\backslashbox}%
+\newsavebox{\atbox}%
+\newsavebox{\percentbox}%
+\newsavebox{\hatbox}%
+\setbox\opencurlybracket=\hbox{\verb.{.}%
+\setbox\closecurlybracket=\hbox{\verb.}.}%
+\setbox\lessthan=\hbox{\verb.<.}%
+\setbox\dollarbox=\hbox{\verb.$.}%
+\setbox\underscorebox=\hbox{\verb._.}%
+\setbox\andbox=\hbox{\verb.&.}%
+\setbox\hashbox=\hbox{\verb.#.}%
+\setbox\atbox=\hbox{\verb.@.}%
+\setbox\backslashbox=\hbox{\verb.\.}%
+\setbox\greaterthan=\hbox{\verb.>.}%
+\setbox\percentbox=\hbox{\verb.\%.}%
+\setbox\hatbox=\hbox{\verb.^.}%
+\def\urltilda{\kern -.15em\lower .7ex\hbox{\~{}}\kern .04em}
+\begin{document}
+\pagecolor{bgcolor}
+\noindent
+\ttfamily
+\syntaxNULL{}\gutter{\ \ \ \ 1{|}\ }\syntaxCOMMENTA{(*{\ }{\ }Title:{\ }{\ }{\ }{\ }{\ }First{\ }attempt{\ }at{\ }Galois}\hspace*{\fill}\\
+\gutter{\ \ \ \ 2{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }{\ }{\ }{\ }Many{\ }authors{\ }base{\ }Galois{\ }definitions{\ }on{\ }partial\usebox{\underscorebox}orders}\hspace*{\fill}\\
+\gutter{\ \ \ \ 3{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }{\ }{\ }{\ }A{\ }few{\ }use{\ }pre\usebox{\underscorebox}orders{\ }(in{\ }isabelle{\ }quasi\usebox{\underscorebox}orders)}\hspace*{\fill}\\
+\gutter{\ \ \ \ 4{|}\ }\syntaxCOMMENTA{Beware{\ }variable{\ }type{\ }are{\ }global{\ }not{\ }local{\ }Hence{\ }use{\ }different{\ }}\hspace*{\fill}\\
+\gutterH{\ \ \ \ 5{|}\ }\syntaxCOMMENTA{var{\ }names}\hspace*{\fill}\\
+\gutter{\ \ \ \ 6{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }Author:{\ }{\ }{\ }{\ }{\ }david{\ }s}\hspace*{\fill}\\
+\gutter{\ \ \ \ 7{|}\ }\syntaxCOMMENTA{*)}\hspace*{\fill}\\
+\gutter{\ \ \ \ 8{|}\ }\hspace*{\fill}\\
+\gutter{\ \ \ \ 9{|}\ }\syntaxKEYWORDA{section}{\ }\syntaxCOMMENTC{‹}\syntaxCOMMENTC{G}\syntaxCOMMENTC{a}\syntaxCOMMENTC{l}\syntaxCOMMENTC{o}\syntaxCOMMENTC{i}\syntaxCOMMENTC{s}\syntaxCOMMENTC{›}\hspace*{\fill}\\
+\gutterH{\ \ \ 10{|}\ }\hspace*{\fill}\\
+\gutter{\ \ \ 11{|}\ }\syntaxKEYWORDA{theory}{\ }PreGalois\hspace*{\fill}\\
+\gutter{\ \ \ 12{|}\ }{\ }{\ }\syntaxKEYWORDB{imports}{\ }{\ }\syntaxLITERALA{"HOL{-}Lattice.CompleteLattice"}{\ }{\ }\syntaxKEYWORDB{begin}\hspace*{\fill}\\
+\gutter{\ \ \ 13{|}\ }\hspace*{\fill}\\
+\gutter{\ \ \ 14{|}\ }\syntaxKEYWORDA{locale}{\ }pre\usebox{\underscorebox}galois{\ }\syntaxOPERATOR{=}\hspace*{\fill}\\
+\gutterH{\ \ \ 15{|}\ }{\ }{\ }\syntaxKEYWORDB{fixes}{\ }leqa{\ }\syntaxOPERATOR{::}{\ }\syntaxLITERALA{"'a{\ }⇒{\ }'a{\ }⇒{\ }bool"}{\ }{\ }\syntaxOPERATOR{(}\syntaxKEYWORDB{infixl}{\ }\syntaxLITERALA{"⊑a"}{\ }50\syntaxOPERATOR{)}\hspace*{\fill}\\
+\gutter{\ \ \ 16{|}\ }{\ }{\ }\syntaxKEYWORDB{fixes}{\ }leqc{\ }\syntaxOPERATOR{::}{\ }\syntaxLITERALA{"'c{\ }⇒{\ }'c{\ }⇒{\ }bool"}{\ }{\ }\syntaxOPERATOR{(}\syntaxKEYWORDB{infixl}{\ }\syntaxLITERALA{"⊑c"}{\ }50\syntaxOPERATOR{)}\hspace*{\fill}\\
+\gutter{\ \ \ 17{|}\ }{\ }{\ }\syntaxKEYWORDB{fixes}{\ }α{\ }{\ }\syntaxOPERATOR{::}{\ }\syntaxLITERALA{"'c{\ }⇒{\ }'a"}{\ }\syntaxCOMMENTA{(*{\ }right{\ }*)}\hspace*{\fill}\\
+\gutter{\ \ \ 18{|}\ }{\ }{\ }\syntaxKEYWORDB{fixes}{\ }γ{\ }\syntaxOPERATOR{::}{\ }\syntaxLITERALA{"'a{\ }⇒{\ }'c"}{\ }{\ }{\ }\syntaxCOMMENTA{(*{\ }left{\ }{\ }{\ }{\ }(γ,{\ }α){\ }*)}\hspace*{\fill}\\
+\gutter{\ \ \ 19{|}\ }{\ }\hspace*{\fill}\\
+\gutterH{\ \ \ 20{|}\ }{\ }\syntaxKEYWORDB{assumes}{\ }refla{\ }\syntaxOPERATOR{{[}}intro\syntaxOPERATOR{,}{\ }simp\syntaxOPERATOR{{]}}\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"x{\ }⊑a{\ }x"}\hspace*{\fill}\\
+\gutter{\ \ \ 21{|}\ }{\ }\syntaxKEYWORDB{and}{\ }transa{\ }\syntaxOPERATOR{{[}}trans\syntaxOPERATOR{{]}}\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"{\ }x{\ }⊑a{\ }y{\ }⟹{\ }y{\ }⊑a{\ }z{\ }{\ }⟹{\ }x{\ }⊑a{\ }z"}\hspace*{\fill}\\
+\gutter{\ \ \ 22{|}\ }{\ }\syntaxKEYWORDB{and}{\ }reflc{\ }\syntaxOPERATOR{{[}}intro\syntaxOPERATOR{,}{\ }simp\syntaxOPERATOR{{]}}\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"xc{\ }⊑c{\ }xc"}\hspace*{\fill}\\
+\gutter{\ \ \ 23{|}\ }{\ }\syntaxKEYWORDB{and}{\ }transc{\ }\syntaxOPERATOR{{[}}trans\syntaxOPERATOR{{]}}\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"{\ }xc{\ }⊑c{\ }yc{\ }==\usebox{\greaterthan}{\ }yc{\ }⊑c{\ }zc{\ }{\ }⟹{\ }xc{\ }⊑c{\ }zc"}{\ }\syntaxCOMMENTA{(*Both{\ }pre\usebox{\underscorebox}orders{\ }*)}\hspace*{\fill}\\
+\gutter{\ \ \ 24{|}\ }{\ }{\ }\syntaxKEYWORDB{and}{\ }adj\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"xa{\ }⊑a{\ }α(xc){\ }={\ }(γ(xa){\ }{\ }⊑c{\ }xc{\ })"}{\ }\hspace*{\fill}\\
+\gutterH{\ \ \ 25{|}\ }\hspace*{\fill}\\
+\gutter{\ \ \ 26{|}\ }\syntaxKEYWORDA{context}{\ }pre\usebox{\underscorebox}galois{\ }\syntaxKEYWORDB{begin}\hspace*{\fill}\\
+\gutter{\ \ \ 27{|}\ }\syntaxCOMMENTA{(*Galois{\ }connection{\ }is{\ }over{\ }pre{-}orders*)}\hspace*{\fill}\\
+\gutter{\ \ \ 28{|}\ }\syntaxKEYWORDA{interpretation}{\ }\syntaxLITERALA{"abs"}{\ }\syntaxOPERATOR{:}{\ }quasi\usebox{\underscorebox}order{\ }\syntaxLITERALA{"(⊑a){\ }::{\ }'a{\ }⇒{\ }'a{\ }⇒{\ }bool"}\hspace*{\fill}\\
+\gutter{\ \ \ 29{|}\ }{\ }{\ }\syntaxKEYWORDA{apply}{\ }\syntaxOPERATOR{(}unfold\usebox{\underscorebox}locales\syntaxOPERATOR{,}auto\syntaxOPERATOR{)}{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutterH{\ \ \ 30{|}\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutter{\ \ \ 31{|}\ }{\ }{\ }\syntaxKEYWORDC{fix}{\ }x{\ }{\ }y{\ }{\ }z{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ \ 32{|}\ }{\ }{\ }\syntaxKEYWORDC{assume}{\ }a\syntaxOPERATOR{:}{\ }{\ }\syntaxLITERALA{"x{\ }⊑a{\ }y"}\hspace*{\fill}\\
+\gutter{\ \ \ 33{|}\ }{\ }{\ }\syntaxKEYWORDC{assume}{\ }b\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"y{\ }⊑a{\ }z"}\hspace*{\fill}\\
+\gutter{\ \ \ 34{|}\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }a{\ }b{\ }{\ }transa{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"x{\ }⊑a{\ }z"}{\ }\syntaxKEYWORDA{by}{\ }auto{\ }\hspace*{\fill}\\
+\gutterH{\ \ \ 35{|}\ }\syntaxKEYWORDA{qed}{\ }\hspace*{\fill}\\
+\gutter{\ \ \ 36{|}\ }\syntaxKEYWORDA{interpretation}{\ }\syntaxLITERALA{"con"}{\ }\syntaxOPERATOR{:}{\ }quasi\usebox{\underscorebox}order{\ }\syntaxLITERALA{"(⊑c){\ }::{\ }'c{\ }⇒{\ }'c{\ }⇒{\ }bool"}\hspace*{\fill}\\
+\gutter{\ \ \ 37{|}\ }\hspace*{\fill}\\
+\gutter{\ \ \ 38{|}\ }{\ }{\ }\syntaxKEYWORDA{apply}{\ }\syntaxOPERATOR{(}unfold\usebox{\underscorebox}locales{\ }\syntaxOPERATOR{,}{\ }auto\syntaxOPERATOR{)}{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ \ 39{|}\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutterH{\ \ \ 40{|}\ }{\ }{\ }\syntaxKEYWORDC{fix}{\ }x{\ }{\ }y{\ }{\ }z{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ \ 41{|}\ }{\ }{\ }\syntaxKEYWORDC{assume}{\ }a\syntaxOPERATOR{:}{\ }{\ }\syntaxLITERALA{"x{\ }⊑c{\ }y"}\hspace*{\fill}\\
+\gutter{\ \ \ 42{|}\ }{\ }{\ }\syntaxKEYWORDC{assume}{\ }b\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"y{\ }⊑c{\ }z"}\hspace*{\fill}\\
+\gutter{\ \ \ 43{|}\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }a{\ }b{\ }{\ }transc{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"x{\ }⊑c{\ }z"}{\ }\syntaxKEYWORDA{by}{\ }auto{\ }\hspace*{\fill}\\
+\gutter{\ \ \ 44{|}\ }\syntaxKEYWORDA{qed}{\ }\hspace*{\fill}\\
+\gutterH{\ \ \ 45{|}\ }\hspace*{\fill}\\
+\gutter{\ \ \ 46{|}\ }\syntaxKEYWORDA{text}{\ }\syntaxCOMMENTC{‹}\hspace*{\fill}\\
+\gutter{\ \ \ 47{|}\ }\syntaxCOMMENTC{{\ }There{\ }are{\ }two{\ }intersting{\ }alternative{\ }characteristic{\ }properties{\ }of{\ }Galois{\ }connections.}\hspace*{\fill}\\
+\gutter{\ \ \ 48{|}\ }\syntaxCOMMENTC{{\ }Either{\ }could{\ }be{\ }used{\ }as{\ }a{\ }definition.}\hspace*{\fill}\\
+\gutter{\ \ \ 49{|}\ }\syntaxCOMMENTC{One:{\ }loopac{\ }loopca{\ }monoa{\ }monoc{\ }replaceing{\ }adj}\hspace*{\fill}\\
+\gutterH{\ \ \ 50{|}\ }\syntaxCOMMENTC{Two:{\ }preservation{\ }of{\ }Meets{\ }/{\ }Joins}\hspace*{\fill}\\
+\gutter{\ \ \ 51{|}\ }\syntaxCOMMENTC{›}\hspace*{\fill}\\
+\gutter{\ \ \ 52{|}\ }\hspace*{\fill}\\
+\gutter{\ \ \ 53{|}\ }\syntaxKEYWORDA{lemma}{\ }loopac{\ }\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"{\ }γ(α(xc)){\ }⊑c{\ }xc"}\hspace*{\fill}\\
+\gutter{\ \ \ 54{|}\ }\syntaxKEYWORDA{proof}{\ }{-}{\ }\hspace*{\fill}\\
+\gutterH{\ \ \ 55{|}\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }refla{\ }\syntaxKEYWORDA{have}{\ }\syntaxLITERALA{"α(xc){\ }⊑a{\ }α(xc)"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ \ 56{|}\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }adj{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"γ(α(xc)){\ }{\ }⊑c{\ }xc{\ }"}{\ }{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ \ 57{|}\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutter{\ \ \ 58{|}\ }\syntaxKEYWORDA{lemma}{\ }loopca{\ }\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"{\ }x{\ }⊑a{\ }{\ }α(γ(x))"}\hspace*{\fill}\\
+\gutter{\ \ \ 59{|}\ }\syntaxKEYWORDA{proof}{\ }{-}{\ }\hspace*{\fill}\\
+\gutterH{\ \ \ 60{|}\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }reflc{\ }\syntaxKEYWORDA{have}{\ }\syntaxLITERALA{"γ(x){\ }⊑c{\ }γ(x)"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ \ 61{|}\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }adj{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"x{\ }⊑a{\ }{\ }α(γ(x)){\ }"}{\ }{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ \ 62{|}\ }{\ }{\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutter{\ \ \ 63{|}\ }\syntaxKEYWORDA{lemma}{\ }monoa{\ }\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"xc{\ }⊑c{\ }yc{\ }⟹{\ }α{\ }xc{\ }⊑a{\ }α{\ }yc{\ }"}\hspace*{\fill}\\
+\gutter{\ \ \ 64{|}\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutterH{\ \ \ 65{|}\ }{\ }{\ }\syntaxKEYWORDC{assume}{\ }\syntaxLITERALA{"xc{\ }⊑c{\ }yc"}{\ }\hspace*{\fill}\\
+\gutter{\ \ \ 66{|}\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }loopac{\ }transc{\ }\syntaxKEYWORDA{have}{\ }\syntaxLITERALA{"{\ }γ{\ }(α{\ }xc){\ }⊑c{\ }yc"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ \ 67{|}\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }adj{\ }{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"α{\ }xc{\ }⊑a{\ }α{\ }yc{\ }"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ \ 68{|}\ }{\ }{\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutter{\ \ \ 69{|}\ }\syntaxKEYWORDA{lemma}{\ }{\ }monoc{\ }\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"x{\ }⊑a{\ }y{\ }⟹{\ }γ{\ }x{\ }⊑c{\ }γ{\ }y{\ }"}\hspace*{\fill}\\
+\gutterH{\ \ \ 70{|}\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutter{\ \ \ 71{|}\ }{\ }{\ }\syntaxKEYWORDC{assume}{\ }\syntaxLITERALA{"x{\ }⊑a{\ }y"}{\ }\hspace*{\fill}\\
+\gutter{\ \ \ 72{|}\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }loopca{\ }transa{\ }\syntaxKEYWORDA{have}{\ }\syntaxLITERALA{"x{\ }⊑a{\ }α(γ(y)){\ }"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ \ 73{|}\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }adj{\ }{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"γ{\ }x{\ }⊑c{\ }γ{\ }y"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ \ 74{|}\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutterH{\ \ \ 75{|}\ }\hspace*{\fill}\\
+\gutter{\ \ \ 76{|}\ }\syntaxCOMMENTA{(*{\ }{\ }{\ }(γ,{\ }α){\ }}\hspace*{\fill}\\
+\gutter{\ \ \ 77{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }are{\ }dules{\ }also{\ }galois?{\ }{\ }}\hspace*{\fill}\\
+\gutter{\ \ \ 78{|}\ }\syntaxCOMMENTA{1){\ }{\ }composition{\ }of{\ }two{\ }galois{\ }{\ }is{\ }a{\ }galois}\hspace*{\fill}\\
+\gutter{\ \ \ 79{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }product{\ }{-}{\ }function{\ }space{\ }{\ }are{\ }galois?{\ }}\hspace*{\fill}\\
+\gutterH{\ \ \ 80{|}\ }\syntaxCOMMENTA{2){\ }{\ }α{\ }and{\ }γ{\ }{\ }define{\ }each{\ }other{\ }but{\ }left+right}\hspace*{\fill}\\
+\gutter{\ \ \ 81{|}\ }\syntaxCOMMENTA{3){\ }{\ }max{\ }and{\ }min}\hspace*{\fill}\\
+\gutter{\ \ \ 82{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }α(c){\ }={\ }M{\ }\usebox{\opencurlybracket}x{\ }|{\ }γ(x){\ }⊑c{\ }c{\ }\usebox{\closecurlybracket}{\ }}\hspace*{\fill}\\
+\gutter{\ \ \ 83{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }γ(a){\ }={\ }M{\ }\usebox{\opencurlybracket}x{\ }|{\ }a{\ }⊑a{\ }α(x){\ }\usebox{\closecurlybracket}}\hspace*{\fill}\\
+\gutter{\ \ \ 84{|}\ }\syntaxCOMMENTA{4){\ }{\ }fixed{\ }points{\ }of{\ }{\ }γ∘α{\ }{\ }and{\ }closures{\ }}\hspace*{\fill}\\
+\gutterH{\ \ \ 85{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }γ(α(γ(a))){\ }={\ }γ(a){\ }{\ }and{\ }}\hspace*{\fill}\\
+\gutter{\ \ \ 86{|}\ }\syntaxCOMMENTA{{\ }{\ }c∈α(C){\ }\usebox{\lessthan}{\ }={\ }\usebox{\greaterthan}{\ }{\ }c{\ }={\ }γ(α(c))}\hspace*{\fill}\\
+\gutter{\ \ \ 87{|}\ }\syntaxCOMMENTA{{\ }{\ }γ(α(C)){\ }α(γ(A)){\ }{\ }are{\ }isomorphic{\ }copies}\hspace*{\fill}\\
+\gutter{\ \ \ 88{|}\ }\syntaxCOMMENTA{*)}\hspace*{\fill}\\
+\gutter{\ \ \ 89{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ \ 90{|}\ }\syntaxCOMMENTA{(*{\ }Retract{\ }={\ }Galois{\ }+{\ }α∘γ{\ }={\ }id\usebox{\underscorebox}A{\ }}\hspace*{\fill}\\
+\gutter{\ \ \ 91{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }interesting{\ }Galois{\ }connections{\ }are{\ }often{\ }Retracts}\hspace*{\fill}\\
+\gutter{\ \ \ 92{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }where{\ }A{\ }is{\ }more{\ }abstract{\ }than{\ }C}\hspace*{\fill}\\
+\gutter{\ \ \ 93{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }Retracts{\ }have{\ }an{\ }isomorphic{\ }copy{\ }of{\ }A{\ }in{\ }C}\hspace*{\fill}\\
+\gutter{\ \ \ 94{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ \ 95{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }with{\ }pre{-}orders{\ }defined{\ }by{\ }rule{\ }induction{\ }over{\ }a{\ }language,}\hspace*{\fill}\\
+\gutter{\ \ \ 96{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }monotonicity{\ }is{\ }soundness{\ }}\hspace*{\fill}\\
+\gutter{\ \ \ 97{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }whereas{\ }the{\ }existence{\ }of{\ }an{\ }isomorphic{\ }copy{\ }of{\ }the{\ }semantics{\ }}\hspace*{\fill}\\
+\gutter{\ \ \ 98{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }is{\ }completeness}\hspace*{\fill}\\
+\gutter{\ \ \ 99{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }}\hspace*{\fill}\\
+\gutterH{\ \ 100{|}\ }\syntaxCOMMENTA{*)}\hspace*{\fill}\\
+\gutter{\ \ 101{|}\ }\syntaxKEYWORDB{end}\hspace*{\fill}\\
+\gutter{\ \ 102{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 103{|}\ }\syntaxKEYWORDA{locale}{\ }pre\usebox{\underscorebox}isom{\ }\syntaxOPERATOR{=}{\ }\hspace*{\fill}\\
+\gutter{\ \ 104{|}\ }{\ }{\ }{\ }le\syntaxOPERATOR{:}{\ }quasi\usebox{\underscorebox}order{\ }{\ }\syntaxLITERALA{"le::{\ }'a{\ }⇒{\ }'a{\ }⇒{\ }bool"}{\ }\syntaxOPERATOR{+}{\ }\hspace*{\fill}\\
+\gutterH{\ \ 105{|}\ }{\ }{\ }lee\syntaxOPERATOR{:}{\ }quasi\usebox{\underscorebox}order{\ }\syntaxLITERALA{"lee::{\ }'c{\ }⇒{\ }'c{\ }⇒{\ }bool"}\hspace*{\fill}\\
+\gutter{\ \ 106{|}\ }{\ }{\ }{\ }\syntaxKEYWORDB{for}{\ }le{\ }\syntaxOPERATOR{(}\syntaxKEYWORDB{infixl}{\ }\syntaxLITERALA{"⊑i"}{\ }50\syntaxOPERATOR{)}{\ }\syntaxKEYWORDB{and}{\ }lee{\ }\syntaxOPERATOR{(}\syntaxKEYWORDB{infixl}{\ }\syntaxLITERALA{"≼i"}{\ }50\syntaxOPERATOR{)}{\ }\syntaxOPERATOR{+}\hspace*{\fill}\\
+\gutter{\ \ 107{|}\ }{\ }{\ }{\ }\syntaxKEYWORDB{fixes}{\ }ψ\hspace*{\fill}\\
+\gutter{\ \ 108{|}\ }{\ }{\ }{\ }\syntaxKEYWORDB{fixes}{\ }φ\hspace*{\fill}\\
+\gutter{\ \ 109{|}\ }{\ }{\ }{\ }\syntaxKEYWORDB{assumes}{\ }hom1\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"{\ }(x{\ }⊑i{\ }y){\ }⟹{\ }{\ }((ψ{\ }x){\ }≼i{\ }(ψ{\ }y))"}{\ }\hspace*{\fill}\\
+\gutterH{\ \ 110{|}\ }{\ }{\ }{\ }\syntaxKEYWORDB{and}{\ }{\ }{\ }{\ }{\ }hom2\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"{\ }(xc≼i{\ }yc){\ }⟹{\ }{\ }((φ{\ }xc){\ }⊑i{\ }(φ{\ }yc))"}{\ }\hspace*{\fill}\\
+\gutter{\ \ 111{|}\ }{\ }{\ }{\ }\syntaxKEYWORDB{and}{\ }{\ }iso1\syntaxOPERATOR{:}{\ }{\ }\syntaxLITERALA{"φ{\ }(ψ{\ }(w::'a)){\ }={\ }(w::'a)"}\hspace*{\fill}\\
+\gutter{\ \ 112{|}\ }{\ }{\ }{\ }\syntaxKEYWORDB{and}{\ }{\ }iso2\syntaxOPERATOR{:}{\ }{\ }\syntaxLITERALA{"ψ{\ }(φ{\ }(z::'c)){\ }={\ }(z::'c)"}\hspace*{\fill}\\
+\gutter{\ \ 113{|}\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 114{|}\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutterH{\ \ 115{|}\ }{\ }{\ }{\ }\syntaxKEYWORDB{begin}\hspace*{\fill}\\
+\gutter{\ \ 116{|}\ }{\ }{\ }{\ }\syntaxKEYWORDA{lemma}{\ }ler{\ }\syntaxOPERATOR{{[}}simp\syntaxOPERATOR{{]}}{\ }\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"x{\ }⊑i{\ }x"}{\ }\syntaxKEYWORDA{proof}{\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutter{\ \ 117{|}\ }{\ }{\ }{\ }\syntaxKEYWORDA{lemma}{\ }app\syntaxOPERATOR{:}{\ }{\ }\syntaxLITERALA{"{\ }(f∘(g::'x⇒'y)){\ }(x::{\ }'x){\ }={\ }f{\ }(g{\ }x)"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ 118{|}\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 119{|}\ }{\ }\syntaxKEYWORDB{end}\hspace*{\fill}\\
+\gutterH{\ \ 120{|}\ }{\ }\syntaxCOMMENTA{(*{\ }{\ }assumes{\ }hom1x:{\ }"{\ }x{\ }{\ }⊑a{\ }y{\ }⟹{\ }lee{\ }ψ{\ }x{\ }ψ{\ }y"{\ }*)}\hspace*{\fill}\\
+\gutter{\ \ 121{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 122{|}\ }\syntaxKEYWORDA{locale}{\ }retract{\ }\syntaxOPERATOR{=}{\ }pre\usebox{\underscorebox}galois{\ }\syntaxOPERATOR{+}\hspace*{\fill}\\
+\gutter{\ \ 123{|}\ }{\ }{\ }{\ }\syntaxKEYWORDB{assumes}{\ }ret\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"{\ }α(γ(xa)){\ }={\ }xa"}\hspace*{\fill}\\
+\gutter{\ \ 124{|}\ }\syntaxCOMMENTA{(*{\ }pre\usebox{\underscorebox}galois{\ }requires{\ }α{\ }and{\ }γ{\ }be{\ }order{\ }preserving}\hspace*{\fill}\\
+\gutterH{\ \ 125{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }ret{\ }requires{\ }'a{\ }is{\ }injected{\ }into{\ }'c*)}\hspace*{\fill}\\
+\gutter{\ \ 126{|}\ }{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 127{|}\ }{\ }{\ }{\ }\syntaxKEYWORDB{begin}{\ }\hspace*{\fill}\\
+\gutter{\ \ 128{|}\ }{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 129{|}\ }{\ }{\ }{\ }\syntaxKEYWORDA{interpretation}{\ }\syntaxLITERALA{"abs"}{\ }\syntaxOPERATOR{:}{\ }quasi\usebox{\underscorebox}order{\ }\syntaxLITERALA{"(⊑a){\ }{\ }::{\ }'a{\ }⇒{\ }'a{\ }⇒{\ }bool"}{\ }\hspace*{\fill}\\
+\gutterH{\ \ 130{|}\ }{\ }{\ }{\ }\syntaxKEYWORDA{apply}\syntaxOPERATOR{(}unfold\usebox{\underscorebox}locales\syntaxOPERATOR{)}{\ }{\ }\syntaxKEYWORDA{apply}{\ }\syntaxOPERATOR{(}auto{\ }simp{\ }add\syntaxOPERATOR{:}{\ }transa\syntaxOPERATOR{)}{\ }\syntaxKEYWORDA{proof}{\ }{-}{\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutter{\ \ 131{|}\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 132{|}\ }{\ }{\ }{\ }\syntaxKEYWORDA{interpretation}{\ }\syntaxLITERALA{"conc"}{\ }\syntaxOPERATOR{:}{\ }quasi\usebox{\underscorebox}order{\ }\syntaxLITERALA{"(⊑c){\ }"}{\ }\hspace*{\fill}\\
+\gutter{\ \ 133{|}\ }{\ }{\ }{\ }\syntaxKEYWORDA{apply}\syntaxOPERATOR{(}unfold\usebox{\underscorebox}locales\syntaxOPERATOR{)}{\ }{\ }\syntaxKEYWORDA{apply}{\ }\syntaxOPERATOR{(}auto{\ }simp{\ }add\syntaxOPERATOR{:}{\ }transc\syntaxOPERATOR{)}{\ }\syntaxKEYWORDA{proof}{\ }{-}{\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutter{\ \ 134{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ 135{|}\ }{\ }{\ }{\ }\syntaxCOMMENTA{(*isabelle{\ }has{\ }no{\ }subtype{\ }and{\ }functions{\ }are{\ }total}\hspace*{\fill}\\
+\gutter{\ \ 136{|}\ }\syntaxCOMMENTA{hence{\ }explist{\ }subset/{\ }embedding{\ }{\ }needs{\ }to{\ }be{\ }defined{\ }{\ }*)}\hspace*{\fill}\\
+\gutter{\ \ 137{|}\ }{\ }{\ }{\ }\syntaxKEYWORDA{interpretation}{\ }\syntaxLITERALA{"iso"}{\ }\syntaxOPERATOR{:}{\ }pre\usebox{\underscorebox}isom{\ }{\ }\syntaxLITERALA{"(⊑c)"}{\ }{\ }\syntaxLITERALA{"(⊑a)::{\ }'a{\ }⇒{\ }'a{\ }⇒{\ }bool"}{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 138{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxLITERALA{"((α∘γ)∘α)"}{\ }{\ }\syntaxLITERALA{"γ"}{\ }{\ }\syntaxCOMMENTA{(*{\ }"x⇒(α(γ(α(x)))"{\ }*)}\hspace*{\fill}\\
+\gutter{\ \ 139{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{apply}\syntaxOPERATOR{(}unfold\usebox{\underscorebox}locales\syntaxOPERATOR{)}{\ }{\ }\hspace*{\fill}\\
+\gutterH{\ \ 140{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{proof}{\ }{-}{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 141{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }monoc{\ }\syntaxKEYWORDC{show}{\ }{\ }{\ }\syntaxLITERALA{"⋀xc{\ }yc.{\ }xc{\ }⊑a{\ }yc{\ }⟹{\ }γ{\ }xc{\ }⊑c{\ }γ{\ }yc"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ 142{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }monoc{\ }\syntaxKEYWORDB{and}{\ }monoa{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"{\ }⋀x{\ }y.{\ }x{\ }⊑c{\ }y{\ }⟹}\hspace*{\fill}\\
+\gutter{\ \ 143{|}\ }\syntaxLITERALA{{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }(α{\ }∘{\ }γ{\ }∘{\ }α){\ }x{\ }⊑a{\ }(α{\ }∘{\ }γ{\ }∘{\ }α){\ }y"}{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 144{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutterH{\ \ 145{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }ret{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"⋀z.{\ }(α{\ }∘{\ }γ{\ }∘{\ }α){\ }(γ{\ }z){\ }={\ }z"}{\ }{\ }{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ 146{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }ret{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"{\ }⋀w.{\ }γ{\ }((α{\ }∘{\ }γ{\ }∘{\ }α){\ }w){\ }={\ }w"}{\ }\syntaxKEYWORDA{apply}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ 147{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 148{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 149{|}\ }\syntaxKEYWORDB{end}{\ }\hspace*{\fill}\\
+\gutterH{\ \ 150{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 151{|}\ }\syntaxKEYWORDA{print\usebox{\underscorebox}locale}\syntaxOPERATOR{!}{\ }quasi\usebox{\underscorebox}order\hspace*{\fill}\\
+\gutter{\ \ 152{|}\ }\syntaxKEYWORDA{thm}{\ }PreGalois.pre\usebox{\underscorebox}galois.refla\hspace*{\fill}\\
+\gutter{\ \ 153{|}\ }\syntaxKEYWORDA{thm}{\ }PreGalois.retract\usebox{\underscorebox}def\hspace*{\fill}\\
+\gutter{\ \ 154{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ 155{|}\ }{\ }\syntaxKEYWORDA{sublocale}{\ }retract{\ }\syntaxOPERATOR{⊆}{\ }pre\usebox{\underscorebox}isom\hspace*{\fill}\\
+\gutter{\ \ 156{|}\ }{\ }\syntaxKEYWORDA{apply}{\ }\syntaxOPERATOR{(}unfold\usebox{\underscorebox}locales\syntaxOPERATOR{)}\hspace*{\fill}\\
+\gutter{\ \ 157{|}\ }{\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutter{\ \ 158{|}\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 159{|}\ }{\ }\syntaxCOMMENTA{(*{\ }and{\ }PreGalois.pre\usebox{\underscorebox}galois.def{\ }*)}\hspace*{\fill}\\
+\gutterH{\ \ 160{|}\ }{\ }\syntaxKEYWORDA{from}{\ }PreGalois.retract\usebox{\underscorebox}def{\ }\syntaxKEYWORDB{and}{\ }pre\usebox{\underscorebox}galois\usebox{\underscorebox}def{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"⋀x.{\ }{\ }le{\ }x{\ }x"}{\ }\syntaxKEYWORDA{apply}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ 161{|}\ }{\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutter{\ \ 162{|}\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 163{|}\ }{\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutter{\ \ 164{|}\ }{\ }\syntaxKEYWORDC{fix}{\ }x{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"le{\ }x{\ }x"}\hspace*{\fill}\\
+\gutterH{\ \ 165{|}\ }{\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutter{\ \ 166{|}\ }{\ }\syntaxKEYWORDA{from}{\ }{\ }retract\usebox{\underscorebox}def{\ }{\ }PreGalois.pre\usebox{\underscorebox}galois\usebox{\underscorebox}def\hspace*{\fill}\\
+\gutter{\ \ 167{|}\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 168{|}\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 169{|}\ }\syntaxCOMMENTA{(*{\ }}\hspace*{\fill}\\
+\gutterH{\ \ 170{|}\ }\syntaxCOMMENTA{apply{\ }(auto{\ }simp{\ }add:{\ }pre\usebox{\underscorebox}galois.refla)}\hspace*{\fill}\\
+\gutter{\ \ 171{|}\ }\syntaxCOMMENTA{proof{\ }{-}}\hspace*{\fill}\\
+\gutter{\ \ 172{|}\ }\syntaxCOMMENTA{fix{\ }x{\ }have{\ }"le{\ }x{\ }x"{\ }apply{\ }auto}\hspace*{\fill}\\
+\gutter{\ \ 173{|}\ }\syntaxCOMMENTA{*)}\hspace*{\fill}\\
+\gutter{\ \ 174{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ 175{|}\ }\syntaxKEYWORDA{definition}{\ }ImageNat{\ }\syntaxOPERATOR{::}{\ }\syntaxLITERALA{"(nat{\ }×{\ }nat){\ }set{\ }⇒{\ }nat{\ }set{\ }⇒{\ }nat{\ }set"}{\ }\syntaxKEYWORDB{where}\hspace*{\fill}\\
+\gutter{\ \ 176{|}\ }{\ }{\ }{\ }\syntaxLITERALA{"ImageNat{\ }r{\ }{\ }s{\ }={\ }\usebox{\opencurlybracket}y.{\ }∃x∈s.{\ }(x,{\ }y){\ }∈{\ }r\usebox{\closecurlybracket}"}\hspace*{\fill}\\
+\gutter{\ \ 177{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 178{|}\ }\syntaxKEYWORDA{definition}{\ }ping\syntaxOPERATOR{::}bool{\ }\syntaxKEYWORDB{where}\hspace*{\fill}\\
+\gutter{\ \ 179{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxLITERALA{"ping{\ }≡{\ }(ImageNat{\ }\usebox{\opencurlybracket}(1,2),{\ }(2,3)\usebox{\closecurlybracket}{\ }{\ }\usebox{\opencurlybracket}1\usebox{\closecurlybracket}{\ }={\ }\usebox{\opencurlybracket}2\usebox{\closecurlybracket})"}\hspace*{\fill}\\
+\gutterH{\ \ 180{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 181{|}\ }\syntaxKEYWORDA{text}{\ }\syntaxCOMMENTC{‹}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{L}\syntaxCOMMENTC{i}\syntaxCOMMENTC{f}\syntaxCOMMENTC{t}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{a}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{r}\syntaxCOMMENTC{e}\syntaxCOMMENTC{l}\syntaxCOMMENTC{a}\syntaxCOMMENTC{t}\syntaxCOMMENTC{i}\syntaxCOMMENTC{o}\syntaxCOMMENTC{n}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{A}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{×}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{B}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{t}\syntaxCOMMENTC{o}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{a}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{f}\syntaxCOMMENTC{u}\syntaxCOMMENTC{n}\syntaxCOMMENTC{c}\syntaxCOMMENTC{t}\syntaxCOMMENTC{i}\syntaxCOMMENTC{o}\syntaxCOMMENTC{n}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{℘}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{A}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{{-}}\syntaxCOMMENTC{\usebox{\greaterthan}}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{℘}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{B}\syntaxCOMMENTC{.}\syntaxCOMMENTC{›}\hspace*{\fill}\\
+\gutter{\ \ 182{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 183{|}\ }\syntaxKEYWORDA{locale}{\ }galois{\ }\syntaxOPERATOR{=}{\ }pre\usebox{\underscorebox}galois{\ }\syntaxOPERATOR{+}\hspace*{\fill}\\
+\gutter{\ \ 184{|}\ }{\ }{\ }\syntaxKEYWORDB{assumes}{\ }syma\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"{\ }x{\ }⊑a{\ }y{\ }⟹{\ }y{\ }⊑a{\ }x{\ }{\ }⟹{\ }x=y"}{\ }\hspace*{\fill}\\
+\gutterH{\ \ 185{|}\ }{\ }{\ }\syntaxKEYWORDB{and}{\ }{\ }{\ }{\ }{\ }symc\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"{\ }(xc::'c){\ }⊑c{\ }yc{\ }⟹{\ }yc{\ }⊑c{\ }xc{\ }{\ }⟹{\ }xc=yc"}\hspace*{\fill}\\
+\gutter{\ \ 186{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 187{|}\ }\syntaxKEYWORDA{context}{\ }galois{\ }\syntaxKEYWORDB{begin}{\ }\hspace*{\fill}\\
+\gutter{\ \ 188{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 189{|}\ }\syntaxKEYWORDA{interpretation}{\ }\syntaxLITERALA{"abs"}{\ }\syntaxOPERATOR{:}{\ }partial\usebox{\underscorebox}order{\ }\syntaxLITERALA{"(⊑a){\ }::{\ }'a{\ }⇒{\ }'a{\ }⇒{\ }bool"}\hspace*{\fill}\\
+\gutterH{\ \ 190{|}\ }{\ }{\ }\syntaxKEYWORDA{apply}{\ }\syntaxOPERATOR{(}unfold\usebox{\underscorebox}locales{\ }\syntaxOPERATOR{,}{\ }\syntaxOPERATOR{(}auto{\ }simp{\ }add\syntaxOPERATOR{:}syma\syntaxOPERATOR{)}\syntaxOPERATOR{)}\hspace*{\fill}\\
+\gutter{\ \ 191{|}\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutter{\ \ 192{|}\ }{\ }{\ }\syntaxKEYWORDC{fix}{\ }x{\ }{\ }y{\ }{\ }z{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 193{|}\ }{\ }{\ }\syntaxKEYWORDC{assume}{\ }a\syntaxOPERATOR{:}{\ }{\ }\syntaxLITERALA{"x{\ }⊑a{\ }y"}\hspace*{\fill}\\
+\gutter{\ \ 194{|}\ }{\ }{\ }\syntaxKEYWORDC{assume}{\ }b\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"y{\ }⊑a{\ }z"}\hspace*{\fill}\\
+\gutterH{\ \ 195{|}\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }a{\ }b{\ }{\ }transa{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"x{\ }⊑a{\ }z"}{\ }\syntaxKEYWORDA{by}{\ }auto{\ }\hspace*{\fill}\\
+\gutter{\ \ 196{|}\ }\syntaxKEYWORDA{qed}{\ }\hspace*{\fill}\\
+\gutter{\ \ 197{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 198{|}\ }\syntaxKEYWORDA{interpretation}{\ }\syntaxLITERALA{"con"}{\ }\syntaxOPERATOR{:}{\ }partial\usebox{\underscorebox}order{\ }\syntaxLITERALA{"(⊑c){\ }::{\ }'c{\ }⇒{\ }'c{\ }⇒{\ }bool"}\hspace*{\fill}\\
+\gutter{\ \ 199{|}\ }{\ }{\ }\syntaxKEYWORDA{apply}{\ }\syntaxOPERATOR{(}unfold\usebox{\underscorebox}locales{\ }\syntaxOPERATOR{,}{\ }\syntaxOPERATOR{(}auto{\ }simp{\ }add\syntaxOPERATOR{:}symc\syntaxOPERATOR{)}\syntaxOPERATOR{)}{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutterH{\ \ 200{|}\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutter{\ \ 201{|}\ }{\ }{\ }\syntaxKEYWORDC{fix}{\ }x{\ }{\ }y{\ }{\ }z{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 202{|}\ }{\ }{\ }\syntaxKEYWORDC{assume}{\ }a\syntaxOPERATOR{:}{\ }{\ }\syntaxLITERALA{"x{\ }⊑c{\ }y"}\hspace*{\fill}\\
+\gutter{\ \ 203{|}\ }{\ }{\ }\syntaxKEYWORDC{assume}{\ }b\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"y{\ }⊑c{\ }z"}\hspace*{\fill}\\
+\gutter{\ \ 204{|}\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }a{\ }b{\ }{\ }transc{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"x{\ }⊑c{\ }z"}{\ }\syntaxKEYWORDA{by}{\ }auto{\ }\hspace*{\fill}\\
+\gutterH{\ \ 205{|}\ }\syntaxKEYWORDA{qed}{\ }\hspace*{\fill}\\
+\gutter{\ \ 206{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 207{|}\ }\syntaxKEYWORDB{end}\hspace*{\fill}\\
+\gutter{\ \ 208{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 209{|}\ }\syntaxKEYWORDA{text}{\ }\syntaxCOMMENTC{‹}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{T}\syntaxCOMMENTC{h}\syntaxCOMMENTC{e}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{f}\syntaxCOMMENTC{u}\syntaxCOMMENTC{n}\syntaxCOMMENTC{c}\syntaxCOMMENTC{t}\syntaxCOMMENTC{i}\syntaxCOMMENTC{o}\syntaxCOMMENTC{n}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{c}\syntaxCOMMENTC{2}\syntaxCOMMENTC{a}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{a}\syntaxCOMMENTC{n}\syntaxCOMMENTC{d}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{a}\syntaxCOMMENTC{2}\syntaxCOMMENTC{c}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{b}\syntaxCOMMENTC{u}\syntaxCOMMENTC{i}\syntaxCOMMENTC{l}\syntaxCOMMENTC{t}\syntaxCOMMENTC{,}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{f}\syntaxCOMMENTC{r}\syntaxCOMMENTC{o}\syntaxCOMMENTC{m}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{a}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{r}\syntaxCOMMENTC{e}\syntaxCOMMENTC{l}\syntaxCOMMENTC{a}\syntaxCOMMENTC{t}\syntaxCOMMENTC{i}\syntaxCOMMENTC{o}\syntaxCOMMENTC{n}\syntaxCOMMENTC{,}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{t}\syntaxCOMMENTC{h}\syntaxCOMMENTC{e}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{m}\syntaxCOMMENTC{o}\syntaxCOMMENTC{r}\syntaxCOMMENTC{p}\syntaxCOMMENTC{h}\syntaxCOMMENTC{i}\syntaxCOMMENTC{s}\syntaxCOMMENTC{m}\syntaxCOMMENTC{s}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{o}\syntaxCOMMENTC{f}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{t}\syntaxCOMMENTC{h}\syntaxCOMMENTC{e}\hspace*{\fill}\\
+\gutterH{\ \ 210{|}\ }\syntaxCOMMENTC{{\ }standard{\ }construction{\ }{\ }Galois{\ }connection{\ }{-}{\ }where{\ }the{\ }two{\ }preorders{\ }are{\ }subsets{\ }}\hspace*{\fill}\\
+\gutter{\ \ 211{|}\ }\syntaxCOMMENTC{on{\ }the{\ }domain{\ }and{\ }the{\ }range.}\hspace*{\fill}\\
+\gutter{\ \ 212{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 213{|}\ }\syntaxCOMMENTC{i}\syntaxCOMMENTC{s}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{⊆}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{a}\syntaxCOMMENTC{n}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{a}\syntaxCOMMENTC{l}\syntaxCOMMENTC{g}\syntaxCOMMENTC{e}\syntaxCOMMENTC{b}\syntaxCOMMENTC{r}\syntaxCOMMENTC{a}\syntaxCOMMENTC{i}\syntaxCOMMENTC{c}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{c}\syntaxCOMMENTC{p}\syntaxCOMMENTC{o}\syntaxCOMMENTC{?}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{a}\syntaxCOMMENTC{n}\syntaxCOMMENTC{d}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{A}\syntaxCOMMENTC{r}\syntaxCOMMENTC{e}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{t}\syntaxCOMMENTC{h}\syntaxCOMMENTC{e}\syntaxCOMMENTC{s}\syntaxCOMMENTC{e}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{f}\syntaxCOMMENTC{u}\syntaxCOMMENTC{n}\syntaxCOMMENTC{c}\syntaxCOMMENTC{t}\syntaxCOMMENTC{i}\syntaxCOMMENTC{o}\syntaxCOMMENTC{n}\syntaxCOMMENTC{s}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{c}\syntaxCOMMENTC{o}\syntaxCOMMENTC{n}\syntaxCOMMENTC{t}\syntaxCOMMENTC{i}\syntaxCOMMENTC{n}\syntaxCOMMENTC{u}\syntaxCOMMENTC{o}\syntaxCOMMENTC{u}\syntaxCOMMENTC{s}\syntaxCOMMENTC{?}\syntaxCOMMENTC{.}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{›}\hspace*{\fill}\\
+\gutter{\ \ 214{|}\ }\syntaxKEYWORDA{fun}{\ }{\ }a2c\syntaxOPERATOR{::}{\ }\syntaxLITERALA{"('a{\ }×{\ }'c){\ }set{\ }⇒{\ }'a{\ }set{\ }⇒{\ }'c{\ }set"}{\ }\syntaxKEYWORDB{where}{\ }\hspace*{\fill}\\
+\gutterH{\ \ 215{|}\ }\syntaxLITERALA{"a2c{\ }rel{\ }aa{\ }={\ }\usebox{\opencurlybracket}c.{\ }∀{\ }a∈aa{\ }.{\ }(a,c)∈rel{\ }\usebox{\closecurlybracket}{\ }"}\hspace*{\fill}\\
+\gutter{\ \ 216{|}\ }\syntaxKEYWORDA{fun}{\ }{\ }c2a\syntaxOPERATOR{::}{\ }\syntaxLITERALA{"('a{\ }×{\ }'c){\ }set{\ }⇒{\ }'c{\ }set{\ }⇒{\ }'a{\ }set"}{\ }\syntaxKEYWORDB{where}{\ }\hspace*{\fill}\\
+\gutter{\ \ 217{|}\ }\syntaxLITERALA{"c2a{\ }rel{\ }cc{\ }={\ }\usebox{\opencurlybracket}a.{\ }∀{\ }c∈cc{\ }.{\ }(a,c)∈rel{\ }\usebox{\closecurlybracket}{\ }"}\hspace*{\fill}\\
+\gutter{\ \ 218{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 219{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ 220{|}\ }\syntaxKEYWORDA{text}{\ }\syntaxCOMMENTC{‹}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{R}\syntaxCOMMENTC{e}\syntaxCOMMENTC{f}\syntaxCOMMENTC{i}\syntaxCOMMENTC{n}\syntaxCOMMENTC{e}\syntaxCOMMENTC{m}\syntaxCOMMENTC{e}\syntaxCOMMENTC{n}\syntaxCOMMENTC{t}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{a}\syntaxCOMMENTC{s}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{a}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{G}\syntaxCOMMENTC{a}\syntaxCOMMENTC{l}\syntaxCOMMENTC{o}\syntaxCOMMENTC{i}\syntaxCOMMENTC{s}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{R}\syntaxCOMMENTC{e}\syntaxCOMMENTC{t}\syntaxCOMMENTC{r}\syntaxCOMMENTC{a}\syntaxCOMMENTC{c}\syntaxCOMMENTC{t}\syntaxCOMMENTC{i}\syntaxCOMMENTC{o}\syntaxCOMMENTC{n}\syntaxCOMMENTC{.}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{›}\hspace*{\fill}\\
+\gutter{\ \ 221{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 222{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 223{|}\ }\syntaxKEYWORDA{text}{\ }\syntaxCOMMENTC{‹}\syntaxCOMMENTC{t}\syntaxCOMMENTC{h}\syntaxCOMMENTC{e}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{s}\syntaxCOMMENTC{t}\syntaxCOMMENTC{a}\syntaxCOMMENTC{n}\syntaxCOMMENTC{d}\syntaxCOMMENTC{a}\syntaxCOMMENTC{r}\syntaxCOMMENTC{d}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{c}\syntaxCOMMENTC{o}\syntaxCOMMENTC{n}\syntaxCOMMENTC{s}\syntaxCOMMENTC{t}\syntaxCOMMENTC{r}\syntaxCOMMENTC{u}\syntaxCOMMENTC{c}\syntaxCOMMENTC{t}\syntaxCOMMENTC{i}\syntaxCOMMENTC{o}\syntaxCOMMENTC{n}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{m}\syntaxCOMMENTC{a}\syntaxCOMMENTC{p}\syntaxCOMMENTC{s}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{r}\syntaxCOMMENTC{e}\syntaxCOMMENTC{l}\syntaxCOMMENTC{a}\syntaxCOMMENTC{t}\syntaxCOMMENTC{i}\syntaxCOMMENTC{o}\syntaxCOMMENTC{n}\syntaxCOMMENTC{s}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{t}\syntaxCOMMENTC{o}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{G}\syntaxCOMMENTC{a}\syntaxCOMMENTC{l}\syntaxCOMMENTC{o}\syntaxCOMMENTC{i}\syntaxCOMMENTC{s}\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{c}\syntaxCOMMENTC{o}\syntaxCOMMENTC{n}\syntaxCOMMENTC{n}\syntaxCOMMENTC{e}\syntaxCOMMENTC{c}\syntaxCOMMENTC{t}\syntaxCOMMENTC{i}\syntaxCOMMENTC{o}\syntaxCOMMENTC{n}\syntaxCOMMENTC{s}\syntaxCOMMENTC{.}\hspace*{\fill}\\
+\gutter{\ \ 224{|}\ }\syntaxCOMMENTC{{\ }{\ }}\hspace*{\fill}\\
+\gutterH{\ \ 225{|}\ }\syntaxCOMMENTC{{\ }The{\ }extensional{\ }intentional{\ }interpretation{\ }of{\ }predicates.}\hspace*{\fill}\\
+\gutter{\ \ 226{|}\ }\syntaxCOMMENTC{{\ }preorder{\ }on{\ }specs{\ }defines{\ }extension:}\hspace*{\fill}\\
+\gutter{\ \ 227{|}\ }\syntaxCOMMENTC{{\ }{\ }{\ }specification{\ }extension{\ }is{\ }the{\ }set{\ }of{\ }programs{\ }(set{\ }of{\ }things{\ }satisfying{\ }spec)}\hspace*{\fill}\\
+\gutter{\ \ 228{|}\ }\syntaxCOMMENTC{{\ }testing{\ }semantics{\ }defines{\ }intention:}\hspace*{\fill}\\
+\gutter{\ \ 229{|}\ }\syntaxCOMMENTC{{\ }{\ }{\ }{\ }specification{\ }intention{\ }is{\ }the{\ }test{\ }results{\ }(properties{\ }or{\ }spec)}\hspace*{\fill}\\
+\gutterH{\ \ 230{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 231{|}\ }\syntaxCOMMENTC{Let{\ }X{\ }be{\ }the{\ }frame{\ }of{\ }reference{\ }(universe){\ }of{\ }FoL(X){\ }then{\ }any{\ }relation{\ }A\usebox{\lessthan}{-}\usebox{\greaterthan}B}\hspace*{\fill}\\
+\gutter{\ \ 232{|}\ }\syntaxCOMMENTC{then{\ }the{\ }standard{\ }construction{\ }builds{\ }a{\ }Galois{\ }connection{\ }between{\ }FoL(A){\ }and{\ }FoL(B)}\hspace*{\fill}\\
+\gutter{\ \ 233{|}\ }\syntaxCOMMENTC{that{\ }will{\ }preserve{\ }∧,∨,¬}\hspace*{\fill}\\
+\gutter{\ \ 234{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ 235{|}\ }\syntaxCOMMENTC{Any{\ }relation{\ }can{\ }be{\ }extended{\ }to{\ }a{\ }TS{\ }relation{\ }by{\ }adding{\ }bottom{\ }modeling}\hspace*{\fill}\\
+\gutter{\ \ 236{|}\ }\syntaxCOMMENTC{{\ }undefined{\ }outside{\ }of{\ }precondition{\ }{\ }(⊆){\ }(⊇)}\hspace*{\fill}\\
+\gutter{\ \ 237{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 238{|}\ }\syntaxCOMMENTC{TLA+{\ }question?}\hspace*{\fill}\\
+\gutter{\ \ 239{|}\ }\syntaxCOMMENTC{{\ }{\ }{\ }{\ }{\ }(State1×{\ }State2){\ }=SC=\usebox{\greaterthan}{\ }Galois\usebox{\underscorebox}State{\ }{\ }FOL\usebox{\underscorebox}State1{\ }FOL\usebox{\underscorebox}State2}\hspace*{\fill}\\
+\gutterH{\ \ 240{|}\ }\syntaxCOMMENTC{{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }SC\usebox{\underscorebox}R*{\ }:{\ }2\usebox{\hatbox}State1{\ }{-}\usebox{\greaterthan}{\ }2\usebox{\hatbox}State2{\ }{\ }{\ }{\ }}\hspace*{\fill}\\
+\gutter{\ \ 241{|}\ }\syntaxCOMMENTC{{\ }{\ }{\ }Lift{\ }:{\ }{\ }State1{\ }×{\ }State2{\ }{-}\usebox{\greaterthan}{\ }Behavior1{\ }×{\ }Behavior2{\ }OR{\ }{\ }}\hspace*{\fill}\\
+\gutter{\ \ 242{|}\ }\syntaxCOMMENTC{{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }(2\usebox{\hatbox}State1{\ }{-}\usebox{\greaterthan}{\ }{\ }2){-}\usebox{\greaterthan}{\ }(2\usebox{\hatbox}Behavior1{\ }{-}\usebox{\greaterthan}{\ }2\usebox{\hatbox}Behavior2){\ }}\hspace*{\fill}\\
+\gutter{\ \ 243{|}\ }\syntaxCOMMENTC{{\ }{\ }{\ }{\ }(Behavior1{\ }×{\ }Behavior2){\ }=SC=\usebox{\greaterthan}{\ }Galois\usebox{\underscorebox}Behavior{\ }{\ }FOL\usebox{\underscorebox}Behavior}\hspace*{\fill}\\
+\gutter{\ \ 244{|}\ }\syntaxCOMMENTC{{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }sc\usebox{\underscorebox}B*{\ }:{\ }2\usebox{\hatbox}Behavior1{\ }{-}\usebox{\greaterthan}{\ }2\usebox{\hatbox}Behavior2}\hspace*{\fill}\\
+\gutterH{\ \ 245{|}\ }\syntaxCOMMENTC{IS{\ }{\ }{\ }Lift{\ }({\ }sc\usebox{\underscorebox}R*){\ }={\ }sc\usebox{\underscorebox}(Lift(R))*{\ }{\ }{\ }???}\hspace*{\fill}\\
+\gutter{\ \ 246{|}\ }\syntaxCOMMENTC{IS{\ }{\ }{[}{]}P{\ }=\usebox{\greaterthan}{\ }{\ }{[}{]}sc\usebox{\underscorebox}R*(P){\ }{\ }{\ }{\ }{\ }???}\hspace*{\fill}\\
+\gutter{\ \ 247{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 248{|}\ }\syntaxCOMMENTC{What{\ }State{\ }{-}\usebox{\greaterthan}{\ }State{\ }mappings{\ }preserve{\ }Galois{\ }relations{\ }\usebox{\lessthan}sc\usebox{\underscorebox}R*,{\ }sc\usebox{\underscorebox}R\usebox{\underscorebox}*\usebox{\greaterthan}.}\hspace*{\fill}\\
+\gutter{\ \ 249{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ 250{|}\ }\syntaxCOMMENTC{TLA+{\ }Refinement{\ }is{\ }=\usebox{\greaterthan}TLA{\ }on{\ }Behaviors}\hspace*{\fill}\\
+\gutter{\ \ 251{|}\ }\syntaxCOMMENTC{Testing{\ }Refinement{\ }is{\ }=\usebox{\greaterthan}Test{\ }on{\ }Ξ×O{\ }{\ }{\ }test{-}Relation}\hspace*{\fill}\\
+\gutter{\ \ 252{|}\ }\syntaxCOMMENTC{Although{\ }=\usebox{\greaterthan}TLA{\ }notequal{\ }=\usebox{\greaterthan}Test}\hspace*{\fill}\\
+\gutter{\ \ 253{|}\ }\syntaxCOMMENTC{{\ }{\ }{\ }{\ }Galois\usebox{\underscorebox}TLA{\ }{\ }={\ }Galois\usebox{\underscorebox}Test{\ }{\ }{\ }???}\hspace*{\fill}\\
+\gutter{\ \ 254{|}\ }\syntaxCOMMENTC{{\ }}\syntaxCOMMENTC{›}\hspace*{\fill}\\
+\gutterH{\ \ 255{|}\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 256{|}\ }\syntaxKEYWORDA{term}{\ }\syntaxLITERALA{"x{\ }={\ }x"}\hspace*{\fill}\\
+\gutter{\ \ 257{|}\ }\syntaxKEYWORDA{locale}{\ }standard\usebox{\underscorebox}construction{\ }\syntaxOPERATOR{=}\hspace*{\fill}\\
+\gutter{\ \ 258{|}\ }{\ }{\ }\syntaxKEYWORDB{fixes}{\ }sc\usebox{\underscorebox}rel{\ }\syntaxOPERATOR{::}{\ }\syntaxLITERALA{"('a{\ }×{\ }'c){\ }set"}{\ }\hspace*{\fill}\\
+\gutter{\ \ 259{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ 260{|}\ }\syntaxKEYWORDA{context}{\ }standard\usebox{\underscorebox}construction{\ }\syntaxKEYWORDB{begin}\hspace*{\fill}\\
+\gutter{\ \ 261{|}\ }\syntaxKEYWORDA{interpretation}{\ }\syntaxLITERALA{"sc\usebox{\underscorebox}gal"}{\ }{\ }\syntaxOPERATOR{:}{\ }galois{\ }\hspace*{\fill}\\
+\gutter{\ \ 262{|}\ }{\ }{\ }{\ }\syntaxLITERALA{"{\ }(⊆){\ }::{\ }'a{\ }set{\ }⇒{\ }'a{\ }set{\ }⇒bool"}{\ }{\ }\syntaxCOMMENTA{(*{\ }from{\ }left{\ }*)}\hspace*{\fill}\\
+\gutter{\ \ 263{|}\ }{\ }{\ }{\ }\syntaxLITERALA{"{\ }(⊇){\ }::{\ }'c{\ }set{\ }⇒{\ }'c{\ }set{\ }⇒bool"}\hspace*{\fill}\\
+\gutter{\ \ 264{|}\ }{\ }{\ }{\ }\syntaxLITERALA{"{\ }(c2a{\ }sc\usebox{\underscorebox}rel){\ }::{\ }('c{\ }set){\ }⇒{\ }('a{\ }set){\ }"}{\ }\syntaxCOMMENTA{(*{\ }right{\ }*)}\hspace*{\fill}\\
+\gutterH{\ \ 265{|}\ }{\ }{\ }{\ }\syntaxLITERALA{"{\ }{\ }a2c{\ }sc\usebox{\underscorebox}rel{\ }{\ }::{\ }('a{\ }set){\ }⇒{\ }('c{\ }set){\ }"}\hspace*{\fill}\\
+\gutter{\ \ 266{|}\ }{\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{apply}{\ }\syntaxOPERATOR{(}unfold\usebox{\underscorebox}locales\syntaxOPERATOR{)}\hspace*{\fill}\\
+\gutter{\ \ 267{|}\ }{\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{apply}{\ }\syntaxOPERATOR{(}simp\usebox{\underscorebox}all\syntaxOPERATOR{)}{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 268{|}\ }\syntaxKEYWORDA{proof}{\ }\hspace*{\fill}\\
+\gutter{\ \ 269{|}\ }{\ }{\ }\syntaxKEYWORDC{fix}{\ }xa{\ }xc\hspace*{\fill}\\
+\gutterH{\ \ 270{|}\ }{\ }{\ }\syntaxKEYWORDC{assume}{\ }ass\syntaxOPERATOR{:}\syntaxLITERALA{"xa{\ }⊆{\ }\usebox{\opencurlybracket}a.{\ }∀c∈xc.{\ }(a,{\ }c){\ }∈{\ }sc\usebox{\underscorebox}rel\usebox{\closecurlybracket}"}\hspace*{\fill}\\
+\gutter{\ \ 271{|}\ }{\ }{\ }\syntaxKEYWORDA{then}{\ }\syntaxKEYWORDA{have}{\ }\syntaxLITERALA{"∀a∈xa.{\ }{\ }∀c∈xc.{\ }(a,{\ }c){\ }∈{\ }sc\usebox{\underscorebox}rel"}{\ }\syntaxKEYWORDA{by}{\ }blast\hspace*{\fill}\\
+\gutter{\ \ 272{|}\ }{\ }{\ }\syntaxKEYWORDA{then}{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"xc{\ }⊆{\ }\usebox{\opencurlybracket}c.{\ }∀a∈xa.{\ }(a,{\ }c){\ }∈{\ }sc\usebox{\underscorebox}rel\usebox{\closecurlybracket}"}{\ }{\ }\syntaxKEYWORDA{by}{\ }blast{\ }\hspace*{\fill}\\
+\gutter{\ \ 273{|}\ }\syntaxKEYWORDA{next}\hspace*{\fill}\\
+\gutter{\ \ 274{|}\ }{\ }{\ }\syntaxKEYWORDC{fix}{\ }xa{\ }xc\hspace*{\fill}\\
+\gutterH{\ \ 275{|}\ }{\ }{\ }\syntaxKEYWORDC{assume}{\ }ass\syntaxOPERATOR{:}\syntaxLITERALA{"xc{\ }⊆{\ }\usebox{\opencurlybracket}c.{\ }∀a∈xa.{\ }(a,{\ }c){\ }∈{\ }sc\usebox{\underscorebox}rel\usebox{\closecurlybracket}{\ }"}\hspace*{\fill}\\
+\gutter{\ \ 276{|}\ }{\ }{\ }\syntaxKEYWORDA{then}{\ }\syntaxKEYWORDA{have}{\ }\syntaxLITERALA{"∀a∈xa.{\ }{\ }∀c∈xc.{\ }(a,{\ }c){\ }∈{\ }sc\usebox{\underscorebox}rel"}{\ }\syntaxKEYWORDA{by}{\ }blast\hspace*{\fill}\\
+\gutter{\ \ 277{|}\ }{\ }{\ }\syntaxKEYWORDA{then}{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"xa{\ }⊆{\ }\usebox{\opencurlybracket}a.{\ }∀c∈xc.{\ }(a,{\ }c){\ }∈{\ }sc\usebox{\underscorebox}rel\usebox{\closecurlybracket}"}{\ }{\ }\syntaxKEYWORDA{by}{\ }blast{\ }{\ }{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 278{|}\ }\syntaxKEYWORDA{qed}{\ }\hspace*{\fill}\\
+\gutter{\ \ 279{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ 280{|}\ }\syntaxCOMMENTA{(*From{\ }any{\ }relation{\ }we{\ }have{\ }Galois{\ }connection!{\ }The{\ }empty{\ }relation{\ }generates}\hspace*{\fill}\\
+\gutter{\ \ 281{|}\ }\syntaxCOMMENTA{Galois{\ }mappings{\ }that{\ }are{\ }constant{\ }functions{\ }returning{\ }the{\ }empty{\ }set{\ }whereas{\ }}\hspace*{\fill}\\
+\gutter{\ \ 282{|}\ }\syntaxCOMMENTA{the{\ }Galois{\ }mappings{\ }generated{\ }from{\ }the{\ }total{\ }relation{\ }{\ }are{\ }constant{\ }functions{\ }}\hspace*{\fill}\\
+\gutter{\ \ 283{|}\ }\syntaxCOMMENTA{returning{\ }the{\ }whole{\ }domain.}\hspace*{\fill}\\
+\gutter{\ \ 284{|}\ }\syntaxCOMMENTA{{\ }{\ }To{\ }be{\ }of{\ }interest{\ }in{\ }program{\ }development{\ }we{\ }need{\ }Retracts,{\ }these{\ }Galois{\ }mappings{\ }}\hspace*{\fill}\\
+\gutterH{\ \ 285{|}\ }\syntaxCOMMENTA{embed{\ }an{\ }isomorphic{\ }copy{\ }of{\ }the{\ }abstract{\ }pre{-}order{\ }in{\ }the{\ }concrete{\ }pre{-}order}\hspace*{\fill}\\
+\gutter{\ \ 286{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 287{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 288{|}\ }\syntaxCOMMENTA{Specifications{\ }may{\ }start{\ }with{\ }terms{\ }T\usebox{\underscorebox}Σ{\ }that{\ }include{\ }non{-}deterministic{\ }Ω{\ }and{\ }are{\ }refined{\ }}\hspace*{\fill}\\
+\gutter{\ \ 289{|}\ }\syntaxCOMMENTA{with{\ }a{\ }preorder{\ }that{\ }reduces{\ }the{\ }non{-}determinism.{\ }To{\ }model{\ }recursive{\ }definitions{\ }extend{\ }this{\ }}\hspace*{\fill}\\
+\gutterH{\ \ 290{|}\ }\syntaxCOMMENTA{preorder{\ }by{\ }ideal{\ }completion{\ }to{\ }build{\ }a{\ }domain{\ }\usebox{\lessthan}A,{\ }≤\usebox{\underscorebox}A,{\ }Σ\usebox{\underscorebox}A\usebox{\greaterthan}.{\ }Although{\ }Ω{\ }can{\ }not{\ }be{\ }implemented{\ }}\hspace*{\fill}\\
+\gutter{\ \ 291{|}\ }\syntaxCOMMENTA{its{\ }existence{\ }effects{\ }the{\ }other{\ }terms,{\ }(Groups{\ }with{\ }Ω{\ }added{\ }colaps{\ }to{\ }a{\ }single{\ }element)}\hspace*{\fill}\\
+\gutter{\ \ 292{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 293{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 294{|}\ }\syntaxCOMMENTA{A{\ }pre{-}domain{\ }\usebox{\lessthan}A,{\ }≤\usebox{\underscorebox}A,{\ }Σ\usebox{\underscorebox}A\usebox{\greaterthan}{\ }{\ }is{\ }a{\ }pre{-}order,{\ }\usebox{\lessthan}A,{\ }≤\usebox{\underscorebox}A\usebox{\greaterthan}{\ }and{\ }{\ }⊥{\ }{\ }\usebox{\backslashbox}in{\ }Σ{\ }and{\ }f\usebox{\backslashbox}in{\ }Σ{\ }implies{\ }}\hspace*{\fill}\\
+\gutterH{\ \ 295{|}\ }\syntaxCOMMENTA{f{\ }monotone.{\ }The{\ }terms{\ }{\ }T\usebox{\underscorebox}\usebox{\opencurlybracket}Σ\usebox{\closecurlybracket}{\ }can{\ }be{\ }thought{\ }of{\ }as{\ }{\ }representing{\ }terminating{\ }processes.{\ }}\hspace*{\fill}\\
+\gutter{\ \ 296{|}\ }\syntaxCOMMENTA{Recursive{\ }terms{\ }define{\ }non{-}terminating{\ }processes{\ }with{\ }least{\ }fixed{\ }point{\ }semantics}\hspace*{\fill}\\
+\gutter{\ \ 297{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 298{|}\ }\syntaxCOMMENTA{The{\ }Ideals{\ }of{\ }A{\ }are{\ }the{\ }directed{\ }downward{\ }closed{\ }subsets{\ }of{\ }A.}\hspace*{\fill}\\
+\gutter{\ \ 299{|}\ }\syntaxCOMMENTA{A{\ }domain{\ }is{\ }a{\ }pre{-}domain{\ }where:{\ }\usebox{\lessthan}A,{\ }≤\usebox{\underscorebox}A\usebox{\greaterthan}{\ }is{\ }an{\ }algebraic{-}cpo{\ }and{\ }the{\ }f{\ }are{\ }continuous}\hspace*{\fill}\\
+\gutterH{\ \ 300{|}\ }\syntaxCOMMENTA{Let{\ }I(A){\ }be{\ }the{\ }Ideals{\ }of{\ }A.{\ }Then{\ }\usebox{\lessthan}I(A),{\ }⊆\usebox{\greaterthan}{\ }is{\ }the{\ }unique{\ }algrbraic{-}cpo{\ }isomorphic{\ }to{\ }}\hspace*{\fill}\\
+\gutter{\ \ 301{|}\ }\syntaxCOMMENTA{\usebox{\lessthan}A,{\ }≤\usebox{\underscorebox}A\usebox{\greaterthan}.{\ }{\ }Thus{\ }A{\ }can{\ }be{\ }thought{\ }of{\ }as{\ }terminating{\ }or{\ }finite{\ }elements{\ }and{\ }the{\ }Ideals{\ }extend{\ }this{\ }}\hspace*{\fill}\\
+\gutter{\ \ 302{|}\ }\syntaxCOMMENTA{to{\ }include{\ }the{\ }non{-}terminating{\ }or{\ }infinite{\ }elements{\ }while{\ }retaining{\ }an{\ }isomorphic{\ }copy{\ }of{\ }the{\ }finite}\hspace*{\fill}\\
+\gutter{\ \ 303{|}\ }\syntaxCOMMENTA{elements.{\ }Note:{\ }the{\ }behaviour{\ }of{\ }the{\ }non{-}terminating{\ }is{\ }completely{\ }defined{\ }by{\ }the{\ }terminating.}\hspace*{\fill}\\
+\gutter{\ \ 304{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ 305{|}\ }\syntaxCOMMENTA{Hence{\ }if{\ }we{\ }start{\ }with{\ }{\ }pre{-}domain{\ }then{\ }there{\ }is{\ }a{\ }standard{\ }way{\ }to{\ }add{\ }recursive{\ }definitions}\hspace*{\fill}\\
+\gutter{\ \ 306{|}\ }\syntaxCOMMENTA{with{\ }a{\ }weakest{\ }pre{-}condition{\ }semantics.{\ }And{\ }relations{\ }between{\ }two{\ }sets{\ }of{\ }terms{\ }T\usebox{\underscorebox}Σ\usebox{\underscorebox}A{\ }and{\ }T\usebox{\underscorebox}Σ\usebox{\underscorebox}B{\ }{\ }}\hspace*{\fill}\\
+\gutter{\ \ 307{|}\ }\syntaxCOMMENTA{can{\ }be{\ }lifted{\ }{\ }by{\ }the{\ }standard{\ }construction{\ }to{\ }Galois{\ }connections{\ }the{\ }domains{\ }over{\ }A{\ }and{\ }B.{\ }}\hspace*{\fill}\\
+\gutter{\ \ 308{|}\ }\syntaxCOMMENTA{The{\ }Galois{\ }connection{\ }preserves{\ }the{\ }least{\ }fixed{\ }point{\ }semantics.}\hspace*{\fill}\\
+\gutter{\ \ 309{|}\ }\syntaxCOMMENTA{{\ }}\hspace*{\fill}\\
+\gutterH{\ \ 310{|}\ }\syntaxCOMMENTA{Let{\ }us{\ }assume{\ }that{\ }we{\ }have{\ }an{\ }abstract{\ }algebra{\ }T\usebox{\underscorebox}Σ{\ }that{\ }defines{\ }our{\ }objects{\ }of{\ }interest.}\hspace*{\fill}\\
+\gutter{\ \ 311{|}\ }\syntaxCOMMENTA{The{\ }we{\ }can{\ }define{\ }the{\ }set{\ }of{\ }contexts{\ }Ξ{\ }{\ }as{\ }a{\ }T\usebox{\underscorebox}Σ{\ }term{\ }that{\ }includes{\ }a{\ }single{\ }hole,{\ }\usebox{\underscorebox}{\ }in{\ }}\hspace*{\fill}\\
+\gutter{\ \ 312{|}\ }\syntaxCOMMENTA{which{\ }we{\ }can{\ }place{\ }one{\ }of{\ }our{\ }objects.}\hspace*{\fill}\\
+\gutter{\ \ 313{|}\ }\syntaxCOMMENTA{Universal{\ }Testing{\ }\usebox{\lessthan}T\usebox{\underscorebox}Σ\usebox{\underscorebox}A,{\ }⊑\usebox{\underscorebox}A,{\ }Σ\usebox{\underscorebox}A\usebox{\greaterthan},{\ }is{\ }a{\ }pre{-}order{\ }{\ }\usebox{\lessthan}T\usebox{\underscorebox}Σ\usebox{\underscorebox}A,{\ }⊑\usebox{\underscorebox}A\usebox{\greaterthan},{\ }f∈{\ }Σ{\ }must{\ }be{\ }{\ }monotone{\ }and{\ }}\hspace*{\fill}\\
+\gutter{\ \ 314{|}\ }\syntaxCOMMENTA{{\ }A∪\usebox{\opencurlybracket}Ω\usebox{\closecurlybracket}⊆Σ\usebox{\underscorebox}A.}\hspace*{\fill}\\
+\gutterH{\ \ 315{|}\ }\syntaxCOMMENTA{For{\ }HS{\ }processes{\ }the{\ }A{\ }in{\ }UTHS\usebox{\underscorebox}A{\ }is{\ }the{\ }set{\ }of{\ }atomic{\ }Events{\ }and{\ }Σ\usebox{\underscorebox}A{\ }={\ }A{\ }∪{\ }\usebox{\opencurlybracket}Ω,{\ }∥\usebox{\underscorebox}S,{\ }+,{\ };,{\ }∘\usebox{\closecurlybracket}{\ }}\hspace*{\fill}\\
+\gutter{\ \ 316{|}\ }\syntaxCOMMENTA{A{\ }retract{\ }between{\ }UTHS\usebox{\underscorebox}A{\ }and{\ }UTHS\usebox{\underscorebox}C{\ }defines{\ }an{\ }embedding{\ }of{\ }\usebox{\lessthan}T\usebox{\underscorebox}Σ\usebox{\underscorebox}A,{\ }⊑\usebox{\underscorebox}A\usebox{\greaterthan}{\ }in{\ }\usebox{\lessthan}T\usebox{\underscorebox}Σ\usebox{\underscorebox}C,{\ }⊑\usebox{\underscorebox}C\usebox{\greaterthan}.{\ }and{\ }}\hspace*{\fill}\\
+\gutter{\ \ 317{|}\ }\syntaxCOMMENTA{hence{\ }an{\ }embedding{\ }of{\ }A{\ }in{\ }C.}\hspace*{\fill}\\
+\gutter{\ \ 318{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 319{|}\ }\syntaxCOMMENTA{There{\ }is{\ }a{\ }Galois{\ }connection{\ }between{\ }sets{\ }of{\ }sentences{\ }and{\ }sets{\ }of{\ }semantic{\ }models.}\hspace*{\fill}\\
+\gutterH{\ \ 320{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 321{|}\ }\syntaxCOMMENTA{Although{\ }UTPHS\usebox{\underscorebox}A{\ }and{\ }UTPBC\usebox{\underscorebox}A{\ }have{\ }the{\ }same{\ }terms{\ }they{\ }have{\ }different{\ }Equations{\ }and{\ }both{\ }the{\ }}\hspace*{\fill}\\
+\gutter{\ \ 322{|}\ }\syntaxCOMMENTA{events{\ }A{\ }and{\ }the{\ }operator{\ }{\ }∥\usebox{\underscorebox}S{\ }have{\ }different{\ }semantics.{\ }}\hspace*{\fill}\\
+\gutter{\ \ 323{|}\ }\syntaxCOMMENTA{Hence{\ }the{\ }{\ }retract{\ }between{\ }{\ }UTPHS\usebox{\underscorebox}A{\ }and{\ }UTPBC\usebox{\underscorebox}C{\ }is{\ }harder{\ }to{\ }define.}\hspace*{\fill}\\
+\gutter{\ \ 324{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ 325{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 326{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 327{|}\ }\syntaxCOMMENTA{The{\ }relational{\ }semantics{\ }of{\ }Universal{\ }Testing{\ }{[}{[}t{]}{]}{\ }⊆{\ }{\ }Ξ×Obs{\ }and{\ }universal{\ }testing{\ }refinement}\hspace*{\fill}\\
+\gutter{\ \ 328{|}\ }\syntaxCOMMENTA{a⊑\usebox{\underscorebox}X{\ }c{\ }{\ }iff{\ }{[}{[}c{]}{]}⊆{[}{[}a{]}{]}.{\ }Hence{\ }any{\ }relation{\ }between{\ }two{\ }semantic{\ }domains{\ }(Ξ\usebox{\underscorebox}A×Obs\usebox{\underscorebox}A){\ }and}\hspace*{\fill}\\
+\gutter{\ \ 329{|}\ }\syntaxCOMMENTA{{\ }(Ξ\usebox{\underscorebox}C×Obs\usebox{\underscorebox}C){\ }{\ }lifts{\ }to{\ }a{\ }Galois{\ }connection{\ }between{\ }the{\ }pre{-}orders}\hspace*{\fill}\\
+\gutterH{\ \ 330{|}\ }\syntaxCOMMENTA{\usebox{\lessthan}(Ξ\usebox{\underscorebox}A×Obs\usebox{\underscorebox}A),⊑\usebox{\underscorebox}A\usebox{\greaterthan}{\ }and{\ }\usebox{\lessthan}(Ξ\usebox{\underscorebox}C×Obs\usebox{\underscorebox}C),⊑\usebox{\underscorebox}C\usebox{\greaterthan}}\hspace*{\fill}\\
+\gutter{\ \ 331{|}\ }\syntaxCOMMENTA{*)}\hspace*{\fill}\\
+\gutter{\ \ 332{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 333{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 334{|}\ }\hspace*{\fill}\\
+\gutterH{\ \ 335{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 336{|}\ }\syntaxCOMMENTA{(*{\ }{\ }1:{\ }are{\ }c2a{\ }and{\ }a2c{\ }homomorphic{\ }w.r.t.{\ }cup\usebox{\underscorebox}{\ }cap\usebox{\underscorebox}{\ }{\ }\usebox{\underscorebox}\usebox{\hatbox}c{\ }}\hspace*{\fill}\\
+\gutter{\ \ 337{|}\ }\syntaxCOMMENTA{YES{\ }Galois{\ }connections{\ }preserve{\ }meets{\ }and{\ }joins!}\hspace*{\fill}\\
+\gutter{\ \ 338{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }2:{\ }are{\ }c2a{\ }and{\ }a2c{\ }{\ }{\ }continuous{\ }{\ }(D{\ }is{\ }directed{\ }if{\ }any{\ }d1,d2{\ }has{\ }an{\ }upper{\ }bound{\ }in{\ }D}\hspace*{\fill}\\
+\gutter{\ \ 339{|}\ }\syntaxCOMMENTA{{\ }{\ }complete{\ }pre{-}orders{\ }have{\ }bot{\ }and{\ }LUB{\ }for{\ }every{\ }D}\hspace*{\fill}\\
+\gutterH{\ \ 340{|}\ }\syntaxCOMMENTA{{\ }{\ }f{\ }is{\ }continuous{\ }if{\ }it{\ }preserves{\ }LUB{\ }of{\ }all{\ }Ds)}\hspace*{\fill}\\
+\gutter{\ \ 341{|}\ }\syntaxCOMMENTA{YES{\ }the{\ }standard{\ }Galois{\ }connections{\ }are{\ }continuous!}\hspace*{\fill}\\
+\gutter{\ \ 342{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }3:{\ }are{\ }⊆{\ }and{\ }⊇{\ }{\ }algebraic{\ }cpos}\hspace*{\fill}\\
+\gutter{\ \ 343{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 344{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }do{\ }c2a{\ }and{\ }a2c{\ }preserve{\ }Ideal{\ }completion{\ }for{\ }free?{\ }}\hspace*{\fill}\\
+\gutterH{\ \ 345{|}\ }\syntaxCOMMENTA{YES{\ }{\ }the{\ }ranges{\ }of{\ }c2a{\ }and{\ }a2c{\ }are{\ }order{\ }isomorphic{\ }See{\ }PeterSmith}\hspace*{\fill}\\
+\gutter{\ \ 346{|}\ }\syntaxCOMMENTA{{\ }{\ }*)}\hspace*{\fill}\\
+\gutter{\ \ 347{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 348{|}\ }\syntaxKEYWORDB{end}\hspace*{\fill}\\
+\gutter{\ \ 349{|}\ }\syntaxCOMMENTA{(*{\ }An{\ }alternative{\ }way{\ }to{\ }define{\ }a{\ }Galois{\ }connection{\ }*)}\hspace*{\fill}\\
+\gutterH{\ \ 350{|}\ }\syntaxKEYWORDA{locale}{\ }altGalois{\ }\syntaxOPERATOR{=}{\ }\hspace*{\fill}\\
+\gutter{\ \ 351{|}\ }{\ }{\ }\syntaxKEYWORDB{fixes}{\ }lqa{\ }\syntaxOPERATOR{::}{\ }\syntaxLITERALA{"'a{\ }⇒{\ }'a{\ }⇒{\ }bool"}{\ }{\ }\syntaxOPERATOR{(}\syntaxKEYWORDB{infixl}{\ }\syntaxLITERALA{"≼a"}{\ }50\syntaxOPERATOR{)}\hspace*{\fill}\\
+\gutter{\ \ 352{|}\ }{\ }{\ }\syntaxKEYWORDB{fixes}{\ }lqc{\ }\syntaxOPERATOR{::}{\ }\syntaxLITERALA{"'c{\ }⇒{\ }'c{\ }⇒{\ }bool"}{\ }{\ }\syntaxOPERATOR{(}\syntaxKEYWORDB{infixl}{\ }\syntaxLITERALA{"≼c"}{\ }50\syntaxOPERATOR{)}\hspace*{\fill}\\
+\gutter{\ \ 353{|}\ }{\ }{\ }\syntaxKEYWORDB{fixes}{\ }α{\ }{\ }\syntaxOPERATOR{::}{\ }\syntaxLITERALA{"'c{\ }⇒{\ }'a"}{\ }\syntaxCOMMENTA{(*{\ }right{\ }*)}\hspace*{\fill}\\
+\gutter{\ \ 354{|}\ }{\ }{\ }\syntaxKEYWORDB{fixes}{\ }γ{\ }\syntaxOPERATOR{::}{\ }\syntaxLITERALA{"'a{\ }⇒{\ }'c"}{\ }\hspace*{\fill}\\
+\gutterH{\ \ 355{|}\ }{\ }{\ }\syntaxKEYWORDB{assumes}{\ }{\ }transc{\ }\syntaxOPERATOR{{[}}trans\syntaxOPERATOR{{]}}\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"xc{\ }≼c{\ }yc{\ }⟹{\ }yc{\ }≼c{\ }zc{\ }⟹{\ }xc{\ }≼c{\ }zc"}\hspace*{\fill}\\
+\gutter{\ \ 356{|}\ }{\ }{\ }\syntaxKEYWORDB{and}{\ }{\ }{\ }{\ }{\ }{\ }transa{\ }\syntaxOPERATOR{{[}}trans\syntaxOPERATOR{{]}}\syntaxOPERATOR{:}{\ }{\ }\syntaxLITERALA{"{\ }x{\ }≼a{\ }y{\ }⟹{\ }y{\ }≼a{\ }z{\ }⟹{\ }x{\ }≼a{\ }z"}{\ }\hspace*{\fill}\\
+\gutter{\ \ 357{|}\ }{\ }{\ }\syntaxKEYWORDB{and}{\ }refla{\ }\syntaxOPERATOR{{[}}intro\syntaxOPERATOR{,}{\ }simp\syntaxOPERATOR{{]}}{\ }\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"x{\ }≼a{\ }x"}\hspace*{\fill}\\
+\gutter{\ \ 358{|}\ }{\ }{\ }\syntaxKEYWORDB{and}{\ }reflc{\ }\syntaxOPERATOR{{[}}intro\syntaxOPERATOR{,}{\ }simp\syntaxOPERATOR{{]}}{\ }\syntaxOPERATOR{:}{\ }\syntaxLITERALA{"xc{\ }≼c{\ }xc"}\hspace*{\fill}\\
+\gutter{\ \ 359{|}\ }{\ }{\ }\syntaxKEYWORDB{and}{\ }monoc\syntaxOPERATOR{:}{\ }{\ }\syntaxLITERALA{"xc{\ }≼c{\ }yc{\ }⟹{\ }α{\ }xc{\ }≼a{\ }α{\ }yc"}\hspace*{\fill}\\
+\gutterH{\ \ 360{|}\ }{\ }{\ }\syntaxKEYWORDB{and}{\ }monoa\syntaxOPERATOR{:}{\ }{\ }\syntaxLITERALA{"xa{\ }≼a{\ }ya{\ }⟹{\ }γ{\ }xa{\ }≼c{\ }γ{\ }ya"}\hspace*{\fill}\\
+\gutter{\ \ 361{|}\ }{\ }{\ }\syntaxKEYWORDB{and}{\ }la\syntaxOPERATOR{:}{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxLITERALA{"{\ }x{\ }≼a{\ }α(γ(x))"}\hspace*{\fill}\\
+\gutter{\ \ 362{|}\ }{\ }{\ }\syntaxKEYWORDB{and}{\ }lc\syntaxOPERATOR{:}{\ }{\ }\syntaxLITERALA{"γ(α(xc)){\ }≼c{\ }xc"}\hspace*{\fill}\\
+\gutter{\ \ 363{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 364{|}\ }\syntaxKEYWORDA{context}{\ }altGalois{\ }\syntaxKEYWORDB{begin}\hspace*{\fill}\\
+\gutterH{\ \ 365{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 366{|}\ }\syntaxKEYWORDA{lemma}{\ }{\ }alt\usebox{\underscorebox}is\usebox{\underscorebox}galois\syntaxOPERATOR{:}\syntaxLITERALA{"pre\usebox{\underscorebox}galois{\ }((≼a)::{\ }'a{\ }⇒{\ }'a{\ }⇒{\ }bool){\ }{\ }}\hspace*{\fill}\\
+\gutter{\ \ 367{|}\ }\syntaxLITERALA{{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }((≼c)::{\ }'c{\ }⇒{\ }'c{\ }⇒{\ }bool){\ }{\ }}\hspace*{\fill}\\
+\gutter{\ \ 368{|}\ }\syntaxLITERALA{{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }(α::'c{\ }⇒{\ }'a){\ }}\hspace*{\fill}\\
+\gutter{\ \ 369{|}\ }\syntaxLITERALA{{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }(γ::{\ }'a{\ }⇒{\ }'c){\ }{\ }"}\hspace*{\fill}\\
+\gutterH{\ \ 370{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{apply}{\ }\syntaxOPERATOR{(}unfold\usebox{\underscorebox}locales\syntaxOPERATOR{,}auto\syntaxOPERATOR{)}\hspace*{\fill}\\
+\gutter{\ \ 371{|}\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutter{\ \ 372{|}\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }transa{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"{\ }⋀x{\ }y{\ }z.{\ }x{\ }≼a{\ }y{\ }⟹{\ }y{\ }≼a{\ }z{\ }⟹{\ }x{\ }≼a{\ }z"}{\ }\syntaxKEYWORDA{.}\hspace*{\fill}\\
+\gutter{\ \ 373{|}\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }transc{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"{\ }⋀xc{\ }yc{\ }zc.{\ }xc{\ }≼c{\ }yc{\ }⟹{\ }yc{\ }≼c{\ }zc{\ }⟹{\ }xc{\ }≼c{\ }zc"}{\ }\syntaxKEYWORDA{.}\hspace*{\fill}\\
+\gutter{\ \ 374{|}\ }{\ }{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"⋀xa{\ }xc.{\ }xa{\ }≼a{\ }α{\ }xc{\ }⟹{\ }γ{\ }xa{\ }≼c{\ }xc"}\hspace*{\fill}\\
+\gutterH{\ \ 375{|}\ }{\ }{\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutter{\ \ 376{|}\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDC{fix}{\ }xa{\ }xc{\ }\syntaxKEYWORDC{assume}{\ }asm\syntaxOPERATOR{:}\syntaxLITERALA{"xa{\ }≼a{\ }α{\ }xc"}{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 377{|}\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }{\ }monoa{\ }{\ }\syntaxKEYWORDA{have}{\ }\syntaxLITERALA{"γ{\ }xa{\ }≼c{\ }γ{\ }(α{\ }xc)"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ 378{|}\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }lc{\ }transc{\ }{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"{\ }γ{\ }xa{\ }≼c{\ }xc"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ 379{|}\ }{\ }{\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutterH{\ \ 380{|}\ }{\ }{\ }{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"{\ }⋀xa{\ }xc.{\ }γ{\ }xa{\ }≼c{\ }xc{\ }⟹{\ }xa{\ }≼a{\ }α{\ }xc"}\hspace*{\fill}\\
+\gutter{\ \ 381{|}\ }{\ }{\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutter{\ \ 382{|}\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDC{fix}{\ }xa{\ }xc{\ }\syntaxKEYWORDC{assume}{\ }asm\syntaxOPERATOR{:}\syntaxLITERALA{"γ{\ }xa{\ }≼c{\ }xc"}{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 383{|}\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }{\ }monoc{\ }{\ }\syntaxKEYWORDA{have}{\ }\syntaxLITERALA{"α{\ }(γ{\ }xa){\ }≼a{\ }α{\ }xc"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ 384{|}\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }la{\ }transa{\ }{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"xa{\ }≼a{\ }α{\ }xc"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutterH{\ \ 385{|}\ }{\ }{\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutter{\ \ 386{|}\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutter{\ \ 387{|}\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 388{|}\ }{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 389{|}\ }{\ }\syntaxKEYWORDA{interpretation}{\ }\syntaxLITERALA{"alt"}{\ }\syntaxOPERATOR{:}{\ }pre\usebox{\underscorebox}galois{\ }\syntaxLITERALA{"((≼a)::{\ }'a{\ }⇒{\ }'a{\ }⇒{\ }bool)"}\hspace*{\fill}\\
+\gutterH{\ \ 390{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxLITERALA{"((≼c)::{\ }'c{\ }⇒{\ }'c{\ }⇒{\ }bool)"}{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 391{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxLITERALA{"(α{\ }::{\ }'c{\ }⇒{\ }'a)"}{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 392{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxLITERALA{"(γ{\ }{\ }::{\ }'a{\ }⇒{\ }'c)"}{\ }\hspace*{\fill}\\
+\gutter{\ \ 393{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{apply}{\ }\syntaxOPERATOR{(}unfold\usebox{\underscorebox}locales\syntaxOPERATOR{,}auto\syntaxOPERATOR{)}\hspace*{\fill}\\
+\gutter{\ \ 394{|}\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutterH{\ \ 395{|}\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }transa{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"{\ }⋀x{\ }y{\ }z.{\ }x{\ }≼a{\ }y{\ }⟹{\ }y{\ }≼a{\ }z{\ }⟹{\ }x{\ }≼a{\ }z"}{\ }\syntaxKEYWORDA{.}\hspace*{\fill}\\
+\gutter{\ \ 396{|}\ }{\ }{\ }\syntaxKEYWORDA{from}{\ }transc{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"{\ }⋀xc{\ }yc{\ }zc.{\ }xc{\ }≼c{\ }yc{\ }⟹{\ }yc{\ }≼c{\ }zc{\ }⟹{\ }xc{\ }≼c{\ }zc"}{\ }\syntaxKEYWORDA{.}\hspace*{\fill}\\
+\gutter{\ \ 397{|}\ }{\ }{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"⋀xa{\ }xc.{\ }xa{\ }≼a{\ }α{\ }xc{\ }⟹{\ }γ{\ }xa{\ }≼c{\ }xc"}\hspace*{\fill}\\
+\gutter{\ \ 398{|}\ }{\ }{\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutter{\ \ 399{|}\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDC{fix}{\ }xa{\ }xc{\ }\syntaxKEYWORDC{assume}{\ }asm\syntaxOPERATOR{:}\syntaxLITERALA{"xa{\ }≼a{\ }α{\ }xc"}{\ }{\ }\hspace*{\fill}\\
+\gutterH{\ \ 400{|}\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }{\ }monoa{\ }{\ }\syntaxKEYWORDA{have}{\ }\syntaxLITERALA{"γ{\ }xa{\ }≼c{\ }γ{\ }(α{\ }xc)"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ 401{|}\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }lc{\ }transc{\ }{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"{\ }γ{\ }xa{\ }≼c{\ }xc"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ 402{|}\ }{\ }{\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutter{\ \ 403{|}\ }{\ }{\ }{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"{\ }⋀xa{\ }xc.{\ }γ{\ }xa{\ }≼c{\ }xc{\ }⟹{\ }xa{\ }≼a{\ }α{\ }xc"}\hspace*{\fill}\\
+\gutter{\ \ 404{|}\ }{\ }{\ }\syntaxKEYWORDA{proof}{\ }{-}\hspace*{\fill}\\
+\gutterH{\ \ 405{|}\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDC{fix}{\ }xa{\ }xc{\ }\syntaxKEYWORDC{assume}{\ }asm\syntaxOPERATOR{:}\syntaxLITERALA{"γ{\ }xa{\ }≼c{\ }xc"}{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 406{|}\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }{\ }monoc{\ }{\ }\syntaxKEYWORDA{have}{\ }\syntaxLITERALA{"α{\ }(γ{\ }xa){\ }≼a{\ }α{\ }xc"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ 407{|}\ }{\ }{\ }{\ }{\ }\syntaxKEYWORDA{with}{\ }la{\ }transa{\ }{\ }\syntaxKEYWORDC{show}{\ }\syntaxLITERALA{"xa{\ }≼a{\ }α{\ }xc"}{\ }\syntaxKEYWORDA{by}{\ }auto\hspace*{\fill}\\
+\gutter{\ \ 408{|}\ }{\ }{\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutter{\ \ 409{|}\ }\syntaxKEYWORDA{qed}\hspace*{\fill}\\
+\gutterH{\ \ 410{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 411{|}\ }\syntaxCOMMENTA{(*proof{\ }(rule{\ }{\ }alt\usebox{\underscorebox}is\usebox{\underscorebox}galois{\ }){\ }qed{\ }*)}\hspace*{\fill}\\
+\gutter{\ \ 412{|}\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }{\ }\hspace*{\fill}\\
+\gutter{\ \ 413{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 414{|}\ }\syntaxKEYWORDB{end}\hspace*{\fill}\\
+\gutterH{\ \ 415{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 416{|}\ }\syntaxCOMMENTA{(*{\ }Galois{\ }connections{\ }are{\ }symetric.{\ }NO{\ }built{\ }in{\ }abstract{\ }and{\ }concrete{\ }pre{-}orders.{\ }}\hspace*{\fill}\\
+\gutter{\ \ 417{|}\ }\syntaxCOMMENTA{Retracts,{\ }α∘γ{\ }={\ }id\usebox{\underscorebox}a,{\ }DO!{\ }There{\ }are{\ }two{\ }types{\ }of{\ }retracts:}\hspace*{\fill}\\
+\gutter{\ \ 418{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }in{\ }one{\ }γ∘α{\ }is{\ }decreasing{\ }}\hspace*{\fill}\\
+\gutter{\ \ 419{|}\ }\syntaxCOMMENTA{{\ }{\ }{\ }{\ }in{\ }the{\ }other{\ }γ∘α{\ }is{\ }increasing.{\ }{\ }}\hspace*{\fill}\\
+\gutterH{\ \ 420{|}\ }\syntaxCOMMENTA{*)}\hspace*{\fill}\\
+\gutter{\ \ 421{|}\ }\syntaxKEYWORDB{end}\hspace*{\fill}\\
+\gutter{\ \ 422{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 423{|}\ }\hspace*{\fill}\\
+\gutter{\ \ 424{|}\ }\hspace*{\fill}\\
+\mbox{}
+\normalfont
+\end{document}

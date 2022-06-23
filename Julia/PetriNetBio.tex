@@ -1,0 +1,328 @@
+
+\section{High level view of Petri Nets in the Box Calculus}
+We  are interested in Transitions with event labels. We must have  definitions both of parallel composition and event abstraction. Atomic Petri Nets have Transitions labelled only with atomic events.  Symbolic Petri Nets have state variables, boolean guards, assignments and value passing events.
+
+
+Symbolic Petri Nets provide many divers but equivalent representations of the same process.  A sequential Atomic/Symbolic Petri Net will be refered to as a Atomic/Symbolic  State Machine. The Token rule constructs State Machines from Petri Nets.
+The symbols in a Symbolic Petri Net can represent: state variables, input values or system parameters. The $n$ in an $n$-place buffer and the $v$ in an input event $in?v$ are both constants that can take an infinite set of values and can not effectively be replaced. Whereas the state variables are local and private to a state machine hence should not appear in a specification. To establish that a concrete Symbolic Petri Net implements an abstract Symbolic Petri Net we establish a Galois relation between the two. The required Galois mappings  are defined as particular relations between the state spaces of the two Petri Nets.
+
+
+
+
+Symbolic Petri Nets types:
+\begin{center}
+\begin{tabular}{lcccc}
+& SPN & GFSPN & SSPN  & Atomic PN\\
+guard & bool& \hspace{2em} -- \hspace{2em} & \hspace{2em} -- \hspace{2em} & \hspace{2em} -- \hspace{2em} \\
+assignment \hspace{2em}& x=exp & x=exp & x = lit & \hspace{2em} -- \hspace{2em}\\
+\end{tabular}
+\end{center}
+
+Symbolic Petri Nets do not loose any  connection between input values and output values.  For both Guard Free Petri Nets,GPPN and the simple symbolic Petri Nets, SSPN the state evaluation of any variable, does not effect the control flow of the Petri Net. Analysis of a SPN 
+\begin{enumerate}
+\item for an SPN with $N$ guards convert into a GFPN or SSPN by decomposing  the state space  $N$ times.
+\item move expressions from inputs to outputs, constructing inductive terms from cycles
+\item analyse the resulting SSPN
+\end{enumerate}    
+The SSPN tracks from input values to output values should  be highlighted in some way. Applying  the Token Rule to SSPNs  constructs state machines with events {\bf in?v} and {\bf out!v}. Applying Event Abstraction to the SSPN prior to the Token rule will on occasions  introduce boolean guards.
+
+The steps from SPN to GFPN and from PN to SM have exponential worst case complexity.
+
+ The Places of a Petri Net are an enumerated type  hence and Symbolic Petri Net is equivalent to the obvious  Symbolic Petri Net with a single Place and an additional variable that is an enumerated type. Thinking about specifying a process as a Symbolic Petri Net encourages you to use enumerated types for the really important design components. Every process $P$ is representable by a tree of Symbolic Petri Nets $P_{Tree}$ each with distinct sets of state variables.
+
+In order to be well defined event abstraction or the construction of the observational semantics on each SPN in t$P_{Tree}$ must result in equivalent SPN! Symbolic abstraction only adds the event $e_1;e_2$ when $g_1 \wedge g_2@a_1$ is  satisfiable. The evaluation of such terms by Z3 will return {\bf satisfiable, unsatisfiable} or {\bf unknown} In the last case it is desirable to export the question to an interactive theorem prover such as Isabelle HOL. 
+
+Isabelle HOL provides JEdit IDE plugin for interactive use. It may be posible to customize this to inject software generated proof obligations? Jedit runs isabelle and via sledgehammer many automatic solvers in separate threads. it should be programatically construct an Isabelle theory file for each Petri Net and load them into JEdit. Then he results form Isabelle should be used to build new Petri Nets.
+The resulting Petri Nets can be displayed by Unreal.
+
+This can then be incrementally extended by stepwise proof of the underlying theory! 
+
+
+Is model checking  SimpSPN equivalent to Symbolic verification? 
+
+\subsection{Examples:}
+
+A one place integer buffer can be in an infinite number of states, the empty state and one unique state for each integer value plus  transitions {\bf in?v} and {\bf out!v}. Nonetheless its behaviour can best be understood by a {\it Symbolic LTS} with two Places and one variable {\bf st}, the empty state and the full state and transitions {\bf in?st} and {\bf out!st}.
+
+
+
+Next consider both a three place buffer, FIFO queue, and a three place stack, FILO queue. With atomic Petri Nets and events, {\bf in} and {\bf out}  they are indistinguishable as the connection between the input and output value has been lost. 
+
+Clearly the n place FILO queue can be represented as a process with atomic events and has N+1 states which  is easily checked. The N place  FIFO Buffer can be represented as a process with atomic events and $\Sigma^{i = N}_{i =0} N^i$ states.
+
+$B1 \sim  Q1$   and $B2 \sim QA1 \parallel QB2  $  but does $QA2\parallel QB2  \sim Q3A \parallel Q1B$ 
+
+A Symbolic PN of an  N Place buffer can  be built from with N one Place buffers each with a local variable {\bf st} and events {\bf inN?st} and {\bf outN!st}. The Token Rule comes in two versions:
+\begin{description}
+\item [Symbolic Token Rule] has to collect the local variables, for instance into an array of size N. The two observable events of the state machine are {\bf in1?st} and {\bf outN!st}
+\item [Atomic Token Rule] is infinite state and has observable events {\bf in1?v} and {\bf outN!v} of each value {\bf v}
+\end{description}  
+
+Interestingly $BN$ are easier to define as concurrent processes whereas $QN$ are each  easier to define as a single sequential process. Alternatively we might view $QN$ as a data type and $BN$ as a process.
+
+\section{High level  design / architecture for  Tool }
+An Ideal and very high level architecture would be to use the Unreal Engine for interactive visualisations of editable Petri Net models. And define a JEdit plugin to work alongside of Isabelle HOL for the definition Symbolic Petri Net functions and ultimately for the proof of the underlying theory.
+
+
+Unreal supports both Gaming and Real World simulation. Both start with quality 3D simulation.  Simulating chemical reactions:
+\begin{description}
+\item[Unreal] starts with a 3D model
+\item[Julia] starts with a differential equation (Continuous Petri Net)
+\end{description}
+Both approaches can be compositional and both are performant ! Could the symbolic optimization from Julia be of use to unreal in the same way as the visualisation from unreal can help understanding of the complex systems modelled by Julia
+
+
+
+
+
+
+
+
+
+
+Use UE as simulation Development environment! Players and Agents move around the simulated  world
+\begin{description}
+\item[Behaviour Tree] built in part of UE
+\item[World Model] Normally a landscape that a person explores. But Petri Nets have constrained topology that the "player", the token explores. The arcs define this topology and can be defined as actors. Hence an entire Petri Net can be defined by a set of actors.
+\item[Smart Objects] contain the information an agent needs to perform some task. They and contained in Actors and can be queried, interacted with,  depending upon  location proximity, or tag. One Smart object container per level. Multiple smart object instances can exist but all share some data
+\item[Data Driven GamePlay Elements]  Data registries are for read-only data  they cannot be assigned values at run time. That is  not to say fixed data. The data register may contain sources that create the data, sources such as JSON formatted files and these files may contain the definition of actors. Thus the json file could define a Petri Net but that Net would be fixed at run time.
+
+Runtime DataTable is available as a plugin but at a cost!  Onlineintructions how to read file.csv into  BluePrint  looks easy to follow.
+
+
+
+\end{description}
+
+Petri Net Token Rule equates to Eager functions What Rule equates to Lazy functions!
+
+
+With Game interpretation of UE  Architectural Questions:
+What is the relation between UE and the various kinds of PN? What do we want from UE? is it just a visualisation or is it editable and can be exported as JSON data structure.
+
+
+A Petri Net is a game and a game play is a trace of the net.
+
+\begin{center}
+\begin{tabular}{ll}
+Petri Nets & UnReal \\
+Petri Net &  World \\
+Meta Transition &  Component \\
+Transition &  Actor containing a Meta-T instance  \\
+Arc & cable component or world topology? \\
+Token & Player or bot \\
+Event synchronisation & Actor to actor communication \\
+\end{tabular}
+\end{center}
+
+In order that Petri Nets can be "defined" a generic Petri Game must be defined and  individual Nets defined as parameters to the generic game.
+ 
+If data source contains a World, the topology of which is the topology of a Petri Net. A world populated by Transition Actors.
+ 
+ 
+ Or Can we define a Game that builds games?
+ 
+ \begin{center}
+ \begin{tabular}{ll}
+Petri Nets & UnReal \\
+Define a Petri Net &  The Game \\
+Variable evaluation & The Game World \\
+Addition of a Assets &  Player action \\
+\end{tabular}
+ \end{center}
+ 
+ Games, PetriNets can be saved and replayed, Petri Nets rebuilt.
+
+
+UE players can interact with Actors and 
+PN tokens interact with Transitions  giving: A Game  is a Petri Net and  a trace is a Game played.
+
+Actors can be define with parameters to give a generic Transition.
+
+Still need the ability to translate from TLA+ to a game!
+
+Command line parameters to the unreal Engine used to define a particular Petri Net. The Game 'Map" being a visual representation of the Petri Net.
+
+From one Symbolic Petri Net compute multiple, related, Petri Nets. 
+
+
+
+Initially tried Julia to javascript and three.js for the GUI.  But finaly gave up with javascript.
+
+\subsection{Julia to Java}
+lookat https://github.com/jbytecode/juliacaller
+
+ https://discourse.julialang.org/t/calling-julia-from-within-java-juliacaller/48357
+
+VSCode JavaFX is ugly: Need to edit or add the \verb|launch.json| file  (Run$>$ Open Cinfigurations) adding
+
+\verb|"vmArgs": "--module-path /Users/dstr/JavaFX-Projects/javafx-sdk-18.0.1/lib |
+    \hspace{1cm}     \verb|  --add-modules javafx.controls,javafx.fxml"|,
+    
+ see https://stackoverflow.com/questions/54349894/javafx-11-with-vscode for details
+
+Refactored PetriNet class to use \verb|Map<String,Place>| etc. Avoiding cyclic class definitions allows the Gson library to serialise PetriNets with out customisation.
+
+java.lang.Runtime.exec("julia thescript.jl")
+
+JavaFX: Stage$>$Scene$>$ Node (button, petrinet)
+   3D objects are GUI Nodes (like buttons and scrollbars) and can be/are  organised in a tree structure. Translations can be applied to node. A 3D scene needs a depth buffer and can have many lights but one camera. 
+   
+   The camera is no longer Fixed .
+   
+A scene can have sub-scenes,each with there own camera and allows 2D 3D mixing.
+Attaching text to a Node rendered in 3D is easy but keeping text positioned and oriented correctly needs some thought
+%It appears that the best way is to use a 2D overlay, convert the  3D coordinates to 2D and  re compute when dragging ,translating, rotating, moving camera.
+
+\subsection{STOPPED looking at Julia to  javascript}
+%Julia   to serve web page - using Mux.jl - it looks stable, well documented and one stpe up from HTTP.jl. Mux.jl has code snip it forr Websockets. The page served is to have Both Three.js and Websockets.js (see https://programmerall.com/article/14942202525/) for javascript example using Web sockets.
+%
+%Using a WebServer based chat client  provides text based communication between a number of web pages and a Julia Server.
+%
+%\begin{verbatim}
+%# Since we are to access a websocket from outside
+%# it's own websocket handler coroutine, we need some kind of
+%# mutable container for storing references:
+%const WEBSOCKETS = Dict{WebSocket, Int}()
+%
+% push!(WEBSOCKETS, thisws => length(WEBSOCKETS) +1 )
+% function distributemsg(msgout, not_to_ws)
+%    foreach(keys(WEBSOCKETS)) do ws
+%        if ws !== not_to_ws
+%            writeguarded(ws, msgout)
+%        end
+%    end
+%    nothing
+%end
+%\end{verbatim}
+
+\subsection{Julia design}
+basic Use Case:
+1 Server side Write specification for State Machine using Julia to validate symbolic syntax and output a jason formatted SM.
+2 Client side (a) display SM (b) edit SM - push edits back to text input?
+3 Server Side Save SM layout and edits
+4 Server Side Load jason SM into test editor + send to Client
+
+
+
+A Language to specify  a Process - Use Z3.jl  to evaluate Symbolic expressions
+
+To use three.js effectively read cookbook! (Node can be a Place of Transition):
+\begin{enumerate}
+\item \verb|<script type="module"> |
+\item define objects hierarchically  PetriNet has Node children 
+\item  Glue a line to Nodes \verb|lineGeometry.vertices.push( item.position );|  then placing or moving Nodes also moves the Line,
+\item get one object to point to, "look at" another 
+\begin{verbatim}
+new function () {
+            this.lookAtCube = function () {
+                cube.lookAt(boxMesh.position);
+            };
+\end{verbatim}
+\item dragging and dropping must be coded as they are not out of the box methods
+\item Possible  ways to visualise and explore the topology of complex data
+
+\begin{enumerate}
+\item point clouds
+\item morph animation
+\item skeletons and skins
+\end{enumerate}
+
+
+\end{enumerate}
+
+{\bf Methods to:}
+\begin{enumerate}
+ \item    return next location
+ \item    Process  to json for  export
+ \item    json to Process for import
+ \item    spring embedder layout
+ \item    parallel composition of processes  $P \|\|{evts} P$
+ \item    tau event hiding on automata and on PN (Explore useful restrictions to enhance visualisation)
+ \item    compute located bisimulation and failure equivalence
+  \item   Token Rule
+ \item    Owners Rule
+     \end{enumerate}
+     
+{\bf Atomic processes have:}
+\begin{enumerate}
+ \item     a single variable Place restricted to a finite set of integers and 
+     events with default guards and ass
+\end{enumerate}
+
+{\bf Symbolic process Methods}
+ \begin{enumerate}
+ \item    Events with guard::Exp and assignments (Var,Exp)
+ \item    Token Rule Symbolic PN  to Symbolic automata
+  \item   ToAtomicExpansion
+ \item       application of assignmnets to guards and assignments (hence macros)
+ \item       May be infinite state  (hence any algorithm may fail)
+ \item          Compute reachable state of variable evaluation  
+ \item          Expand selected variable, split Places depending on evaluation 
+    Split Place according to event guards
+ \item        A one place integer buffer Buf = in(i).out(i).Buf is infinite state
+       but as 'i' dose not appear in any guard it is best left unexpanded
+  \item       An 'N' place buffer Buff(N) has state space dependent on 'N' and 'N' appears in a guard and       could only be removed by building 'N' states.
+
+\end{enumerate}
+Many models, of interest in Constraint programming,  can not be effectivly  formulated with FOL alone
+  but they can be with  FOL + Induction + Aggregation.
+
+
+    Symbolic tau event hiding, state pruning
+        application of assignments to guards and assignments (hence macros)
+    simplification via Symbolic bisimulation and failure semantics
+
+Implement a DSL using Julia Meta programming.
+
+To evaluate guards  use Z3.jl
+
+To apply assignments  perform substitutions   Symbolics.jl
+
+Many very distinct extensions to Petri Nets  have been used to model  Biological pathways. The usual semantics of a Petri Net is un-timed and has both a discrete state space and discrete state transitions. Whereas chemical reactions exhibit both  stochastic behaviour,  temporal behaviour and continuous change rather than discrete state change.
+
+Process algebra,  PA, can be used to define composition  processes that can be  given a Petri Net semantics. Restricting ourselves to PN generated by PA means that certain PN properties are guaranteed, e.g. Place invariants. Temporal  process algebras, TPA, associate time either to  an event or can treat the events as atomic and associate time to the state of the process. Stochastic processes can introduce probability distributions to the the length of time or by defining probabilistic choice in place of non-deterministic choice. The semantics of TPA are, quite naturally, temporal Petri Nets, TPN.
+
+Which of these can be viewed as ODEs? And dose the work on ODEs help?
+
+Which of these permits $\tau$ abstraction and although abstraction simplifies atomic PNs the application to TPA may, in some cases, do little more than push the complexity into the events rate functions? 
+
+Which of these are interchangeable?
+
+The dynamic behaviour of chemical reactions are  modelled by systems ODEs. Even simple ODEs, such as the Lorenze equations, three first order differential equations with only two non linear polynomial terms, both second order, have such complex behaviour that they are still being actively researched. As such the analyticity and numeric analysis of PNs that are equivalent to ODEs will also be problematic.
+
+\begin{enumerate}
+\item Generalised Stochastic Petri Nets GSPN, have integer tokens and an exponentially distributed firing rate associated to each timed transition. Plus immediate and inhibitor transitions.
+
+\item Continuous Petri Nets have real valued, not integer valued tokens. The Token Rule is now continuous not discrete, and each transition has a "firing rate" that is a function of the token values on the pre-Places.
+
+ Processes tokens with real values can be modelled by real valued variables in the state space. The continuous Token Rule gives Transitions an ODE semantics.
+ 
+ 
+\item Process Algebras have been used to specify models for performance modelling - biochemical modelling, but beware the interleaving assumption. Handshake = blocking read and write and symmetric choice (coffee machine); Broadcast = non-blocking send (email); Responsible Hand shake blocking read and write and write choice. 
+
+\item  PEPA  continuous PN with probabilistic choice in place of  non-deterministic choice.  Active events have firing rate whereas passive events do not.
+
+\end{enumerate}
+
+\subsection{Using Petri Nets in Biology}
+
+Chemical reactions are stochastic processes and even simple Biological pathways can involve may component reactions each modelled by a differential equation. The concentration of each component can be modelled by a continuous process with reactions as stochastic events. Such pathways  can be defined by process algebra and given a stochastic Petri Net semantics. The collection of the many differential equations can be built directly from the Net.
+
+
+
+
+
+
+
+FOL   existential predicates are interchangeable with functions
+resolution theorem proving move to all functions
+        constraint solvers move to all existential   
+
+Julia meta-programming
+     getfield(Main, :x)   filenames(Expr)     
+
+function foo(e)
+   for field in fieldnames(Expr)
+      println(getfield(e, field))
+   end 
+end
